@@ -80,10 +80,10 @@ export default async function TerritoryPage() {
             {territories.map((t) => (
               <tr key={t.id} style={{ borderBottom: `1px solid rgba(0,212,255,0.04)` }}>
                 <td style={{ padding: "12px 16px", fontWeight: 700, fontSize: "0.85rem", color: CYAN }}>{t.state}</td>
-                <td style={{ padding: "12px 16px", fontSize: "0.82rem", color: TEXT_MUTED }}>{t.region ?? "—"}</td>
+                <td style={{ padding: "12px 16px", fontSize: "0.82rem", color: TEXT_MUTED }}>{t.region ?? "-"}</td>
                 <td style={{ padding: "12px 16px", fontSize: "0.85rem", color: TEXT }}>{t.rep.user.name}</td>
-                <td style={{ padding: "12px 16px", fontSize: "0.82rem", color: TEXT_MUTED }}>{t.city ?? "—"}</td>
-                <td style={{ padding: "12px 16px", fontSize: "0.8rem", color: TEXT_MUTED }}>{t.notes ?? "—"}</td>
+                <td style={{ padding: "12px 16px", fontSize: "0.82rem", color: TEXT_MUTED }}>{t.city ?? "-"}</td>
+                <td style={{ padding: "12px 16px", fontSize: "0.8rem", color: TEXT_MUTED }}>{t.notes ?? "-"}</td>
               </tr>
             ))}
           </tbody>

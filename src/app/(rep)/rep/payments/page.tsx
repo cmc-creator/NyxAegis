@@ -75,7 +75,7 @@ export default async function RepPaymentsPage() {
                   <span style={{ fontSize: "0.7rem", fontWeight: 700, color: statusColors[p.status] ?? CYAN, background: "rgba(0,0,0,0.3)", padding: "2px 8px", borderRadius: 4 }}>{p.status}</span>
                 </td>
                 <td style={{ padding: "13px 16px", fontSize: "0.78rem", color: TEXT_MUTED }}>
-                  {p.periodStart && p.periodEnd ? `${formatDate(p.periodStart)} – ${formatDate(p.periodEnd)}` : "—"}
+                  {p.periodStart && p.periodEnd ? `${formatDate(p.periodStart)} – ${formatDate(p.periodEnd)}` : "-"}
                 </td>
                 <td style={{ padding: "13px 16px", fontSize: "0.82rem", color: p.paidAt ? "#34d399" : TEXT_MUTED }}>{formatDate(p.paidAt)}</td>
               </tr>

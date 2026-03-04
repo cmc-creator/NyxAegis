@@ -61,7 +61,7 @@ export default async function RepOpportunitiesPage() {
                   <span style={{ fontSize: "0.7rem", fontWeight: 700, color: stageColors[opp.stage] ?? CYAN, background: "rgba(0,0,0,0.3)", padding: "2px 8px", borderRadius: 4 }}>{opp.stage.replace("_", " ")}</span>
                 </td>
                 <td style={{ padding: "13px 16px", fontSize: "0.82rem", color: TEXT_MUTED }}>{opp.serviceLine.replace(/_/g, " ")}</td>
-                <td style={{ padding: "13px 16px", fontSize: "0.9rem", fontWeight: 700, color: CYAN }}>{opp.value ? formatCurrency(Number(opp.value)) : "—"}</td>
+                <td style={{ padding: "13px 16px", fontSize: "0.9rem", fontWeight: 700, color: CYAN }}>{opp.value ? formatCurrency(Number(opp.value)) : "-"}</td>
                 <td style={{ padding: "13px 16px", fontSize: "0.82rem", color: TEXT_MUTED }}>{formatDate(opp.closeDate)}</td>
               </tr>
             ))}

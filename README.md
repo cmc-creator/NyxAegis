@@ -1,6 +1,6 @@
 # NyxAegis CRM
 
-**Hospital Business Development Platform** — purpose-built for healthcare BD teams.
+**Hospital Business Development Platform** - purpose-built for healthcare BD teams.
 
 NyxAegis gives hospital business development organizations a unified platform to manage hospital accounts, track opportunity pipelines, assign territories, manage rep compliance, and close more contracts.
 
@@ -18,9 +18,9 @@ NyxAegis gives hospital business development organizations a unified platform to
 
 | Role | Portal | Access |
 |------|--------|--------|
-| `ADMIN` | `/admin/*` | Full platform access — all hospitals, reps, pipeline, analytics |
-| `REP` | `/rep/*` | BD rep portal — their opportunities, territory, docs, payments |
-| `ACCOUNT` | `/account/*` | Hospital portal — their engagements, invoices, contracts |
+| `ADMIN` | `/admin/*` | Full platform access - all hospitals, reps, pipeline, analytics |
+| `REP` | `/rep/*` | BD rep portal - their opportunities, territory, docs, payments |
+| `ACCOUNT` | `/account/*` | Hospital portal - their engagements, invoices, contracts |
 
 ## Setup
 
@@ -41,10 +41,10 @@ cp .env.example .env
 ```
 
 Required variables:
-- `DATABASE_URL` — PostgreSQL connection string
-- `AUTH_SECRET` — NextAuth secret (generate with `openssl rand -base64 32`)
-- `STRIPE_SECRET_KEY` — Stripe secret key
-- `RESEND_API_KEY` — Resend email API key
+- `DATABASE_URL` - PostgreSQL connection string
+- `AUTH_SECRET` - NextAuth secret (generate with `openssl rand -base64 32`)
+- `STRIPE_SECRET_KEY` - Stripe secret key
+- `RESEND_API_KEY` - Resend email API key
 
 ### 3. Database setup
 
@@ -100,23 +100,23 @@ prisma/
 
 ## Key Models
 
-- **Rep** — BD representative profiles, credentials, territories
-- **Hospital** — Hospital/health system account records
-- **Contact** — Hospital decision makers (CMO, CFO, etc.)
-- **Lead** — Pre-account prospects in the funnel
-- **Opportunity** — Active BD opportunities (Discovery → Closed Won)
-- **Activity** — CRM activity log (calls, emails, meetings, etc.)
-- **Contract** — Service agreements and MSAs
-- **Invoice** — Billing records with Stripe integration
-- **ComplianceDoc** — HIPAA certs, state licenses, BAAs, W-9s
+- **Rep** - BD representative profiles, credentials, territories
+- **Hospital** - Hospital/health system account records
+- **Contact** - Hospital decision makers (CMO, CFO, etc.)
+- **Lead** - Pre-account prospects in the funnel
+- **Opportunity** - Active BD opportunities (Discovery to Closed Won)
+- **Activity** - CRM activity log (calls, emails, meetings, etc.)
+- **Contract** - Service agreements and MSAs
+- **Invoice** - Billing records with Stripe integration
+- **ComplianceDoc** - HIPAA certs, state licenses, BAAs, W-9s
 
 ## Deployment (Vercel)
 
 1. Push to GitHub
 2. Connect to Vercel
 3. Set environment variables
-4. Deploy — Vercel will run `prisma migrate deploy && next build`
+4. Deploy - Vercel will run `prisma migrate deploy && next build`
 
 ---
 
-© 2026 NyxCollective LLC — Hospital BD Platform
+© 2026 NyxCollective LLC - Hospital BD Platform

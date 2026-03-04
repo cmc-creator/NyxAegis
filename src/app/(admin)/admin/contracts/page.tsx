@@ -45,11 +45,11 @@ export default async function ContractsPage() {
               <tr key={c.id} style={{ borderBottom: `1px solid rgba(0,212,255,0.04)` }}>
                 <td style={{ padding: "13px 16px", fontWeight: 600, fontSize: "0.875rem", color: TEXT }}>{c.title}</td>
                 <td style={{ padding: "13px 16px", fontSize: "0.85rem", color: TEXT_MUTED }}>{c.hospital.hospitalName}</td>
-                <td style={{ padding: "13px 16px", fontSize: "0.82rem", color: TEXT_MUTED }}>{c.assignedRep?.user.name ?? "—"}</td>
+                <td style={{ padding: "13px 16px", fontSize: "0.82rem", color: TEXT_MUTED }}>{c.assignedRep?.user.name ?? "-"}</td>
                 <td style={{ padding: "13px 16px" }}>
                   <span style={{ fontSize: "0.7rem", fontWeight: 700, color: statusColors[c.status] ?? CYAN, background: "rgba(0,0,0,0.3)", padding: "2px 8px", borderRadius: 4 }}>{c.status}</span>
                 </td>
-                <td style={{ padding: "13px 16px", fontSize: "0.9rem", fontWeight: 700, color: CYAN }}>{c.value ? formatCurrency(Number(c.value)) : "—"}</td>
+                <td style={{ padding: "13px 16px", fontSize: "0.9rem", fontWeight: 700, color: CYAN }}>{c.value ? formatCurrency(Number(c.value)) : "-"}</td>
                 <td style={{ padding: "13px 16px", fontSize: "0.8rem", color: TEXT_MUTED }}>{formatDate(c.startDate)}</td>
                 <td style={{ padding: "13px 16px", fontSize: "0.8rem", color: TEXT_MUTED }}>{formatDate(c.endDate)}</td>
               </tr>

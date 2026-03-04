@@ -76,7 +76,7 @@ function LoginForm() {
               <span className="login-text-glow" style={{ color: CYAN }}>Command Center</span>
             </h1>
             <p style={{ color: "rgba(216,232,244,0.55)", fontSize: "1rem", lineHeight: 1.7, maxWidth: 320, marginBottom: 40 }}>
-              Manage hospital accounts, track your opportunity pipeline, and grow your healthcare BD business — all from one platform.
+              Manage hospital accounts, track your opportunity pipeline, and grow your healthcare BD business - all from one platform.
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               {[

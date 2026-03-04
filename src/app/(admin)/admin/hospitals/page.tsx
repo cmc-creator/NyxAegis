@@ -46,7 +46,7 @@ export default async function HospitalsPage() {
                   <div style={{ fontWeight: 600, fontSize: "0.875rem", color: TEXT }}>{h.hospitalName}</div>
                   <div style={{ fontSize: "0.75rem", color: TEXT_MUTED }}>{h.city}{h.city && h.state ? ", " : ""}{h.state}</div>
                 </td>
-                <td style={{ padding: "14px 16px", fontSize: "0.85rem", color: TEXT_MUTED }}>{h.systemName ?? "—"}</td>
+                <td style={{ padding: "14px 16px", fontSize: "0.85rem", color: TEXT_MUTED }}>{h.systemName ?? "-"}</td>
                 <td style={{ padding: "14px 16px", fontSize: "0.8rem", color: TEXT_MUTED }}>{h.hospitalType.replace(/_/g, " ")}</td>
                 <td style={{ padding: "14px 16px" }}>
                   <span style={{ fontSize: "0.72rem", fontWeight: 700, color: statusColor[h.status] ?? CYAN, background: "rgba(0,0,0,0.3)", padding: "3px 9px", borderRadius: 4 }}>{h.status}</span>

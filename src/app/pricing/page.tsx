@@ -74,10 +74,10 @@ const tiers = [
 
 const faqs = [
   { q: "Is NyxAegis HIPAA compliant?", a: "NyxAegis is designed with HIPAA requirements in mind. We provide BAA (Business Associate Agreement) templates, HIPAA training doc storage, and encrypt data at rest and in transit. Contact us for a BAA for your organization." },
-  { q: "Can I try NyxAegis before paying?", a: "Yes — all plans include a 14-day free trial with no credit card required. You'll have full access to all features in your chosen plan." },
+  { q: "Can I try NyxAegis before paying?", a: "Yes - all plans include a 14-day free trial with no credit card required. You'll have full access to all features in your chosen plan." },
   { q: "What counts as a 'hospital account'?", a: "Each distinct hospital or health system entity counts as one account. A 10-hospital IDN would count as 10 accounts on Solo Rep, or unlimited on BD Team and above." },
   { q: "Can I add more BD reps to my team?", a: "Yes. BD Team supports up to 10 reps. Additional rep seats are $25/rep/mo. Health System plans include unlimited reps." },
-  { q: "Do you offer nonprofit or academic medical center discounts?", a: "Yes — contact us at ops@nyxaegis.com for nonprofit, academic, or government healthcare pricing." },
+  { q: "Do you offer nonprofit or academic medical center discounts?", a: "Yes - contact us at ops@nyxaegis.com for nonprofit, academic, or government healthcare pricing." },
   { q: "What integrations do you support?", a: "Health System plans include custom integration development. We currently support Stripe for payments, Resend for email, and have open APIs for CRM, EHR, and BI tool integrations." },
 ];
 

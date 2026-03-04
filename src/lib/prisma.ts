@@ -15,7 +15,7 @@ function createPrismaClient(): PrismaClient {
   });
 }
 
-// Lazy proxy — client is only created on first actual DB call, not at import time.
+// Lazy proxy - client is only created on first actual DB call, not at import time.
 // This prevents build-time failures when DATABASE_URL is not available.
 export const prisma: PrismaClient = new Proxy({} as PrismaClient, {
   get(_, prop: string | symbol) {

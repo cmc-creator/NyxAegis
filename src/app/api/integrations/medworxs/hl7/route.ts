@@ -113,10 +113,10 @@ export async function POST(req: NextRequest) {
     : null;
 
   if (!referrerName && !referrerNpi) {
-    // No referring provider in message — still ACK but log nothing
+    // No referring provider in message - still ACK but log nothing
     return new NextResponse(
       buildACK(sendingApp, sendingFacility, msgControlId, "AA",
-        "Accepted — no referring provider in PV1-8, no referral logged"),
+        "Accepted - no referring provider in PV1-8, no referral logged"),
       { status: 200, headers: { "Content-Type": "text/plain" } },
     );
   }
@@ -138,7 +138,7 @@ export async function POST(req: NextRequest) {
   // PV1-10 = Hospital Service (service line)
   const serviceRaw = pv1[10]?.split("^")?.[0]?.trim() || undefined;
 
-  // PID-5 = Patient Name — grab initials (LastName^FirstName)
+  // PID-5 = Patient Name - grab initials (LastName^FirstName)
   const pidName     = pid?.[5] ?? "";
   const nameParts   = pidName.split("^");
   const patientInitials = nameParts[0] && nameParts[1]
@@ -191,7 +191,7 @@ export async function POST(req: NextRequest) {
         });
         return new NextResponse(
           buildACK(sendingApp, sendingFacility, msgControlId, "AA",
-            "Accepted — duplicate referral skipped"),
+            "Accepted - duplicate referral skipped"),
           { status: 200, headers: { "Content-Type": "text/plain" } },
         );
       }
@@ -224,7 +224,7 @@ export async function POST(req: NextRequest) {
     return new NextResponse(
       buildACK(sendingApp ?? "MEDWORXS", sendingFacility ?? "HOSPITAL",
         msgControlId, "AE",
-        "Internal processing error — please retry"),
+        "Internal processing error - please retry"),
       { status: 500, headers: { "Content-Type": "text/plain" } },
     );
   }

@@ -58,7 +58,7 @@ export default function MedworxsIntegrationPage() {
       if (res.ok) setResult(data);
       else setImportError(data.error ?? "Import failed");
     } catch {
-      setImportError("Network error — please try again");
+      setImportError("Network error - please try again");
     }
     setImporting(false);
   };

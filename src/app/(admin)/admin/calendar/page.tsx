@@ -9,7 +9,7 @@ const upcoming = [
   { type: "DEMO", title: "Product Demo - Cardiology Revenue Cycle", date: "Jan 9, 2026", time: "2:00 PM", rep: "Jordan Rivera", hospital: "Vanderbilt Health" },
   { type: "SITE_VISIT", title: "On-site Visit - Baptist Hospital Memphis", date: "Jan 12, 2026", time: "9:00 AM", rep: "Jordan Rivera", hospital: "Baptist Hospital" },
   { type: "CALL", title: "Follow-up Call - St. Thomas Health", date: "Jan 13, 2026", time: "11:30 AM", rep: "Unassigned", hospital: "St. Thomas Health" },
-  { type: "CONFERENCE", title: "HFMA Annual Conference - Las Vegas", date: "Jan 20-22, 2026", time: "All day", rep: "Team", hospital: "—" },
+  { type: "CONFERENCE", title: "HFMA Annual Conference - Las Vegas", date: "Jan 20-22, 2026", time: "All day", rep: "Team", hospital: "-" },
 ];
 
 const typeColors: Record<string, string> = {

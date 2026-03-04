@@ -150,7 +150,7 @@ export async function POST(req: NextRequest) {
 
     const providerName = get(colIdx.referringProvider);
     if (!providerName) {
-      errors.push(`Row ${rowNum}: missing referring provider name — skipped`);
+      errors.push(`Row ${rowNum}: missing referring provider name - skipped`);
       skipped++;
       continue;
     }

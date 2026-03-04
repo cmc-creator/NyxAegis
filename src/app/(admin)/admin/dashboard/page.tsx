@@ -114,7 +114,7 @@ export default async function AdminDashboard() {
                 <div style={{ width: 6, height: 6, borderRadius: "50%", background: CYAN, marginTop: 6, flexShrink: 0, opacity: 0.6 }} />
                 <div>
                   <div style={{ fontSize: "0.82rem", color: TEXT, marginBottom: 1 }}>{act.title}</div>
-                  <div style={{ fontSize: "0.72rem", color: TEXT_MUTED }}>{act.hospital?.hospitalName ?? "—"} · {formatRelativeTime(act.createdAt)}</div>
+                  <div style={{ fontSize: "0.72rem", color: TEXT_MUTED }}>{act.hospital?.hospitalName ?? "-"} · {formatRelativeTime(act.createdAt)}</div>
                 </div>
               </div>
             ))}

@@ -26,10 +26,10 @@ const icons = {
 };
 
 const features = [
-  { icon: icons.referral, color: C.cyan,      title: "Referral Source Tracking",   desc: "Log every referring physician, specialist, SNF, and care facility. Track visit frequency, relationship strength, and referral volume per source — so you know exactly where to invest your time." },
+  { icon: icons.referral, color: C.cyan,      title: "Referral Source Tracking",   desc: "Log every referring physician, specialist, SNF, and care facility. Track visit frequency, relationship strength, and referral volume per source - so you know exactly where to invest your time." },
   { icon: icons.chart,    color: C.blue,      title: "Referral Volume Analytics",  desc: "Count referrals actually received vs. expected by source. Spot trending sources, identify drop-offs, and give leadership real data on what your community outreach is producing." },
   { icon: icons.map,      color: C.teal,      title: "Territory Management",       desc: "Assign BD reps to geographic territories. Map referral source density and whitespace. Track which zip codes and facilities your team has touched this week." },
-  { icon: icons.activity, color: "#a78bfa",   title: "Activity Logging",           desc: "Log physician office visits, lunches, calls, and events in seconds — right from the field. Auto-reminders for follow-ups so no relationship slips through the cracks." },
+  { icon: icons.activity, color: "#a78bfa",   title: "Activity Logging",           desc: "Log physician office visits, lunches, calls, and events in seconds - right from the field. Auto-reminders for follow-ups so no relationship slips through the cracks." },
   { icon: icons.shield,   color: C.emerald,   title: "HIPAA Compliance Docs",      desc: "Store and track BAAs, NDAs, licenses, and training certificates. Automated expiration alerts keep every rep compliant in the field." },
   { icon: icons.mobile,   color: "#f59e0b",   title: "Field-First Mobile Design",  desc: "Built for reps who are out in the community. Log a visit, update a referral count, or check your territory from any device between stops." },
 ];
@@ -38,7 +38,7 @@ const workflow = [
   { n: "01", title: "Add Referral Sources",      desc: "Build your directory of physicians, practices, SNFs, specialists, and care coordinators with contact details, relationship history, and referral volume goals." },
   { n: "02", title: "Track Outreach Activity",   desc: "Log every office visit, call, lunch, and event as you do it. The app captures time, location, and outcome so nothing is forgotten." },
   { n: "03", title: "Count Referrals Received",  desc: "When a patient arrives, log the referral back to the source. Watch your referral-per-source metrics update in real time." },
-  { n: "04", title: "Report to Leadership",      desc: "Auto-generated dashboards show referral volume, source performance, rep activity, and territory coverage — ready for any C-suite meeting." },
+  { n: "04", title: "Report to Leadership",      desc: "Auto-generated dashboards show referral volume, source performance, rep activity, and territory coverage - ready for any C-suite meeting." },
 ];
 
 const stats = [
@@ -83,7 +83,7 @@ function DashboardMock() {
         <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#ff5f57", display: "inline-block" }} />
         <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#febc2e", display: "inline-block" }} />
         <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#28c840", display: "inline-block" }} />
-        <span style={{ flex: 1, textAlign: "center", fontSize: "0.68rem", color: C.dim, letterSpacing: "0.05em" }}>Referral Source Dashboard — Q1 2026</span>
+        <span style={{ flex: 1, textAlign: "center", fontSize: "0.68rem", color: C.dim, letterSpacing: "0.05em" }}>Referral Source Dashboard - Q1 2026</span>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 1, background: C.border, borderBottom: `1px solid ${C.border}` }}>
         {[{ label: "Referrals MTD", value: "59", color: C.cyan }, { label: "Active Sources", value: "38", color: "#a78bfa" }, { label: "Goal Attainment", value: "103%", color: C.emerald }].map((k) => (
@@ -157,7 +157,7 @@ export default function LandingPage() {
               <br />Count every<br />referral received.
             </h1>
             <p style={{ fontSize: "1.05rem", color: C.muted, maxWidth: 480, lineHeight: 1.75, marginBottom: 36 }}>
-              Built for hospital BD teams working in the community — log physician visits, track SNFs and care facilities, and prove your outreach is turning into actual patient referrals.
+              Built for hospital BD teams working in the community - log physician visits, track SNFs and care facilities, and prove your outreach is turning into actual patient referrals.
             </p>
             <div style={{ display: "flex", gap: 14, flexWrap: "wrap", marginBottom: 24 }}>
               <Link href="/signup" style={{ background: `linear-gradient(135deg, ${C.cyan} 0%, #3b82f6 100%)`, color: "#000", padding: "14px 32px", borderRadius: 10, fontWeight: 800, textDecoration: "none", fontSize: "0.95rem", display: "inline-flex", alignItems: "center", gap: 8, boxShadow: "0 0 40px rgba(0,180,255,0.3)" }}>
@@ -192,7 +192,7 @@ export default function LandingPage() {
         <div style={{ textAlign: "center", marginBottom: 60 }}>
           <p style={{ color: C.cyan, fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 14 }}>Platform Features</p>
           <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 900, letterSpacing: "-0.025em", marginBottom: 14 }}>Built for how you actually work</h2>
-          <p style={{ color: C.muted, fontSize: "1rem", maxWidth: 520, margin: "0 auto", lineHeight: 1.7 }}>Every feature was designed for BD reps who are out in the field building relationships — not sitting at a desk.</p>
+          <p style={{ color: C.muted, fontSize: "1rem", maxWidth: 520, margin: "0 auto", lineHeight: 1.7 }}>Every feature was designed for BD reps who are out in the field building relationships - not sitting at a desk.</p>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: 20 }}>
           {features.map((f) => (
@@ -234,18 +234,18 @@ export default function LandingPage() {
           <div style={{ textAlign: "center", marginBottom: 56 }}>
             <p style={{ color: C.cyan, fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 14 }}>Role-Based Access</p>
             <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 900, letterSpacing: "-0.025em", marginBottom: 12 }}>A portal for every stakeholder</h2>
-            <p style={{ color: C.muted, fontSize: "1rem", maxWidth: 480, margin: "0 auto", lineHeight: 1.7 }}>Each user sees exactly what they need — nothing more, nothing less.</p>
+            <p style={{ color: C.muted, fontSize: "1rem", maxWidth: 480, margin: "0 auto", lineHeight: 1.7 }}>Each user sees exactly what they need - nothing more, nothing less.</p>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 20 }}>
             {[
               {
                 role: "ADMIN", color: C.cyan, title: "Operations Command Center",
-                desc: "Full visibility over your entire BD organization — reps, sources, referral volume, territory coverage, and compliance status.",
+                desc: "Full visibility over your entire BD organization - reps, sources, referral volume, territory coverage, and compliance status.",
                 items: ["Team referral dashboards & KPIs", "Territory assignment & coverage maps", "Rep activity and performance metrics", "HIPAA compliance doc management"],
               },
               {
                 role: "BD REP", color: "#a78bfa", title: "Field Rep Dashboard",
-                desc: "Everything a BD rep needs out in the community — log visits, update referral counts, and review your territory between stops.",
+                desc: "Everything a BD rep needs out in the community - log visits, update referral counts, and review your territory between stops.",
                 items: ["Referral source directory & history", "Quick visit & activity logging", "Personal referral count tracking", "Compliance doc uploads on mobile"],
               },
               {
@@ -315,7 +315,7 @@ export default function LandingPage() {
             <span style={{ background: `linear-gradient(135deg, ${C.cyan} 0%, #60a5fa 100%)`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>that matter.</span>
           </h2>
           <p style={{ color: C.muted, marginBottom: 36, fontSize: "1rem", lineHeight: 1.75 }}>
-            Give your BD team the tool they&apos;ve been asking for — purpose-built to log visits, count referrals, and prove the value of every relationship they build.
+            Give your BD team the tool they&apos;ve been asking for - purpose-built to log visits, count referrals, and prove the value of every relationship they build.
           </p>
           <Link href="/signup" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: `linear-gradient(135deg, ${C.cyan} 0%, #3b82f6 100%)`, color: "#000", padding: "16px 42px", borderRadius: 12, fontWeight: 900, textDecoration: "none", fontSize: "1rem", boxShadow: "0 0 60px rgba(0,180,255,0.3)" }}>
             Get Started Free <span>{icons.arrow}</span>

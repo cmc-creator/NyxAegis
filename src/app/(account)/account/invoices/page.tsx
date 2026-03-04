@@ -68,7 +68,7 @@ export default async function AccountInvoicesPage() {
                   <span style={{ fontSize: "0.7rem", fontWeight: 700, color: statusColors[inv.status] ?? CYAN, background: "rgba(0,0,0,0.3)", padding: "2px 8px", borderRadius: 4 }}>{inv.status}</span>
                 </td>
                 <td style={{ padding: "13px 16px", fontSize: "0.85rem", color: TEXT_MUTED }}>{formatDate(inv.dueDate)}</td>
-                <td style={{ padding: "13px 16px", fontSize: "0.85rem", color: inv.paidAt ? "#34d399" : TEXT_MUTED }}>{inv.paidAt ? formatDate(inv.paidAt) : "—"}</td>
+                <td style={{ padding: "13px 16px", fontSize: "0.85rem", color: inv.paidAt ? "#34d399" : TEXT_MUTED }}>{inv.paidAt ? formatDate(inv.paidAt) : "-"}</td>
               </tr>
             ))}
           </tbody>

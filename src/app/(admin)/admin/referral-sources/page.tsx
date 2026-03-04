@@ -132,19 +132,19 @@ export default function ReferralSourcesPage() {
                         {LABEL[s.type] ?? s.type}
                       </span>
                     </td>
-                    <td style={{ padding:"12px 14px", fontSize:"0.82rem", color:C.muted }}>{s.practiceName ?? "—"}</td>
-                    <td style={{ padding:"12px 14px", fontSize:"0.78rem", color:C.dim, fontFamily:"monospace" }}>{s.npi ?? "—"}</td>
+                    <td style={{ padding:"12px 14px", fontSize:"0.82rem", color:C.muted }}>{s.practiceName ?? "-"}</td>
+                    <td style={{ padding:"12px 14px", fontSize:"0.78rem", color:C.dim, fontFamily:"monospace" }}>{s.npi ?? "-"}</td>
                     <td style={{ padding:"12px 14px", fontSize:"0.82rem", color:C.muted }}>{s.assignedRep?.user?.name ?? "Unassigned"}</td>
                     <td style={{ padding:"12px 14px" }}>
                       <span style={{ fontSize:"1.1rem", fontWeight:900, color:C.cyan }}>{s._count.referrals}</span>
                     </td>
-                    <td style={{ padding:"12px 14px", fontSize:"0.82rem", color:C.muted }}>{s.monthlyGoal ?? "—"}</td>
+                    <td style={{ padding:"12px 14px", fontSize:"0.82rem", color:C.muted }}>{s.monthlyGoal ?? "-"}</td>
                     <td style={{ padding:"12px 14px" }}>
                       {pct !== null ? (
                         <span style={{ fontSize:"0.82rem", fontWeight:700, color: pct >= 100 ? C.emerald : pct >= 75 ? C.amber : C.red }}>
                           {pct}%
                         </span>
-                      ) : <span style={{ color:C.dim }}>—</span>}
+                      ) : <span style={{ color:C.dim }}>-</span>}
                     </td>
                     <td style={{ padding:"12px 14px" }}>
                       <span style={{ display:"inline-flex", alignItems:"center", gap:5, fontSize:"0.65rem", fontWeight:700, letterSpacing:"0.08em", color: s.active ? C.emerald : C.muted }}>

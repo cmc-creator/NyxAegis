@@ -59,14 +59,14 @@ export default async function LeadsPage() {
                   {lead.state && <div style={{ fontSize: "0.72rem", color: TEXT_MUTED }}>{lead.city ? `${lead.city}, ` : ""}{lead.state}</div>}
                 </td>
                 <td style={{ padding: "13px 16px" }}>
-                  <div style={{ fontSize: "0.82rem", color: TEXT }}>{lead.contactName ?? "—"}</div>
+                  <div style={{ fontSize: "0.82rem", color: TEXT }}>{lead.contactName ?? "-"}</div>
                   <div style={{ fontSize: "0.72rem", color: TEXT_MUTED }}>{lead.contactTitle ?? ""}</div>
                 </td>
                 <td style={{ padding: "13px 16px" }}>
                   <span style={{ fontSize: "0.7rem", fontWeight: 700, color: statusColors[lead.status] ?? CYAN, background: "rgba(0,0,0,0.3)", padding: "2px 8px", borderRadius: 4 }}>{lead.status}</span>
                 </td>
                 <td style={{ padding: "13px 16px", fontSize: "0.82rem", color: TEXT_MUTED }}>{lead.source.replace(/_/g, " ")}</td>
-                <td style={{ padding: "13px 16px", fontSize: "0.85rem", color: CYAN }}>{lead.estimatedValue ? formatCurrency(Number(lead.estimatedValue)) : "—"}</td>
+                <td style={{ padding: "13px 16px", fontSize: "0.85rem", color: CYAN }}>{lead.estimatedValue ? formatCurrency(Number(lead.estimatedValue)) : "-"}</td>
                 <td style={{ padding: "13px 16px", fontSize: "0.82rem", color: TEXT_MUTED }}>{lead.assignedRep?.user.name ?? "Unassigned"}</td>
                 <td style={{ padding: "13px 16px", fontSize: "0.78rem", color: TEXT_MUTED }}>{formatDate(lead.createdAt)}</td>
               </tr>

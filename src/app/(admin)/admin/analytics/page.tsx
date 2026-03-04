@@ -56,7 +56,7 @@ export default async function AnalyticsPage() {
                 <div style={{ fontSize: "0.8rem", color: TEXT_MUTED }}>{row.stage.replace(/_/g, " ")}</div>
                 <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
                   <span style={{ fontSize: "0.8rem", fontWeight: 700, color: TEXT }}>{row._count.id}</span>
-                  <span style={{ fontSize: "0.78rem", color: CYAN }}>{row._sum.value ? formatCurrency(Number(row._sum.value)) : "—"}</span>
+                  <span style={{ fontSize: "0.78rem", color: CYAN }}>{row._sum.value ? formatCurrency(Number(row._sum.value)) : "-"}</span>
                 </div>
               </div>
             ))}

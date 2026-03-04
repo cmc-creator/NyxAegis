@@ -45,7 +45,7 @@ export default function ReferralsPage() {
   useEffect(() => { load(); }, [load]);
 
   const fmt = (d?: string) => {
-    if (!d) return "—";
+    if (!d) return "-";
     return new Date(d).toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric" });
   };
 
@@ -79,7 +79,7 @@ export default function ReferralsPage() {
           { label:"Total Referrals", value:total,    color:C.cyan },
           { label:"Admitted",        value:admitted, color:C.emerald },
           { label:"In Progress",     value:pending,  color:C.amber },
-          { label:"Top Source",      value:topSources[0]?.[0]?.split(" ").slice(-1)[0] ?? "—", color:"#a78bfa" },
+          { label:"Top Source",      value:topSources[0]?.[0]?.split(" ").slice(-1)[0] ?? "-", color:"#a78bfa" },
         ].map((s) => (
           <div key={s.label} style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:"18px 16px" }}>
             <div style={{ fontSize:"1.6rem", fontWeight:900, color:s.color, letterSpacing:"-0.03em" }}>{s.value}</div>
@@ -149,11 +149,11 @@ export default function ReferralsPage() {
                       {r.referralSource.type.replace("_"," ")}
                     </span>
                   </td>
-                  <td style={{ padding:"12px 14px", fontSize:"0.82rem", color:C.muted }}>{r.patientInitials ?? "—"}</td>
-                  <td style={{ padding:"12px 14px", fontSize:"0.82rem", color:C.muted }}>{r.serviceLine ?? "—"}</td>
+                  <td style={{ padding:"12px 14px", fontSize:"0.82rem", color:C.muted }}>{r.patientInitials ?? "-"}</td>
+                  <td style={{ padding:"12px 14px", fontSize:"0.82rem", color:C.muted }}>{r.serviceLine ?? "-"}</td>
                   <td style={{ padding:"12px 14px", fontSize:"0.82rem", color:C.muted, whiteSpace:"nowrap" }}>{fmt(r.admissionDate)}</td>
                   <td style={{ padding:"12px 14px", fontSize:"0.82rem", color:C.muted, whiteSpace:"nowrap" }}>{fmt(r.dischargeDate)}</td>
-                  <td style={{ padding:"12px 14px", fontSize:"0.75rem", color:C.dim, fontFamily:"monospace" }}>{r.externalId ?? "—"}</td>
+                  <td style={{ padding:"12px 14px", fontSize:"0.75rem", color:C.dim, fontFamily:"monospace" }}>{r.externalId ?? "-"}</td>
                   <td style={{ padding:"12px 14px" }}>
                     <span style={{ background: STATUS_COLORS[r.status] ?? "transparent", borderRadius:999, padding:"3px 10px", fontSize:"0.65rem", fontWeight:700, color: STATUS_TEXT[r.status] ?? C.muted, letterSpacing:"0.08em" }}>
                       {r.status}
