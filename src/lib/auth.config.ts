@@ -1,4 +1,14 @@
 import type { NextAuthConfig } from "next-auth";
+import { NextResponse } from "next/server";
+
+function getRoleHome(role?: string) {
+  switch (role) {
+    case "ADMIN":   return "/admin/dashboard";
+    case "REP":     return "/rep/dashboard";
+    case "ACCOUNT": return "/account/dashboard";
+    default:        return "/login";
+  }
+}
 
 export const authConfig: NextAuthConfig = {
   pages: {
@@ -22,11 +32,29 @@ export const authConfig: NextAuthConfig = {
     },
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
+      const role = (auth?.user as { role?: string } | undefined)?.role;
+      const { pathname } = nextUrl;
+
       const isProtected =
-        nextUrl.pathname.startsWith("/admin") ||
-        nextUrl.pathname.startsWith("/rep") ||
-        nextUrl.pathname.startsWith("/account");
-      if (isProtected && !isLoggedIn) return false;
+        pathname.startsWith("/admin") ||
+        pathname.startsWith("/rep") ||
+        pathname.startsWith("/account");
+
+      if (isProtected && !isLoggedIn) return false; // → redirect to /login
+
+      // Role-based access control
+      if (isLoggedIn) {
+        if (pathname.startsWith("/admin") && role !== "ADMIN") {
+          return NextResponse.redirect(new URL(getRoleHome(role), nextUrl));
+        }
+        if (pathname.startsWith("/rep") && role !== "REP" && role !== "ADMIN") {
+          return NextResponse.redirect(new URL("/unauthorized", nextUrl));
+        }
+        if (pathname.startsWith("/account") && role !== "ACCOUNT" && role !== "ADMIN") {
+          return NextResponse.redirect(new URL("/unauthorized", nextUrl));
+        }
+      }
+
       return true;
     },
   },
