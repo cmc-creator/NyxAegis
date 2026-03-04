@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
-import Link from "next/link";
 
 const CYAN = "#00d4ff";
 const CARD = "rgba(255,255,255,0.03)";

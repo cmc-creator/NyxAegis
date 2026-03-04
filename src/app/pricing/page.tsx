@@ -4,7 +4,6 @@ const CYAN = "#00d4ff";
 const BG = "#04080f";
 const BORDER = "rgba(0,212,255,0.08)";
 const TEXT = "#d8e8f4";
-const TEXT_MUTED = "rgba(216,232,244,0.55)";
 
 const tiers = [
   {

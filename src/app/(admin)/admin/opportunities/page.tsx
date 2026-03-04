@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils";
 
 const CYAN = "#00d4ff";
 const CARD = "rgba(255,255,255,0.03)";
