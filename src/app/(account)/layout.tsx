@@ -2,6 +2,8 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/layout/sidebar";
 
+export const dynamic = "force-dynamic";
+
 export default async function AccountLayout({ children }: { children: React.ReactNode }) {
   let session;
   try { session = await auth(); } catch { redirect("/login"); }
