@@ -43,6 +43,7 @@
 @layer base {
   * { @apply border-border; }
   body { @apply bg-background text-foreground; }
+  p, h1, h2, h3, h4, h5, h6, li, td, th, div { text-wrap: pretty; }
 }
 
 ::-webkit-scrollbar { width: 5px; height: 5px; }
