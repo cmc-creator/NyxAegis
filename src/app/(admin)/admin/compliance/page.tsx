@@ -49,7 +49,7 @@ export default async function CompliancePage() {
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {reps.length === 0 && <p style={{ color: TEXT_MUTED, fontSize: "0.85rem" }}>No active reps.</p>}
           {reps.map((rep) => {
-            const hasHipaa = rep.hipaaTrainedAt != null;
+            const hasHipaa = rep.hipaaTrainedAt !== null;
             const docCount = rep.complianceDocs.length;
             const verifiedDocs = rep.complianceDocs.filter(d => d.verified).length;
             return (
