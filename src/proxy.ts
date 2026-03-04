@@ -1,9 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
-import { jwtVerify } from "jose";
+import NextAuth from "next-auth";
+import { authConfig } from "@/lib/auth.config";
+import { NextResponse } from "next/server";
 
-const secret = new TextEncoder().encode(
-  process.env.AUTH_SECRET ?? "nyxaegis-crm-super-secret-key-2026"
-);
+// Use NextAuth's Edge-compatible auth() so it correctly decrypts JWE session
+// tokens instead of trying to verify them as plain JWS with jose jwtVerify.
+const { auth } = NextAuth(authConfig);
 
 function getRoleHome(role?: string) {
   switch (role) {
@@ -14,7 +15,8 @@ function getRoleHome(role?: string) {
   }
 }
 
-export async function proxy(req: NextRequest) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const proxy = auth(function middleware(req: any) {
   const { pathname } = req.nextUrl;
 
   const isPublic =
@@ -34,18 +36,7 @@ export async function proxy(req: NextRequest) {
 
   if (isPublic) return NextResponse.next();
 
-  const token =
-    req.cookies.get("authjs.session-token")?.value ??
-    req.cookies.get("__Secure-authjs.session-token")?.value;
-
-  let role: string | undefined;
-
-  if (token) {
-    try {
-      const { payload } = await jwtVerify(token, secret);
-      role = payload.role as string;
-    } catch { /* invalid/expired */ }
-  }
+  const role = req.auth?.user?.role as string | undefined;
 
   if (!role) {
     const loginUrl = new URL("/login", req.url);
@@ -64,6 +55,5 @@ export async function proxy(req: NextRequest) {
   }
 
   return NextResponse.next();
-}
-
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+}) as any;
