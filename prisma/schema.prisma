@@ -150,16 +150,17 @@ model Rep {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  territories    RepTerritory[]
-  opportunities  Opportunity[]
-  complianceDocs ComplianceDoc[]
-  payments       RepPayment[]
-  contracts      Contract[]
-  activities     Activity[]
-  reviews        RepReview[]
-  availability   RepAvailability[]
-  w9Form         W9Form?
-  leads          Lead[]
+  territories     RepTerritory[]
+  opportunities   Opportunity[]
+  complianceDocs  ComplianceDoc[]
+  payments        RepPayment[]
+  contracts       Contract[]
+  activities      Activity[]
+  reviews         RepReview[]
+  availability    RepAvailability[]
+  w9Form          W9Form?
+  leads           Lead[]
+  referralSources ReferralSource[]
 
   @@map("reps")
 }
@@ -695,4 +696,125 @@ model Message {
   createdAt  DateTime @default(now())
 
   @@map("messages")
+}
+
+// ─────────────────────────────────────────
+// REFERRAL TRACKING (MedWorxs integration)
+// ─────────────────────────────────────────
+
+enum ReferralSourceType {
+  PHYSICIAN
+  SPECIALIST
+  SNF
+  REHAB_FACILITY
+  CARE_FACILITY
+  HOME_HEALTH
+  HOSPITAL
+  PRACTICE_GROUP
+  OTHER
+}
+
+enum ReferralStatus {
+  RECEIVED
+  ADMITTED
+  DECLINED
+  PENDING
+  DUPLICATE
+}
+
+enum IntegrationMethod {
+  CSV
+  HL7
+  FHIR
+  MANUAL
+}
+
+model ReferralSource {
+  id           String             @id @default(cuid())
+  name         String
+  type         ReferralSourceType @default(PHYSICIAN)
+  specialty    String?
+  practiceName String?
+  npi          String?
+
+  contactName  String?
+  email        String?
+  phone        String?
+
+  address      String?
+  city         String?
+  state        String?
+  zip          String?
+
+  assignedRepId String?
+  assignedRep   Rep?   @relation(fields: [assignedRepId], references: [id])
+
+  monthlyGoal  Int?
+  notes        String?
+  active       Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  referrals Referral[]
+
+  @@map("referral_sources")
+}
+
+model Referral {
+  id               String         @id @default(cuid())
+  referralSourceId String
+  referralSource   ReferralSource @relation(fields: [referralSourceId], references: [id])
+
+  patientInitials String?
+  admissionDate   DateTime?
+  dischargeDate   DateTime?
+  serviceLine     String?
+  externalId      String?   // MedWorxs encounter/patient ID to prevent duplicates
+  importId        String?   // links back to MedworxsImport
+
+  status ReferralStatus @default(RECEIVED)
+  notes  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([referralSourceId, externalId]) // prevent duplicate imports
+  @@map("referrals")
+}
+
+model IntegrationConfig {
+  id      String            @id @default(cuid())
+  name    String
+  method  IntegrationMethod
+  enabled Boolean           @default(false)
+  config  Json?
+  secret  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  imports MedworxsImport[]
+
+  @@unique([name, method])
+  @@map("integration_configs")
+}
+
+model MedworxsImport {
+  id            String            @id @default(cuid())
+  integrationId String
+  integration   IntegrationConfig @relation(fields: [integrationId], references: [id])
+
+  method     IntegrationMethod
+  filename   String?
+  totalRows  Int               @default(0)
+  imported   Int               @default(0)
+  skipped    Int               @default(0)
+  errors     Int               @default(0)
+  errorLog   Json?
+  importedBy String?
+
+  createdAt DateTime @default(now())
+
+  @@map("medworxs_imports")
 }

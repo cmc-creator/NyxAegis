@@ -24,8 +24,15 @@ const ADMIN_NAV: NavGroup[] = [
   {
     group: "Pipeline",
     items: [
-      { href: "/admin/opportunities", label: "Opportunities", icon: "📊" },
-      { href: "/admin/leads", label: "Leads", icon: "🎯" },
+      { href: "/admin/opportunities",    label: "Opportunities",    icon: "📊" },
+      { href: "/admin/leads",            label: "Leads",            icon: "🎯" },
+    ],
+  },
+  {
+    group: "Referral Tracking",
+    items: [
+      { href: "/admin/referral-sources", label: "Referral Sources",  icon: "👥" },
+      { href: "/admin/referrals",        label: "Referrals Received",icon: "📥" },
     ],
   },
   {
