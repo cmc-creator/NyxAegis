@@ -1,14 +1,32 @@
 "use client";
-import { useState } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
+import { signIn, getSession } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+
+function getRoleHome(role?: string) {
+  switch (role) {
+    case "ADMIN":   return "/admin/dashboard";
+    case "REP":     return "/rep/dashboard";
+    case "ACCOUNT": return "/account/dashboard";
+    default:        return "/admin/dashboard";
+  }
+}
 
 const CYAN = "#00d4ff";
 const BG = "#04080f";
 
 export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -23,7 +41,11 @@ export default function LoginPage() {
       if (result?.error) {
         setError("Invalid email or password.");
       } else {
-        router.push("/admin/dashboard");
+        // Get role from session to redirect to the correct portal
+        const session = await getSession();
+        const callbackUrl = searchParams.get("callbackUrl");
+        const destination = callbackUrl ?? getRoleHome(session?.user?.role as string | undefined);
+        router.push(destination);
         router.refresh();
       }
     } catch {
