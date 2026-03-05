@@ -1,17 +1,17 @@
 import Link from "next/link";
 
 const C = {
-  bg: "#020810",
-  navy: "#04080f",
-  cyan: "#00d4ff",
-  blue: "#3b82f6",
-  teal: "#14b8a6",
-  emerald: "#10b981",
-  text: "#e2eeff",
-  muted: "rgba(200,220,255,0.5)",
-  dim: "rgba(200,220,255,0.25)",
-  card: "rgba(255,255,255,0.025)",
-  border: "rgba(0,180,255,0.1)",
+  bg:      "var(--nyx-bg)",
+  navy:    "var(--nyx-bg)",
+  cyan:    "var(--nyx-accent)",
+  blue:    "var(--nyx-accent)",
+  teal:    "var(--nyx-accent)",
+  emerald: "var(--nyx-accent)",
+  text:    "var(--nyx-text)",
+  muted:   "var(--nyx-text-muted)",
+  dim:     "var(--nyx-text-muted)",
+  card:    "var(--nyx-card)",
+  border:  "var(--nyx-border)",
 };
 
 const icons = {
@@ -26,11 +26,11 @@ const icons = {
 };
 
 const features = [
-  { icon: icons.referral, color: C.cyan,      title: "Referral Source Tracking",   desc: "Log every referring physician, specialist, SNF, and care facility. Track visit frequency, relationship strength, and referral volume per source - so you know exactly where to invest your time." },
-  { icon: icons.chart,    color: C.blue,      title: "Referral Volume Analytics",  desc: "Count referrals actually received vs. expected by source. Spot trending sources, identify drop-offs, and give leadership real data on what your community outreach is producing." },
-  { icon: icons.map,      color: C.teal,      title: "Territory Management",       desc: "Assign BD reps to geographic territories. Map referral source density and whitespace. Track which zip codes and facilities your team has touched this week." },
+  { icon: icons.referral, color: "var(--nyx-accent)", title: "Referral Source Tracking",   desc: "Log every referring physician, specialist, SNF, and care facility. Track visit frequency, relationship strength, and referral volume per source - so you know exactly where to invest your time." },
+  { icon: icons.chart,    color: "var(--nyx-accent)", title: "Referral Volume Analytics",  desc: "Count referrals actually received vs. expected by source. Spot trending sources, identify drop-offs, and give leadership real data on what your community outreach is producing." },
+  { icon: icons.map,      color: "var(--nyx-accent)", title: "Territory Management",       desc: "Assign BD reps to geographic territories. Map referral source density and whitespace. Track which zip codes and facilities your team has touched this week." },
   { icon: icons.activity, color: "#a78bfa",   title: "Activity Logging",           desc: "Log physician office visits, lunches, calls, and events in seconds - right from the field. Auto-reminders for follow-ups so no relationship slips through the cracks." },
-  { icon: icons.shield,   color: C.emerald,   title: "HIPAA Compliance Docs",      desc: "Store and track BAAs, NDAs, licenses, and training certificates. Automated expiration alerts keep every rep compliant in the field." },
+  { icon: icons.shield,   color: "var(--nyx-accent)", title: "HIPAA Compliance Docs",      desc: "Store and track BAAs, NDAs, licenses, and training certificates. Automated expiration alerts keep every rep compliant in the field." },
   { icon: icons.mobile,   color: "#f59e0b",   title: "Field-First Mobile Design",  desc: "Built for reps who are out in the community. Log a visit, update a referral count, or check your territory from any device between stops." },
 ];
 
@@ -78,7 +78,7 @@ function DashboardMock() {
     { name: "Summit Rehab Center",         type: "Rehab Facility",  goal: 10, actual: 12, up: true  },
   ];
   return (
-    <div style={{ background: "rgba(4,10,24,0.95)", border: `1px solid ${C.border}`, borderRadius: 16, overflow: "hidden", boxShadow: "0 40px 80px rgba(0,0,0,0.6), 0 0 60px rgba(0,180,255,0.07)" }}>
+    <div style={{ background: "var(--nyx-bg)", border: `1px solid ${C.border}`, borderRadius: 16, overflow: "hidden", boxShadow: "0 40px 80px rgba(0,0,0,0.6), 0 0 60px var(--nyx-accent-dim)" }}>
       <div style={{ background: "rgba(255,255,255,0.03)", borderBottom: `1px solid ${C.border}`, padding: "12px 16px", display: "flex", alignItems: "center", gap: 8 }}>
         <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#ff5f57", display: "inline-block" }} />
         <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#febc2e", display: "inline-block" }} />
@@ -86,8 +86,8 @@ function DashboardMock() {
         <span style={{ flex: 1, textAlign: "center", fontSize: "0.68rem", color: C.dim, letterSpacing: "0.05em" }}>Referral Source Dashboard - Q1 2026</span>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 1, background: C.border, borderBottom: `1px solid ${C.border}` }}>
-        {[{ label: "Referrals MTD", value: "59", color: C.cyan }, { label: "Active Sources", value: "38", color: "#a78bfa" }, { label: "Goal Attainment", value: "103%", color: C.emerald }].map((k) => (
-          <div key={k.label} style={{ background: "rgba(4,10,24,0.98)", padding: "14px 16px", textAlign: "center" }}>
+        {[{ label: "Referrals MTD", value: "59", color: "var(--nyx-accent)" }, { label: "Active Sources", value: "38", color: "#a78bfa" }, { label: "Goal Attainment", value: "103%", color: "var(--nyx-accent)" }].map((k) => (
+          <div key={k.label} style={{ background: "var(--nyx-bg)", padding: "14px 16px", textAlign: "center" }}>
             <div style={{ fontSize: "1.5rem", fontWeight: 900, color: k.color, letterSpacing: "-0.02em" }}>{k.value}</div>
             <div style={{ fontSize: "0.62rem", color: C.dim, marginTop: 2, textTransform: "uppercase", letterSpacing: "0.08em" }}>{k.label}</div>
           </div>
@@ -104,8 +104,8 @@ function DashboardMock() {
             <div style={{ fontSize: "0.72rem", color: C.text, fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{r.name}</div>
             <div style={{ fontSize: "0.65rem", color: C.muted }}>{r.type}</div>
             <div style={{ fontSize: "0.72rem", color: C.muted }}>{r.goal}</div>
-            <div style={{ fontSize: "0.72rem", fontWeight: 700, color: r.up ? C.emerald : "#f87171" }}>{r.actual}</div>
-            <div style={{ fontSize: "0.8rem", fontWeight: 800, color: r.up ? C.emerald : "#f87171" }}>{r.up ? "↑" : "↓"}</div>
+            <div style={{ fontSize: "0.72rem", fontWeight: 700, color: r.up ? "var(--nyx-accent)" : "#f87171" }}>{r.actual}</div>
+            <div style={{ fontSize: "0.8rem", fontWeight: 800, color: r.up ? "var(--nyx-accent)" : "#f87171" }}>{r.up ? "↑" : "↓"}</div>
           </div>
         ))}
       </div>
@@ -119,13 +119,13 @@ export default function LandingPage() {
 
       {/* AMBIENT ORBS */}
       <div aria-hidden style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0 }}>
-        <div className="orb-1" style={{ position: "absolute", top: "10%", left: "15%", width: 600, height: 600, borderRadius: "50%", background: "radial-gradient(circle, rgba(0,180,255,0.06) 0%, transparent 70%)", filter: "blur(60px)" }} />
-        <div className="orb-2" style={{ position: "absolute", top: "50%", right: "10%", width: 500, height: 500, borderRadius: "50%", background: "radial-gradient(circle, rgba(59,130,246,0.05) 0%, transparent 70%)", filter: "blur(60px)" }} />
-        <div className="orb-3" style={{ position: "absolute", bottom: "15%", left: "35%", width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(20,184,166,0.04) 0%, transparent 70%)", filter: "blur(60px)" }} />
+        <div className="orb-1" style={{ position: "absolute", top: "10%", left: "15%", width: 600, height: 600, borderRadius: "50%", background: "radial-gradient(circle, var(--nyx-accent-dim) 0%, transparent 70%)", filter: "blur(60px)" }} />
+        <div className="orb-2" style={{ position: "absolute", top: "50%", right: "10%", width: 500, height: 500, borderRadius: "50%", background: "radial-gradient(circle, var(--nyx-accent-dim) 0%, transparent 70%)", filter: "blur(60px)" }} />
+        <div className="orb-3" style={{ position: "absolute", bottom: "15%", left: "35%", width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, var(--nyx-accent-dim) 0%, transparent 70%)", filter: "blur(60px)" }} />
       </div>
 
       {/* NAV */}
-      <nav style={{ position: "sticky", top: 0, zIndex: 50, borderBottom: `1px solid ${C.border}`, padding: "0 2rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64, background: "rgba(2,8,16,0.85)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)" }}>
+      <nav style={{ position: "sticky", top: 0, zIndex: 50, borderBottom: `1px solid ${C.border}`, padding: "0 2rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64, background: "color-mix(in srgb, var(--nyx-bg) 85%, transparent)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <svg width="30" height="30" viewBox="0 0 32 32" fill="none">
             <rect width="32" height="32" rx="8" fill={C.navy}/>
@@ -139,7 +139,7 @@ export default function LandingPage() {
           <Link href="#features" style={{ color: C.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 500 }}>Features</Link>
           <Link href="/pricing" style={{ color: C.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 500 }}>Pricing</Link>
           <Link href="/login" style={{ color: C.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 500 }}>Sign In</Link>
-          <Link href="/signup" style={{ background: `linear-gradient(135deg, ${C.cyan} 0%, #3b82f6 100%)`, color: "#000", padding: "8px 22px", borderRadius: 8, fontWeight: 800, textDecoration: "none", fontSize: "0.85rem", boxShadow: "0 0 20px rgba(0,180,255,0.25)" }}>Get Started</Link>
+          <Link href="/signup" style={{ background: "var(--nyx-accent)", color: "#000", padding: "8px 22px", borderRadius: 8, fontWeight: 800, textDecoration: "none", fontSize: "0.85rem", boxShadow: "0 0 20px var(--nyx-accent-str)" }}>Get Started</Link>
         </div>
       </nav>
 
@@ -147,20 +147,20 @@ export default function LandingPage() {
       <section style={{ position: "relative", zIndex: 1, padding: "100px 2rem 0", maxWidth: 1200, margin: "0 auto" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
           <div>
-            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(0,180,255,0.07)", border: `1px solid rgba(0,180,255,0.18)`, borderRadius: 999, padding: "6px 16px", marginBottom: 28 }}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--nyx-accent-dim)", border: "1px solid var(--nyx-accent-mid)", borderRadius: 999, padding: "6px 16px", marginBottom: 28 }}>
               <span style={{ width: 7, height: 7, borderRadius: "50%", background: C.cyan, display: "inline-block", boxShadow: `0 0 8px ${C.cyan}` }} />
               <span style={{ fontSize: "0.72rem", color: C.cyan, fontWeight: 700, letterSpacing: "0.1em" }}>HOSPITAL BD REFERRAL TRACKING</span>
             </div>
             <h1 style={{ fontSize: "clamp(2.4rem, 5vw, 3.8rem)", fontWeight: 900, lineHeight: 1.08, letterSpacing: "-0.03em", marginBottom: 24 }}>
               Track every<br />
-              <span style={{ background: `linear-gradient(135deg, ${C.cyan} 0%, #60a5fa 60%, #a78bfa 100%)`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>referral source.</span>
+              <span style={{ color: "var(--nyx-accent)" }}>referral source.</span>
               <br />Count every<br />referral received.
             </h1>
             <p style={{ fontSize: "1.05rem", color: C.muted, maxWidth: 480, lineHeight: 1.75, marginBottom: 36 }}>
               Built for hospital BD teams working in the community - log physician visits, track SNFs and care facilities, and prove your outreach is turning into actual patient referrals.
             </p>
             <div style={{ display: "flex", gap: 14, flexWrap: "wrap", marginBottom: 24 }}>
-              <Link href="/signup" style={{ background: `linear-gradient(135deg, ${C.cyan} 0%, #3b82f6 100%)`, color: "#000", padding: "14px 32px", borderRadius: 10, fontWeight: 800, textDecoration: "none", fontSize: "0.95rem", display: "inline-flex", alignItems: "center", gap: 8, boxShadow: "0 0 40px rgba(0,180,255,0.3)" }}>
+              <Link href="/signup" style={{ background: "var(--nyx-accent)", color: "#000", padding: "14px 32px", borderRadius: 10, fontWeight: 800, textDecoration: "none", fontSize: "0.95rem", display: "inline-flex", alignItems: "center", gap: 8, boxShadow: "0 0 40px var(--nyx-accent-str)" }}>
                 Start Free Trial <span>{icons.arrow}</span>
               </Link>
               <Link href="/login" style={{ background: "rgba(255,255,255,0.04)", color: C.text, padding: "14px 28px", borderRadius: 10, fontWeight: 600, textDecoration: "none", fontSize: "0.95rem", border: `1px solid ${C.border}` }}>
@@ -170,7 +170,7 @@ export default function LandingPage() {
             <p style={{ fontSize: "0.75rem", color: C.dim }}>No credit card required · 14-day free trial · Cancel anytime</p>
           </div>
           <div style={{ position: "relative" }}>
-            <div style={{ position: "absolute", inset: -1, background: `linear-gradient(135deg, rgba(0,180,255,0.15), rgba(59,130,246,0.08), transparent)`, borderRadius: 18, filter: "blur(1px)" }} />
+            <div style={{ position: "absolute", inset: -1, background: "linear-gradient(135deg, var(--nyx-accent-mid), var(--nyx-accent-dim), transparent)", borderRadius: 18, filter: "blur(1px)" }} />
             <DashboardMock />
           </div>
         </div>
@@ -178,8 +178,8 @@ export default function LandingPage() {
         {/* STATS BAR */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 1, background: C.border, border: `1px solid ${C.border}`, borderRadius: 14, overflow: "hidden", marginTop: 72 }}>
           {stats.map((s) => (
-            <div key={s.label} style={{ background: "rgba(4,10,24,0.95)", padding: "24px 20px", textAlign: "center" }}>
-              <div style={{ fontSize: "1.7rem", fontWeight: 900, color: C.cyan, letterSpacing: "-0.03em", textShadow: "0 0 24px rgba(0,180,255,0.4)" }}>{s.value}</div>
+            <div key={s.label} style={{ background: "var(--nyx-bg)", padding: "24px 20px", textAlign: "center" }}>
+              <div style={{ fontSize: "1.7rem", fontWeight: 900, color: C.cyan, letterSpacing: "-0.03em", textShadow: "0 0 24px var(--nyx-accent-glow)" }}>{s.value}</div>
               <div style={{ fontSize: "0.8rem", fontWeight: 700, color: C.text, marginTop: 4 }}>{s.label}</div>
               <div style={{ fontSize: "0.7rem", color: C.dim, marginTop: 2 }}>{s.sub}</div>
             </div>
@@ -207,7 +207,7 @@ export default function LandingPage() {
       </section>
 
       {/* WORKFLOW */}
-      <section style={{ position: "relative", zIndex: 1, padding: "96px 2rem", borderTop: `1px solid ${C.border}`, background: "rgba(0,180,255,0.015)" }}>
+      <section style={{ position: "relative", zIndex: 1, padding: "96px 2rem", borderTop: `1px solid ${C.border}`, background: "var(--nyx-accent-dim)" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: 64 }}>
             <p style={{ color: C.cyan, fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 14 }}>How It Works</p>
@@ -218,7 +218,7 @@ export default function LandingPage() {
               <div key={w.n} style={{ padding: "0 24px 0 0", position: "relative" }}>
                 {i < workflow.length - 1 && <div style={{ position: "absolute", top: 22, right: 0, width: "100%", height: 1, background: `linear-gradient(90deg, ${C.cyan}30, transparent)`, zIndex: 0 }} />}
                 <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16, position: "relative", zIndex: 1 }}>
-                  <div style={{ width: 44, height: 44, borderRadius: "50%", background: `linear-gradient(135deg, rgba(0,180,255,0.15), rgba(59,130,246,0.08))`, border: `1px solid rgba(0,180,255,0.25)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.7rem", fontWeight: 900, color: C.cyan, letterSpacing: "0.05em", flexShrink: 0 }}>{w.n}</div>
+                  <div style={{ width: 44, height: 44, borderRadius: "50%", background: "linear-gradient(135deg, var(--nyx-accent-mid), var(--nyx-accent-dim))", border: "1px solid var(--nyx-accent-str)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.7rem", fontWeight: 900, color: C.cyan, letterSpacing: "0.05em", flexShrink: 0 }}>{w.n}</div>
                 </div>
                 <h3 style={{ fontSize: "1rem", fontWeight: 700, color: C.text, marginBottom: 10 }}>{w.title}</h3>
                 <p style={{ fontSize: "0.85rem", color: C.muted, lineHeight: 1.7 }}>{w.desc}</p>
@@ -244,12 +244,12 @@ export default function LandingPage() {
                 items: ["Team referral dashboards & KPIs", "Territory assignment & coverage maps", "Rep activity and performance metrics", "HIPAA compliance doc management"],
               },
               {
-                role: "BD REP", color: "#a78bfa", title: "Field Rep Dashboard",
+                role: "BD REP", color: "var(--nyx-accent)", title: "Field Rep Dashboard",
                 desc: "Everything a BD rep needs out in the community - log visits, update referral counts, and review your territory between stops.",
                 items: ["Referral source directory & history", "Quick visit & activity logging", "Personal referral count tracking", "Compliance doc uploads on mobile"],
               },
               {
-                role: "ACCOUNT", color: C.emerald, title: "Hospital Partner Portal",
+                role: "ACCOUNT", color: "var(--nyx-accent)", title: "Hospital Partner Portal",
                 desc: "A transparent view for your hospital and health system partners to track engagement summaries and service activity.",
                 items: ["Engagement & referral summaries", "Active proposals and invoices", "Contract and document access", "Branded white-label experience"],
               },
@@ -273,7 +273,7 @@ export default function LandingPage() {
       </section>
 
       {/* PRICING */}
-      <section id="pricing" style={{ position: "relative", zIndex: 1, padding: "96px 2rem", borderTop: `1px solid ${C.border}`, background: "rgba(0,180,255,0.015)" }}>
+      <section id="pricing" style={{ position: "relative", zIndex: 1, padding: "96px 2rem", borderTop: `1px solid ${C.border}`, background: "var(--nyx-accent-dim)" }}>
         <div style={{ maxWidth: 1080, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: 56 }}>
             <p style={{ color: C.cyan, fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 14 }}>Pricing</p>
@@ -281,8 +281,8 @@ export default function LandingPage() {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20 }}>
             {pricing.map((p) => (
-              <div key={p.name} style={{ position: "relative", background: p.highlight ? "rgba(0,180,255,0.04)" : C.card, border: `1px solid ${p.highlight ? "rgba(0,180,255,0.28)" : C.border}`, borderRadius: 14, padding: "32px 28px", boxShadow: p.highlight ? "0 0 40px rgba(0,180,255,0.08)" : "none" }}>
-                {p.highlight && <div style={{ position: "absolute", top: -1, left: "50%", transform: "translateX(-50%)", background: `linear-gradient(135deg, ${C.cyan}, #3b82f6)`, color: "#000", padding: "4px 18px", borderRadius: "0 0 10px 10px", fontSize: "0.62rem", fontWeight: 900, letterSpacing: "0.12em" }}>MOST POPULAR</div>}
+              <div key={p.name} style={{ position: "relative", background: p.highlight ? "var(--nyx-accent-dim)" : C.card, border: `1px solid ${p.highlight ? "var(--nyx-border)" : C.border}`, borderRadius: 14, padding: "32px 28px", boxShadow: p.highlight ? "0 0 40px var(--nyx-accent-dim)" : "none" }}>
+                {p.highlight && <div style={{ position: "absolute", top: -1, left: "50%", transform: "translateX(-50%)", background: "var(--nyx-accent)", color: "#000", padding: "4px 18px", borderRadius: "0 0 10px 10px", fontSize: "0.62rem", fontWeight: 900, letterSpacing: "0.12em" }}>MOST POPULAR</div>}
                 <div style={{ fontSize: "0.72rem", fontWeight: 800, color: C.cyan, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 10 }}>{p.name}</div>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 8 }}>
                   <span style={{ fontSize: "2.8rem", fontWeight: 900, color: C.text, letterSpacing: "-0.04em" }}>{p.price}</span>
@@ -297,7 +297,7 @@ export default function LandingPage() {
                     </li>
                   ))}
                 </ul>
-                <Link href={p.name === "Health System" ? "/contact" : "/signup"} style={{ display: "block", textAlign: "center", background: p.highlight ? `linear-gradient(135deg, ${C.cyan}, #3b82f6)` : "rgba(255,255,255,0.05)", color: p.highlight ? "#000" : C.text, padding: "13px", borderRadius: 10, fontWeight: 700, textDecoration: "none", fontSize: "0.88rem", border: p.highlight ? "none" : `1px solid ${C.border}`, boxShadow: p.highlight ? "0 0 24px rgba(0,180,255,0.2)" : "none" }}>
+                <Link href={p.name === "Health System" ? "/contact" : "/signup"} style={{ display: "block", textAlign: "center", background: p.highlight ? "var(--nyx-accent)" : "rgba(255,255,255,0.05)", color: p.highlight ? "#000" : C.text, padding: "13px", borderRadius: 10, fontWeight: 700, textDecoration: "none", fontSize: "0.88rem", border: p.highlight ? "none" : `1px solid ${C.border}`, boxShadow: p.highlight ? "0 0 24px var(--nyx-accent-str)" : "none" }}>
                   {p.cta}
                 </Link>
               </div>
@@ -308,16 +308,16 @@ export default function LandingPage() {
 
       {/* CTA */}
       <section style={{ position: "relative", zIndex: 1, padding: "100px 2rem", textAlign: "center" }}>
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 800px 400px at 50% 50%, rgba(0,180,255,0.05) 0%, transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse 800px 400px at 50% 50%, var(--nyx-accent-dim) 0%, transparent 70%)", pointerEvents: "none" }} />
         <div style={{ maxWidth: 620, margin: "0 auto", position: "relative" }}>
           <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 3rem)", fontWeight: 900, letterSpacing: "-0.03em", marginBottom: 16, lineHeight: 1.1 }}>
             Start tracking referrals<br />
-            <span style={{ background: `linear-gradient(135deg, ${C.cyan} 0%, #60a5fa 100%)`, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>that matter.</span>
+            <span style={{ color: "var(--nyx-accent)" }}>that matter.</span>
           </h2>
           <p style={{ color: C.muted, marginBottom: 36, fontSize: "1rem", lineHeight: 1.75 }}>
             Give your BD team the tool they&apos;ve been asking for - purpose-built to log visits, count referrals, and prove the value of every relationship they build.
           </p>
-          <Link href="/signup" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: `linear-gradient(135deg, ${C.cyan} 0%, #3b82f6 100%)`, color: "#000", padding: "16px 42px", borderRadius: 12, fontWeight: 900, textDecoration: "none", fontSize: "1rem", boxShadow: "0 0 60px rgba(0,180,255,0.3)" }}>
+          <Link href="/signup" style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "var(--nyx-accent)", color: "#000", padding: "16px 42px", borderRadius: 12, fontWeight: 900, textDecoration: "none", fontSize: "1rem", boxShadow: "0 0 60px var(--nyx-accent-str)" }}>
             Get Started Free <span>{icons.arrow}</span>
           </Link>
         </div>
