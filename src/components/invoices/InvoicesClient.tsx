@@ -9,7 +9,7 @@ interface Invoice {
   opportunityId?: string | null;
   status: InvoiceStatus; totalAmount: string | number;
   dueDate?: string | null; paidAt?: string | null;
-  notes?: string | null; lineItems?: Record<string, unknown>[] | null;
+  notes?: string | null; lineItems?: LineItem[] | null;
   createdAt: string;
 }
 
