@@ -1,11 +1,6 @@
 import { prisma } from "@/lib/prisma";
-import dynamic from "next/dynamic";
 import { formatDate } from "@/lib/utils";
-
-const TerritoryMapClient = dynamic(
-  () => import("@/components/maps/TerritoryMapClient"),
-  { ssr: false, loading: () => <div style={{ height: 500, display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(216,232,244,0.4)" }}>Loading map</div> }
-);
+import TerritoryMapWrapper from "@/components/maps/TerritoryMapWrapper";
 
 const REP_COLORS = ["#00d4ff","#34d399","#fbbf24","#a78bfa","#f59e0b","#60a5fa","#f87171","#fb923c"];
 const CYAN = "#00d4ff";
@@ -62,7 +57,7 @@ export default async function TerritoryPage() {
       {/* Leaflet Map */}
       <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 14, padding: 24, marginBottom: 28 }}>
         <p style={{ fontSize: "0.65rem", fontWeight: 700, color: "rgba(0,212,255,0.5)", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 16 }}>INTERACTIVE COVERAGE MAP</p>
-        <TerritoryMapClient hospitals={mapHospitals} repTerritories={repTerritories} />
+        <TerritoryMapWrapper hospitals={mapHospitals} repTerritories={repTerritories} />
         <div style={{ display: "flex", gap: 16, marginTop: 14, flexWrap: "wrap" }}>
           {repTerritories.map(r => (
             <div key={r.id} style={{ display: "flex", alignItems: "center", gap: 6 }}>
