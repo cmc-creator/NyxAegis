@@ -13,7 +13,7 @@ type NyxVars = {
   "--nyx-accent-mid": string; "--nyx-accent-str": string; "--nyx-bg": string;
   "--nyx-card": string; "--nyx-border": string; "--nyx-sidebar-bg": string;
   "--nyx-text": string; "--nyx-text-muted": string; "--nyx-input-bg": string;
-  "--nyx-scrollbar": string; "--nyx-accent-label": string;
+  "--nyx-scrollbar": string; "--nyx-accent-label": string; "--nyx-texture": string;
 };
 interface Theme { key: string; label: string; desc: string; accent: string; vars: NyxVars; }
 
@@ -36,6 +36,7 @@ const THEMES: Theme[] = [
       "--nyx-input-bg":    "rgba(0,0,0,0.45)",
       "--nyx-scrollbar":   "rgba(201,168,76,0.20)",
       "--nyx-accent-label":"rgba(201,168,76,0.60)",
+      "--nyx-texture":     "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.68 .62' numOctaves='5' seed='2' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.15 0 0 0 0.06  0 0 0 0 0.04  0 0 0 0 0.01  0 0 0 0.055 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>\")",
     },
   },
   {
@@ -56,6 +57,7 @@ const THEMES: Theme[] = [
       "--nyx-input-bg":    "rgba(0,0,0,0.35)",
       "--nyx-scrollbar":   "var(--nyx-accent-mid)",
       "--nyx-accent-label":"rgba(0,212,255,0.60)",
+      "--nyx-texture":     "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.65 .60' numOctaves='5' seed='7' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 0  0.05 0 0 0 0.02  0.10 0 0 0 0.04  0 0 0 0.05 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>\")",
     },
   },
   {
@@ -76,6 +78,7 @@ const THEMES: Theme[] = [
       "--nyx-input-bg":    "rgba(0,0,0,0.40)",
       "--nyx-scrollbar":   "rgba(52,211,153,0.18)",
       "--nyx-accent-label":"rgba(52,211,153,0.60)",
+      "--nyx-texture":     "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.70 .65' numOctaves='5' seed='11' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 0  0.10 0 0 0 0.04  0.05 0 0 0 0.02  0 0 0 0.05 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>\")",
     },
   },
   {
@@ -96,6 +99,7 @@ const THEMES: Theme[] = [
       "--nyx-input-bg":    "rgba(0,0,0,0.40)",
       "--nyx-scrollbar":   "rgba(167,139,250,0.18)",
       "--nyx-accent-label":"rgba(167,139,250,0.60)",
+      "--nyx-texture":     "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.66 .60' numOctaves='5' seed='5' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.06 0 0 0 0.03  0 0 0 0 0.01  0.08 0 0 0 0.04  0 0 0 0.05 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>\")",
     },
   },
   {
@@ -116,6 +120,7 @@ const THEMES: Theme[] = [
       "--nyx-input-bg":    "rgba(0,0,0,0.42)",
       "--nyx-scrollbar":   "rgba(251,191,36,0.18)",
       "--nyx-accent-label":"rgba(251,191,36,0.60)",
+      "--nyx-texture":     "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.67 .61' numOctaves='5' seed='3' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.15 0 0 0 0.07  0.07 0 0 0 0.04  0 0 0 0 0  0 0 0 0.055 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>\")",
     },
   },
   {
@@ -136,6 +141,7 @@ const THEMES: Theme[] = [
       "--nyx-input-bg":    "rgba(0,0,0,0.42)",
       "--nyx-scrollbar":   "rgba(248,113,113,0.18)",
       "--nyx-accent-label":"rgba(248,113,113,0.60)",
+      "--nyx-texture":     "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.68 .63' numOctaves='5' seed='9' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.12 0 0 0 0.06  0 0 0 0 0.01  0.02 0 0 0 0.01  0 0 0 0.05 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>\")",
     },
   },
 ];
