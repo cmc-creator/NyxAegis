@@ -270,6 +270,23 @@
 .orb-2 { animation: orb-float-2 22s ease-in-out infinite; }
 .orb-3 { animation: orb-float-3 16s ease-in-out infinite; }
 
+/* Calendar border shimmer */
+@keyframes nyx-cal-shimmer {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px var(--nyx-accent-dim),
+      0 0 28px var(--nyx-accent-glow),
+      inset 0 1px 0 rgba(255,255,255,0.02);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px var(--nyx-accent-str),
+      0 0 56px var(--nyx-accent-mid),
+      0 0 100px var(--nyx-accent-dim),
+      inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+}
+
 /* Landing page - feature cards */
 .feature-card:hover {
   border-color: var(--nyx-accent-mid) !important;

@@ -393,18 +393,19 @@ function MonthView({
   return (
     <div>
       {/* Day-of-week headers */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", marginBottom:2 }}>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", marginBottom:2,
+        background:"var(--nyx-accent-dim)", borderRadius:"10px 10px 0 0", borderBottom:"1px solid var(--nyx-accent-str)" }}>
         {DAYS_SHORT.map(d => (
-          <div key={d} style={{ textAlign:"center", fontSize:"0.62rem", fontWeight:700,
-            color:"var(--nyx-accent-label)", letterSpacing:"0.1em", textTransform:"uppercase",
-            padding:"8px 0" }}>
+          <div key={d} style={{ textAlign:"center", fontSize:"0.65rem", fontWeight:800,
+            color:"var(--nyx-accent)", letterSpacing:"0.12em", textTransform:"uppercase",
+            padding:"10px 0" }}>
             {d}
           </div>
         ))}
       </div>
 
       {/* Calendar grid */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:1, background:C.border, borderRadius:10, overflow:"hidden" }}>
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(7,1fr)", gap:1, background:"var(--nyx-accent-str)", borderRadius:"0 0 10px 10px", overflow:"hidden" }}>
         {grid.map((day, i) => {
           const isThisMonth = day.getMonth() === month;
           const isToday     = isSameDay(day, today);
@@ -418,11 +419,16 @@ function MonthView({
               key={i}
               onClick={() => onDayClick(day)}
               style={{
-                background: isToday ? "var(--nyx-accent-dim)" : "var(--nyx-bg)",
-                borderTop: isToday ? `2px solid var(--nyx-accent-label)` : "2px solid transparent",
-                minHeight:96, padding:"6px 6px 4px",
+                background: isToday
+                  ? "var(--nyx-accent-dim)"
+                  : isThisMonth
+                  ? "var(--nyx-bg)"
+                  : "rgba(0,0,0,0.45)",
+                borderTop: isToday ? `2px solid var(--nyx-accent)` : "2px solid transparent",
+                minHeight: 108, padding:"7px 7px 5px",
                 cursor:"pointer",
                 transition:"background 0.15s",
+                opacity: isThisMonth || isToday ? 1 : 0.55,
               }}
             >
               <div style={{
@@ -779,7 +785,15 @@ export default function CalendarClient({
   };
 
   return (
-    <div>
+    <div
+      style={{
+        background: "var(--nyx-card)",
+        border: "1px solid var(--nyx-accent-str)",
+        borderRadius: 20,
+        padding: "24px 24px 28px",
+        animation: "nyx-cal-shimmer 5s ease-in-out infinite",
+      }}
+    >
       {/* ── Toolbar ── */}
       <div style={{ display:"flex", flexWrap:"wrap", gap:12, alignItems:"center", marginBottom:20, justifyContent:"space-between" }}>
 
