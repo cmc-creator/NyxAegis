@@ -1,5 +1,6 @@
 ﻿"use client";
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 
 const inp: React.CSSProperties = {
   width: "100%", background: "var(--nyx-input-bg)", border: "1px solid var(--nyx-border)",
@@ -41,21 +42,21 @@ const THEMES: Theme[] = [
   },
   {
     key: "glass", label: "Glass", desc: "Midnight Cyan",
-    accent: "var(--nyx-accent)",
+    accent: "#00d4ff",
     vars: {
-      "--nyx-accent":      "var(--nyx-accent)",
-      "--nyx-accent-glow": "var(--nyx-accent-mid)",
-      "--nyx-accent-dim":  "var(--nyx-accent-dim)",
-      "--nyx-accent-mid":  "var(--nyx-accent-mid)",
-      "--nyx-accent-str":  "var(--nyx-accent-str)",
+      "--nyx-accent":      "#00d4ff",
+      "--nyx-accent-glow": "rgba(0,212,255,0.22)",
+      "--nyx-accent-dim":  "rgba(0,212,255,0.08)",
+      "--nyx-accent-mid":  "rgba(0,212,255,0.15)",
+      "--nyx-accent-str":  "rgba(0,212,255,0.30)",
       "--nyx-bg":          "#040810",
-      "--nyx-card":        "var(--nyx-accent-dim)",
-      "--nyx-border":      "var(--nyx-accent-dim)",
+      "--nyx-card":        "rgba(0,212,255,0.03)",
+      "--nyx-border":      "rgba(0,212,255,0.09)",
       "--nyx-sidebar-bg":  "rgba(4,6,12,0.98)",
       "--nyx-text":        "#d8e8f4",
       "--nyx-text-muted":  "rgba(216,232,244,0.72)",
       "--nyx-input-bg":    "rgba(0,0,0,0.35)",
-      "--nyx-scrollbar":   "var(--nyx-accent-mid)",
+      "--nyx-scrollbar":   "rgba(0,212,255,0.18)",
       "--nyx-accent-label":"rgba(0,212,255,0.60)",
       "--nyx-texture":     "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.65 .60' numOctaves='5' seed='7' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 0  0.05 0 0 0 0.02  0.10 0 0 0 0.04  0 0 0 0.05 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>\")",
     },
@@ -103,24 +104,24 @@ const THEMES: Theme[] = [
     },
   },
   {
-    key: "amber", label: "Amber", desc: "Warm Whiskey",
-    accent: "#fbbf24",
+    key: "hotpink", label: "Hot Pink", desc: "Neon Magenta",
+    accent: "#ec4899",
     vars: {
-      "--nyx-accent":      "#fbbf24",
-      "--nyx-accent-glow": "rgba(251,191,36,0.20)",
-      "--nyx-accent-dim":  "rgba(251,191,36,0.08)",
-      "--nyx-accent-mid":  "rgba(251,191,36,0.15)",
-      "--nyx-accent-str":  "rgba(251,191,36,0.28)",
-      "--nyx-bg":          "#080600",
-      "--nyx-card":        "rgba(251,191,36,0.03)",
-      "--nyx-border":      "rgba(251,191,36,0.10)",
-      "--nyx-sidebar-bg":  "rgba(5,4,0,0.99)",
-      "--nyx-text":        "#f2e8c8",
-      "--nyx-text-muted":  "rgba(242,232,200,0.72)",
+      "--nyx-accent":      "#ec4899",
+      "--nyx-accent-glow": "rgba(236,72,153,0.22)",
+      "--nyx-accent-dim":  "rgba(236,72,153,0.08)",
+      "--nyx-accent-mid":  "rgba(236,72,153,0.15)",
+      "--nyx-accent-str":  "rgba(236,72,153,0.30)",
+      "--nyx-bg":          "#0a0308",
+      "--nyx-card":        "rgba(236,72,153,0.03)",
+      "--nyx-border":      "rgba(236,72,153,0.10)",
+      "--nyx-sidebar-bg":  "rgba(6,1,4,0.99)",
+      "--nyx-text":        "#fce7f3",
+      "--nyx-text-muted":  "rgba(252,231,243,0.72)",
       "--nyx-input-bg":    "rgba(0,0,0,0.42)",
-      "--nyx-scrollbar":   "rgba(251,191,36,0.18)",
-      "--nyx-accent-label":"rgba(251,191,36,0.60)",
-      "--nyx-texture":     "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.67 .61' numOctaves='5' seed='3' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.15 0 0 0 0.07  0.07 0 0 0 0.04  0 0 0 0 0  0 0 0 0.055 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>\")",
+      "--nyx-scrollbar":   "rgba(236,72,153,0.18)",
+      "--nyx-accent-label":"rgba(236,72,153,0.60)",
+      "--nyx-texture":     "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.67 .61' numOctaves='5' seed='13' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.15 0 0 0 0.07  0 0 0 0 0.01  0.08 0 0 0 0.04  0 0 0 0.055 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>\")",
     },
   },
   {
@@ -142,6 +143,48 @@ const THEMES: Theme[] = [
       "--nyx-scrollbar":   "rgba(248,113,113,0.18)",
       "--nyx-accent-label":"rgba(248,113,113,0.60)",
       "--nyx-texture":     "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.68 .63' numOctaves='5' seed='9' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.12 0 0 0 0.06  0 0 0 0 0.01  0.02 0 0 0 0.01  0 0 0 0.05 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>\")",
+    },
+  },
+  {
+    key: "light", label: "Light", desc: "Clean Silver",
+    accent: "#6366f1",
+    vars: {
+      "--nyx-accent":      "#6366f1",
+      "--nyx-accent-glow": "rgba(99,102,241,0.18)",
+      "--nyx-accent-dim":  "rgba(99,102,241,0.10)",
+      "--nyx-accent-mid":  "rgba(99,102,241,0.18)",
+      "--nyx-accent-str":  "rgba(99,102,241,0.35)",
+      "--nyx-bg":          "#f0f2f7",
+      "--nyx-card":        "#ffffff",
+      "--nyx-border":      "rgba(99,102,241,0.18)",
+      "--nyx-sidebar-bg":  "#e8eaf2",
+      "--nyx-text":        "#1a1b2e",
+      "--nyx-text-muted":  "rgba(26,27,46,0.55)",
+      "--nyx-input-bg":    "rgba(0,0,0,0.05)",
+      "--nyx-scrollbar":   "rgba(99,102,241,0.25)",
+      "--nyx-accent-label":"rgba(99,102,241,0.70)",
+      "--nyx-texture":     "none",
+    },
+  },
+  {
+    key: "blush", label: "Blush", desc: "Soft Daylight",
+    accent: "#be185d",
+    vars: {
+      "--nyx-accent":      "#be185d",
+      "--nyx-accent-glow": "rgba(190,24,93,0.16)",
+      "--nyx-accent-dim":  "rgba(190,24,93,0.08)",
+      "--nyx-accent-mid":  "rgba(190,24,93,0.14)",
+      "--nyx-accent-str":  "rgba(190,24,93,0.28)",
+      "--nyx-bg":          "#fdf4f7",
+      "--nyx-card":        "#ffffff",
+      "--nyx-border":      "rgba(190,24,93,0.15)",
+      "--nyx-sidebar-bg":  "#f7e8ee",
+      "--nyx-text":        "#1e0a12",
+      "--nyx-text-muted":  "rgba(30,10,18,0.55)",
+      "--nyx-input-bg":    "rgba(0,0,0,0.04)",
+      "--nyx-scrollbar":   "rgba(190,24,93,0.22)",
+      "--nyx-accent-label":"rgba(190,24,93,0.65)",
+      "--nyx-texture":     "none",
     },
   },
 ];
@@ -189,6 +232,8 @@ function SettingRow({ label, desc, children }: { label: string; desc?: string; c
 
 /*  Main component  */
 export default function SettingsClient() {
+  const { data: session } = useSession();
+  const isAdmin = session?.user?.role === "ADMIN";
   const [activeTheme, setActiveTheme] = useState("luxury");
   const [orgName, setOrgName] = useState("NyxAegis");
   const [supportEmail, setSupportEmail] = useState("support@nyxaegis.com");
@@ -302,7 +347,8 @@ export default function SettingsClient() {
 
       {/*  ORGANISATION  */}
       <Section title="Organization">
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 16 }}>
+        <button onClick={saveOrg} style={{ background: "var(--nyx-accent-dim)", border: "1px solid var(--nyx-accent-mid)", borderRadius: 7, padding: "8px 22px", color: "var(--nyx-accent)", cursor: "pointer", fontSize: "0.875rem", fontWeight: 700, marginBottom: 16 }}>{saved ? "Saved \u2713" : "Save Changes"}</button>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
           <div>
             <label style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", display: "block", marginBottom: 4 }}>ORG / BRAND NAME</label>
             <input style={inp} value={orgName} onChange={e => setOrgName(e.target.value)} />
@@ -312,7 +358,6 @@ export default function SettingsClient() {
             <input style={inp} type="email" value={supportEmail} onChange={e => setSupportEmail(e.target.value)} />
           </div>
         </div>
-        <button onClick={saveOrg} style={{ background: "var(--nyx-accent-dim)", border: "1px solid var(--nyx-accent-mid)", borderRadius: 7, padding: "8px 22px", color: "var(--nyx-accent)", cursor: "pointer", fontSize: "0.875rem", fontWeight: 700 }}>{saved ? "Saved \u2713" : "Save Changes"}</button>
       </Section>
 
       {/*  NOTIFICATIONS  */}
@@ -332,6 +377,21 @@ export default function SettingsClient() {
 
       {/*  DEV TOOLS  */}
       <Section title="Developer Tools">
+        {/* Admin-only warning banner */}
+        <div style={{ background: "rgba(248,113,113,0.08)", border: "1px solid rgba(248,113,113,0.30)", borderRadius: 9, padding: "12px 16px", marginBottom: 16, display: "flex", alignItems: "flex-start", gap: 10 }}>
+          <span style={{ fontSize: "1.1rem", lineHeight: "1.3", flexShrink: 0 }}>⚠️</span>
+          <div>
+            <div style={{ fontSize: "0.78rem", fontWeight: 800, color: "#f87171", letterSpacing: "0.06em", marginBottom: 4 }}>ADMIN / OWNER ACCESS ONLY</div>
+            <div style={{ fontSize: "0.75rem", color: "var(--nyx-text-muted)", lineHeight: 1.55 }}>
+              Destructive actions are <strong style={{ color: "#f87171" }}>permanent and irreversible</strong>. Clear All Data will permanently delete every record — no undo, no backup, no recovery.
+            </div>
+          </div>
+        </div>
+        {!isAdmin && (
+          <div style={{ background: "rgba(248,113,113,0.06)", border: "1px solid rgba(248,113,113,0.20)", borderRadius: 7, padding: "9px 14px", marginBottom: 14, fontSize: "0.78rem", color: "#f87171", fontWeight: 600 }}>
+            🔒 You do not have permission to perform destructive actions. Admin or Owner role required.
+          </div>
+        )}
         <p style={{ fontSize: "0.8rem", color: "var(--nyx-text-muted)", marginBottom: 18 }}>Manage demo data for testing and presentations. Use with caution in production.</p>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {/* Seed */}
@@ -344,32 +404,39 @@ export default function SettingsClient() {
           </div>
 
           {/* Clear Demo */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "rgba(0,0,0,0.2)", borderRadius: 9, padding: "14px 18px", border: "1px solid rgba(251,191,36,0.12)" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "rgba(0,0,0,0.2)", borderRadius: 9, padding: "14px 18px", border: "1px solid rgba(251,191,36,0.18)", opacity: isAdmin ? 1 : 0.45 }}>
             <div>
-              <div style={{ fontSize: "0.875rem", fontWeight: 600, color: "#fbbf24" }}>Clear Demo Data</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ fontSize: "0.875rem", fontWeight: 600, color: "#fbbf24" }}>Clear Demo Data</span>
+                <span style={{ fontSize: "0.62rem", fontWeight: 800, background: "rgba(251,191,36,0.12)", border: "1px solid rgba(251,191,36,0.30)", borderRadius: 4, padding: "2px 6px", color: "#fbbf24", letterSpacing: "0.05em" }}>ADMIN ONLY</span>
+              </div>
               <div style={{ fontSize: "0.75rem", color: "var(--nyx-text-muted)", marginTop: 2 }}>Removes demo leads, opportunities, activities, invoices, and contracts</div>
             </div>
             {confirmAction === "clear-demo"
               ? <div style={{ display: "flex", gap: 8 }}>
-                  <button onClick={() => devAction("clear-demo")} disabled={devLoading !== null} style={{ background: "rgba(251,191,36,0.15)", border: "1px solid rgba(251,191,36,0.35)", borderRadius: 7, padding: "7px 14px", color: "#fbbf24", cursor: "pointer", fontWeight: 700, fontSize: "0.8rem" }}>{devLoading === "clear-demo" ? "Clearing\u2026" : "Confirm"}</button>
+                  <button onClick={() => devAction("clear-demo")} disabled={devLoading !== null || !isAdmin} style={{ background: "rgba(251,191,36,0.15)", border: "1px solid rgba(251,191,36,0.35)", borderRadius: 7, padding: "7px 14px", color: "#fbbf24", cursor: isAdmin ? "pointer" : "not-allowed", fontWeight: 700, fontSize: "0.8rem" }}>{devLoading === "clear-demo" ? "Clearing\u2026" : "Confirm"}</button>
                   <button onClick={() => setConfirmAction(null)} style={{ background: "none", border: "1px solid var(--nyx-border)", borderRadius: 7, padding: "7px 12px", color: "var(--nyx-text-muted)", cursor: "pointer", fontSize: "0.8rem" }}>Cancel</button>
                 </div>
-              : <button onClick={() => devAction("clear-demo")} disabled={devLoading !== null} style={{ background: "rgba(251,191,36,0.08)", border: "1px solid rgba(251,191,36,0.2)", borderRadius: 7, padding: "8px 18px", color: "#fbbf24", cursor: "pointer", fontWeight: 700, fontSize: "0.8rem" }}>Clear Demo</button>
+              : <button onClick={() => devAction("clear-demo")} disabled={devLoading !== null || !isAdmin} style={{ background: "rgba(251,191,36,0.08)", border: "1px solid rgba(251,191,36,0.2)", borderRadius: 7, padding: "8px 18px", color: "#fbbf24", cursor: isAdmin ? "pointer" : "not-allowed", fontWeight: 700, fontSize: "0.8rem" }}>Clear Demo</button>
             }
           </div>
 
           {/* Clear All */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "rgba(0,0,0,0.2)", borderRadius: 9, padding: "14px 18px", border: "1px solid rgba(248,113,113,0.12)" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "rgba(248,113,113,0.04)", borderRadius: 9, padding: "14px 18px", border: "1px solid rgba(248,113,113,0.28)", opacity: isAdmin ? 1 : 0.45 }}>
             <div>
-              <div style={{ fontSize: "0.875rem", fontWeight: 600, color: "#f87171" }}>Clear All Data</div>
-              <div style={{ fontSize: "0.75rem", color: "var(--nyx-text-muted)", marginTop: 2 }}>Wipes all transactional records &mdash; leads, opps, invoices, contracts, activities</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                <span style={{ fontSize: "0.875rem", fontWeight: 700, color: "#f87171" }}>Clear All Data</span>
+                <span style={{ fontSize: "0.62rem", fontWeight: 800, background: "rgba(248,113,113,0.15)", border: "1px solid rgba(248,113,113,0.40)", borderRadius: 4, padding: "2px 6px", color: "#f87171", letterSpacing: "0.06em" }}>EXTREME CAUTION</span>
+                <span style={{ fontSize: "0.62rem", fontWeight: 800, background: "rgba(248,113,113,0.10)", border: "1px solid rgba(248,113,113,0.30)", borderRadius: 4, padding: "2px 6px", color: "#f87171", letterSpacing: "0.05em" }}>ADMIN ONLY</span>
+              </div>
+              <div style={{ fontSize: "0.75rem", color: "var(--nyx-text-muted)", marginTop: 4, lineHeight: 1.5 }}>Permanently wipes <strong style={{ color: "#f87171" }}>ALL</strong> records &mdash; leads, opps, invoices, contracts, activities. <strong style={{ color: "#f87171" }}>No undo. No recovery.</strong></div>
             </div>
             {confirmAction === "clear-all"
               ? <div style={{ display: "flex", gap: 8 }}>
-                  <button onClick={() => devAction("clear-all")} disabled={devLoading !== null} style={{ background: "rgba(248,113,113,0.15)", border: "1px solid rgba(248,113,113,0.35)", borderRadius: 7, padding: "7px 14px", color: "#f87171", cursor: "pointer", fontWeight: 700, fontSize: "0.8rem" }}>{devLoading === "clear-all" ? "Clearing\u2026" : "Confirm \u2014 Wipe All"}</button>
+                  <button onClick={() => devAction("clear-all")} disabled={devLoading !== null || !isAdmin} style={{ background: "rgba(248,113,113,0.18)", border: "1px solid rgba(248,113,113,0.45)", borderRadius: 7, padding: "7px 14px", color: "#f87171", cursor: isAdmin ? "pointer" : "not-allowed", fontWeight: 800, fontSize: "0.8rem" }}>{devLoading === "clear-all" ? "Wiping\u2026" : "\u26a0 Confirm \u2014 Wipe Everything"}</button>
                   <button onClick={() => setConfirmAction(null)} style={{ background: "none", border: "1px solid var(--nyx-border)", borderRadius: 7, padding: "7px 12px", color: "var(--nyx-text-muted)", cursor: "pointer", fontSize: "0.8rem" }}>Cancel</button>
                 </div>
-              : <button onClick={() => devAction("clear-all")} disabled={devLoading !== null} style={{ background: "rgba(248,113,113,0.06)", border: "1px solid rgba(248,113,113,0.15)", borderRadius: 7, padding: "8px 18px", color: "#f87171", cursor: "pointer", fontWeight: 700, fontSize: "0.8rem" }}>Clear All</button>
+              : <button onClick={() => devAction("clear-all")} disabled={devLoading !== null || !isAdmin} style={{ background: "rgba(248,113,113,0.08)", border: "1px solid rgba(248,113,113,0.25)", borderRadius: 7, padding: "8px 18px", color: "#f87171", cursor: isAdmin ? "pointer" : "not-allowed", fontWeight: 700, fontSize: "0.8rem" }}>Clear All</button>
             }
           </div>
         </div>
