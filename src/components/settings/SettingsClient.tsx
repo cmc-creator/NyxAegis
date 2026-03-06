@@ -14,7 +14,7 @@ type NyxVars = {
   "--nyx-accent-mid": string; "--nyx-accent-str": string; "--nyx-bg": string;
   "--nyx-card": string; "--nyx-border": string; "--nyx-sidebar-bg": string;
   "--nyx-text": string; "--nyx-text-muted": string; "--nyx-input-bg": string;
-  "--nyx-scrollbar": string; "--nyx-accent-label": string; "--nyx-texture": string; "--nyx-card-texture": string;
+  "--nyx-scrollbar": string; "--nyx-accent-label": string; "--nyx-texture": string; "--nyx-card-texture": string; "--nyx-card-border": string;
 };
 interface Theme { key: string; label: string; desc: string; accent: string; vars: NyxVars; }
 
@@ -39,6 +39,7 @@ const THEMES: Theme[] = [
       "--nyx-accent-label":"rgba(201,168,76,0.60)",
       "--nyx-texture":     "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.52 .38' numOctaves='7' seed='19' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.22 0 0 0 0.08  0.11 0 0 0 0.04  0 0 0 0 0  0 0 0 0.10 0'/></filter><filter id='w'><feTurbulence type='turbulence' baseFrequency='.028 .022' numOctaves='5' seed='8' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.15 0 0 0 0.06  0.07 0 0 0 0.025  0 0 0 0 0  0 0 0 0.07 0'/></filter><rect width='256' height='256' filter='url(%23g)'/><rect width='256' height='256' filter='url(%23w)'/></svg>\")",
       "--nyx-card-texture": "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512'><filter id='c'><feTurbulence type='fractalNoise' baseFrequency='.015 .010' numOctaves='8' seed='23' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.18 0 0 0 0.10  0.14 0 0 0 0.07  0.04 0 0 0 0.02  0 0 0 0.12 0'/></filter><filter id='v'><feTurbulence type='turbulence' baseFrequency='.004 .002' numOctaves='4' seed='7' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.30 0 0 0 0.15  0.18 0 0 0 0.08  0 0 0 0 0  0 0 0 0.08 0'/></filter><rect width='512' height='512' filter='url(%23c)'/><rect width='512' height='512' filter='url(%23v)'/></svg>\")",
+      "--nyx-card-border": "linear-gradient(135deg, #2e1800 0%, #7a5210 8%, #C9A84C 18%, #f0d060 26%, #fffce0 33%, #e8c840 41%, #c09030 50%, #e8c840 58%, #fffce0 66%, #f0d060 74%, #C9A84C 82%, #7a5210 91%, #2e1800 100%)",
     },
   },
   {
@@ -61,6 +62,7 @@ const THEMES: Theme[] = [
       "--nyx-accent-label":"rgba(0,212,255,0.60)",
       "--nyx-texture":     "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.65 .60' numOctaves='5' seed='7' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 0  0.05 0 0 0 0.02  0.10 0 0 0 0.04  0 0 0 0.05 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>\")",
       "--nyx-card-texture": "none",
+      "--nyx-card-border": "linear-gradient(135deg, #001428 0%, #00486a 12%, #00b8e8 22%, #40d8ff 30%, #d8f8ff 38%, #00c8f0 48%, #0098c0 58%, #40d8ff 68%, #d8f8ff 77%, #00486a 90%, #001428 100%)",
     },
   },
   {
@@ -83,6 +85,7 @@ const THEMES: Theme[] = [
       "--nyx-accent-label":"rgba(52,211,153,0.60)",
       "--nyx-texture":     "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.70 .65' numOctaves='5' seed='11' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 0  0.10 0 0 0 0.04  0.05 0 0 0 0.02  0 0 0 0.05 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>\")",
       "--nyx-card-texture": "none",
+      "--nyx-card-border": "linear-gradient(135deg, #001208 0%, #0a4820 12%, #34d399 22%, #70f0c0 30%, #dfffef 38%, #28c880 48%, #10a060 58%, #70f0c0 68%, #dfffef 77%, #0a4820 90%, #001208 100%)",
     },
   },
   {
@@ -105,6 +108,7 @@ const THEMES: Theme[] = [
       "--nyx-accent-label":"rgba(167,139,250,0.60)",
       "--nyx-texture":     "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.66 .60' numOctaves='5' seed='5' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.06 0 0 0 0.03  0 0 0 0 0.01  0.08 0 0 0 0.04  0 0 0 0.05 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>\")",
       "--nyx-card-texture": "none",
+      "--nyx-card-border": "linear-gradient(135deg, #0a0218 0%, #340880 12%, #a78bfa 22%, #c8b0ff 30%, #f0e8ff 38%, #9868f0 48%, #7040d0 58%, #c8b0ff 68%, #f0e8ff 77%, #340880 90%, #0a0218 100%)",
     },
   },
   {
@@ -127,6 +131,7 @@ const THEMES: Theme[] = [
       "--nyx-accent-label":"rgba(236,72,153,0.60)",
       "--nyx-texture":     "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.67 .61' numOctaves='5' seed='13' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.15 0 0 0 0.07  0 0 0 0 0.01  0.08 0 0 0 0.04  0 0 0 0.055 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>\")",
       "--nyx-card-texture": "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512'><filter id='c'><feTurbulence type='fractalNoise' baseFrequency='.012 .008' numOctaves='7' seed='17' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.22 0 0 0 0.12  0.06 0 0 0 0.02  0.10 0 0 0 0.05  0 0 0 0.10 0'/></filter><filter id='v'><feTurbulence type='turbulence' baseFrequency='.004 .002' numOctaves='4' seed='11' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.30 0 0 0 0.15  0.18 0 0 0 0.08  0 0 0 0 0  0 0 0 0.09 0'/></filter><rect width='512' height='512' filter='url(%23c)'/><rect width='512' height='512' filter='url(%23v)'/></svg>\")",
+      "--nyx-card-border": "linear-gradient(135deg, #1a0010 0%, #6a0040 12%, #ec4899 22%, #ff80c8 30%, #ffe8f4 38%, #d82880 48%, #a81860 58%, #ff80c8 68%, #ffe8f4 77%, #6a0040 90%, #1a0010 100%)",
     },
   },
   {
@@ -149,6 +154,7 @@ const THEMES: Theme[] = [
       "--nyx-accent-label":"rgba(248,113,113,0.60)",
       "--nyx-texture":     "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.68 .63' numOctaves='5' seed='9' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.12 0 0 0 0.06  0 0 0 0 0.01  0.02 0 0 0 0.01  0 0 0 0.05 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>\")",
       "--nyx-card-texture": "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512'><filter id='c'><feTurbulence type='fractalNoise' baseFrequency='.013 .009' numOctaves='7' seed='31' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.20 0 0 0 0.12  0.08 0 0 0 0.04  0.08 0 0 0 0.04  0 0 0 0.10 0'/></filter><filter id='v'><feTurbulence type='turbulence' baseFrequency='.005 .002' numOctaves='4' seed='5' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.08 0 0 0 0.04  0.04 0 0 0 0.02  0.04 0 0 0 0.02  0 0 0 0.09 0'/></filter><rect width='512' height='512' filter='url(%23c)'/><rect width='512' height='512' filter='url(%23v)'/></svg>\")",
+      "--nyx-card-border": "linear-gradient(135deg, #180008 0%, #5a0020 12%, #f87171 22%, #ffa0a0 30%, #ffe8e8 38%, #e84040 48%, #c02020 58%, #ffa0a0 68%, #ffe8e8 77%, #5a0020 90%, #180008 100%)",
     },
   },
   {
@@ -171,6 +177,7 @@ const THEMES: Theme[] = [
       "--nyx-accent-label":"rgba(99,102,241,0.70)",
       "--nyx-texture":     "none",
       "--nyx-card-texture": "none",
+      "--nyx-card-border": "linear-gradient(135deg, #6080a0 0%, #90a8c0 12%, #b8d0e8 22%, #d8eaf8 30%, #f8fbff 38%, #c0d8f0 48%, #a0c0d8 58%, #d8eaf8 68%, #f8fbff 77%, #90a8c0 90%, #6080a0 100%)",
     },
   },
   {
@@ -193,6 +200,7 @@ const THEMES: Theme[] = [
       "--nyx-accent-label":"rgba(190,24,93,0.65)",
       "--nyx-texture":     "none",
       "--nyx-card-texture": "none",
+      "--nyx-card-border": "linear-gradient(135deg, #2a0018 0%, #8c1050 12%, #be185d 22%, #e060a8 30%, #ffd4e8 38%, #c82870 48%, #9e1248 58%, #e060a8 68%, #ffd4e8 77%, #8c1050 90%, #2a0018 100%)",
     },
   },
 ];
@@ -323,13 +331,32 @@ export default function SettingsClient() {
                 {/* Gem / swatch */}
                 <div style={{ position: "relative", width: 32, height: 32, margin: "0 auto 10px" }}>
                   <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                    <polygon points="16,2 30,14 16,30 2,14"
-                      fill={`${t.accent}14`} stroke={t.accent} strokeWidth="1.3" strokeOpacity="0.75" />
-                    <line x1="2" y1="14" x2="30" y2="14" stroke={t.accent} strokeWidth="0.65" strokeOpacity="0.4" />
-                    <line x1="16" y1="2" x2="9" y2="14" stroke={t.accent} strokeWidth="0.55" strokeOpacity="0.35" />
-                    <line x1="16" y1="2" x2="23" y2="14" stroke={t.accent} strokeWidth="0.55" strokeOpacity="0.35" />
-                    <polygon points="11,8 16,3 21,8" fill={`${t.accent}28`} />
-                    <circle cx="16" cy="10" r="1.5" fill={t.accent} fillOpacity="0.9" />
+                    {/* Pavilion */}
+                    <polygon points="3,13 29,13 16,29" fill={`${t.accent}22`} stroke={t.accent} strokeWidth="1" strokeOpacity="0.8" />
+                    {/* Crown */}
+                    <polygon points="10,4 22,4 29,13 3,13" fill={`${t.accent}32`} stroke={t.accent} strokeWidth="1" strokeOpacity="0.85" />
+                    {/* Table */}
+                    <rect x="10" y="4" width="12" height="4" fill={`${t.accent}55`} />
+                    {/* Crown facet lines */}
+                    <line x1="10" y1="4" x2="3" y2="13" stroke={t.accent} strokeWidth="0.6" strokeOpacity="0.55" />
+                    <line x1="22" y1="4" x2="29" y2="13" stroke={t.accent} strokeWidth="0.6" strokeOpacity="0.55" />
+                    <line x1="10" y1="8" x2="7" y2="13" stroke={t.accent} strokeWidth="0.5" strokeOpacity="0.4" />
+                    <line x1="22" y1="8" x2="25" y2="13" stroke={t.accent} strokeWidth="0.5" strokeOpacity="0.4" />
+                    <line x1="13" y1="4" x2="10" y2="8" stroke={t.accent} strokeWidth="0.5" strokeOpacity="0.4" />
+                    <line x1="16" y1="4" x2="16" y2="8" stroke={t.accent} strokeWidth="0.6" strokeOpacity="0.5" />
+                    <line x1="19" y1="4" x2="22" y2="8" stroke={t.accent} strokeWidth="0.5" strokeOpacity="0.4" />
+                    {/* Pavilion facets */}
+                    <line x1="10" y1="13" x2="16" y2="29" stroke={t.accent} strokeWidth="0.6" strokeOpacity="0.45" />
+                    <line x1="22" y1="13" x2="16" y2="29" stroke={t.accent} strokeWidth="0.6" strokeOpacity="0.45" />
+                    <line x1="7" y1="13" x2="16" y2="29" stroke={t.accent} strokeWidth="0.4" strokeOpacity="0.25" />
+                    <line x1="25" y1="13" x2="16" y2="29" stroke={t.accent} strokeWidth="0.4" strokeOpacity="0.25" />
+                    <line x1="16" y1="13" x2="16" y2="29" stroke={t.accent} strokeWidth="0.4" strokeOpacity="0.2" />
+                    {/* Table highlight */}
+                    <polygon points="13,4 19,4 16,8" fill="white" fillOpacity="0.32" />
+                    {/* Girdle */}
+                    <line x1="3" y1="13" x2="29" y2="13" stroke={t.accent} strokeWidth="0.9" strokeOpacity="0.65" />
+                    {/* Crown shine */}
+                    <line x1="11" y1="5" x2="15" y2="7" stroke="white" strokeWidth="0.8" strokeOpacity="0.5" />
                   </svg>
                   {isActive && (
                     <div style={{ position: "absolute", inset: 0, borderRadius: "50%", background: `radial-gradient(circle, ${t.accent}22 0%, transparent 70%)`, pointerEvents: "none" }} />
@@ -343,8 +370,11 @@ export default function SettingsClient() {
         </div>
         <div style={{ marginTop: 16, padding: "10px 14px", borderRadius: 8, background: "rgba(0,0,0,0.3)", border: "1px solid var(--nyx-border)", display: "flex", alignItems: "center", gap: 10 }}>
           <svg width="18" height="18" viewBox="0 0 32 32" fill="none">
-            <polygon points="16,2 30,14 16,30 2,14" fill={`${curTheme.accent}18`} stroke={curTheme.accent} strokeWidth="1.2" />
-            <circle cx="16" cy="10" r="1.4" fill={curTheme.accent} fillOpacity="0.9" />
+            <polygon points="3,13 29,13 16,29" fill={`${curTheme.accent}22`} stroke={curTheme.accent} strokeWidth="1.2" strokeOpacity="0.8" />
+            <polygon points="10,4 22,4 29,13 3,13" fill={`${curTheme.accent}35`} stroke={curTheme.accent} strokeWidth="1.2" strokeOpacity="0.85" />
+            <rect x="10" y="4" width="12" height="4" fill={`${curTheme.accent}55`} />
+            <polygon points="13,4 19,4 16,8" fill="white" fillOpacity="0.32" />
+            <line x1="3" y1="13" x2="29" y2="13" stroke={curTheme.accent} strokeWidth="1" strokeOpacity="0.6" />
           </svg>
           <span style={{ fontSize: "0.78rem", color: "var(--nyx-text-muted)" }}>
             Active: <strong style={{ color: curTheme.accent }}>{curTheme.label}</strong>

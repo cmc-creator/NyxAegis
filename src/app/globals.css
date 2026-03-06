@@ -27,6 +27,7 @@
   --nyx-scrollbar:    rgba(201,168,76,0.20);
   --nyx-texture:      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.52 .38' numOctaves='7' seed='19' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.22 0 0 0 0.08  0.11 0 0 0 0.04  0 0 0 0 0  0 0 0 0.10 0'/></filter><filter id='w'><feTurbulence type='turbulence' baseFrequency='.028 .022' numOctaves='5' seed='8' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.15 0 0 0 0.06  0.07 0 0 0 0.025  0 0 0 0 0  0 0 0 0.07 0'/></filter><rect width='256' height='256' filter='url(%23g)'/><rect width='256' height='256' filter='url(%23w)'/></svg>");
   --nyx-card-texture: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512'><filter id='c'><feTurbulence type='fractalNoise' baseFrequency='.015 .010' numOctaves='8' seed='23' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.18 0 0 0 0.10  0.14 0 0 0 0.07  0.04 0 0 0 0.02  0 0 0 0.12 0'/></filter><filter id='v'><feTurbulence type='turbulence' baseFrequency='.004 .002' numOctaves='4' seed='7' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.30 0 0 0 0.15  0.18 0 0 0 0.08  0 0 0 0 0  0 0 0 0.08 0'/></filter><rect width='512' height='512' filter='url(%23c)'/><rect width='512' height='512' filter='url(%23v)'/></svg>");
+  --nyx-card-border: linear-gradient(135deg, #2e1800 0%, #7a5210 8%, #C9A84C 18%, #f0d060 26%, #fffce0 33%, #e8c840 41%, #c09030 50%, #e8c840 58%, #fffce0 66%, #f0d060 74%, #C9A84C 82%, #7a5210 91%, #2e1800 100%);
   /* Tailwind compat */
   --background:        30 20% 3%;
   --foreground:        36 40% 91%;
@@ -51,6 +52,7 @@
   --nyx-input-bg:     rgba(0,0,0,0.35);
   --nyx-scrollbar:    rgba(0,212,255,0.15);
   --nyx-texture:      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.65 .60' numOctaves='5' seed='7' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 0  0.05 0 0 0 0.02  0.10 0 0 0 0.04  0 0 0 0.05 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>");
+  --nyx-card-border:  linear-gradient(135deg, #001428 0%, #00486a 12%, #00b8e8 22%, #40d8ff 30%, #d8f8ff 38%, #00c8f0 48%, #0098c0 58%, #40d8ff 68%, #d8f8ff 77%, #00486a 90%, #001428 100%);
   --background:        220 62% 3%;
   --foreground:        210 35% 90%;
   --border:            220 38% 14%;
@@ -74,6 +76,7 @@
   --nyx-input-bg:     rgba(0,0,0,0.40);
   --nyx-scrollbar:    rgba(52,211,153,0.18);
   --nyx-texture:      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.70 .65' numOctaves='5' seed='11' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 0  0.10 0 0 0 0.04  0.05 0 0 0 0.02  0 0 0 0.05 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>");
+  --nyx-card-border:  linear-gradient(135deg, #001208 0%, #0a4820 12%, #34d399 22%, #70f0c0 30%, #dfffef 38%, #28c880 48%, #10a060 58%, #70f0c0 68%, #dfffef 77%, #0a4820 90%, #001208 100%);
   --background:        145 30% 3%;
   --foreground:        155 30% 88%;
   --border:            145 20% 12%;
@@ -101,6 +104,7 @@
   --nyx-input-bg:     rgba(0,0,0,0.40);
   --nyx-scrollbar:    rgba(167,139,250,0.18);
   --nyx-texture:      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.66 .60' numOctaves='5' seed='5' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.06 0 0 0 0.03  0 0 0 0 0.01  0.08 0 0 0 0.04  0 0 0 0.05 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>");
+  --nyx-card-border:  linear-gradient(135deg, #0a0218 0%, #340880 12%, #a78bfa 22%, #c8b0ff 30%, #f0e8ff 38%, #9868f0 48%, #7040d0 58%, #c8b0ff 68%, #f0e8ff 77%, #340880 90%, #0a0218 100%);
   --background:        258 30% 4%;
   --foreground:        255 30% 88%;
   --border:            258 20% 14%;
@@ -128,6 +132,7 @@
   --nyx-input-bg:     rgba(0,0,0,0.42);
   --nyx-scrollbar:    rgba(251,191,36,0.18);
   --nyx-texture:      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.67 .61' numOctaves='5' seed='3' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.15 0 0 0 0.07  0.07 0 0 0 0.04  0 0 0 0 0  0 0 0 0.055 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>");
+  --nyx-card-border:  linear-gradient(135deg, #1a0c00 0%, #6a3800 12%, #fbbf24 22%, #ffd860 30%, #fff8d4 38%, #f0a800 48%, #c88000 58%, #ffd860 68%, #fff8d4 77%, #6a3800 90%, #1a0c00 100%);
   --background:        42 25% 3%;
   --foreground:        42 40% 88%;
   --border:            42 22% 14%;
@@ -155,6 +160,7 @@
   --nyx-input-bg:     rgba(0,0,0,0.42);
   --nyx-scrollbar:    rgba(248,113,113,0.18);
   --nyx-texture:      url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.68 .63' numOctaves='5' seed='9' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.12 0 0 0 0.06  0 0 0 0 0.01  0.02 0 0 0 0.01  0 0 0 0.05 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>");
+  --nyx-card-border:  linear-gradient(135deg, #180008 0%, #5a0020 12%, #f87171 22%, #ffa0a0 30%, #ffe8e8 38%, #e84040 48%, #c02020 58%, #ffa0a0 68%, #ffe8e8 77%, #5a0020 90%, #180008 100%);
   --background:        350 25% 3%;
   --foreground:        0 30% 88%;
   --border:            350 18% 14%;
@@ -246,27 +252,76 @@
 .gold-card::before {
   content: "";
   position: absolute;
-  inset: -1px;
+  inset: -2px;
   border-radius: inherit;
-  background: linear-gradient(
-    145deg,
-    var(--nyx-accent-str) 0%,
-    var(--nyx-accent-dim) 30%,
-    transparent 50%,
-    var(--nyx-accent-dim) 70%,
-    var(--nyx-accent-str) 100%
-  );
-  background-size: 200% 200%;
-  animation: gold-shimmer-sweep 7s ease-in-out infinite;
+  background: var(--nyx-card-border, linear-gradient(135deg, var(--nyx-accent-str) 0%, var(--nyx-accent-dim) 30%, transparent 50%, var(--nyx-accent-dim) 70%, var(--nyx-accent-str) 100%));
+  background-size: 300% 300%;
+  animation: gold-shimmer-sweep 9s ease-in-out infinite;
   z-index: 0;
   pointer-events: none;
-  border-radius: inherit;
 }
 .gold-card > * { position: relative; z-index: 1; }
 
 @keyframes gold-shimmer-sweep {
-  0%, 100% { background-position: 0% 0%; opacity: 0.7; }
-  50%       { background-position: 100% 100%; opacity: 1; }
+  0%        { background-position: 0% 0%; opacity: 0.75; }
+  35%       { background-position: 80% 60%; opacity: 1; }
+  65%       { background-position: 100% 100%; opacity: 1; }
+  100%      { background-position: 0% 0%; opacity: 0.75; }
+}
+
+/* ── Luxury gold frame — calendar, modal, featured panels ─────────── */
+.nyx-gold-frame {
+  position: relative;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  border-radius: 10px;
+  box-shadow:
+    0 0 0 2px var(--nyx-accent-dim),
+    0 8px 36px rgba(0,0,0,0.55),
+    inset 0 1px 0 rgba(255,255,255,0.04);
+}
+.nyx-gold-frame::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: var(--nyx-card-border, linear-gradient(135deg, var(--nyx-accent-str) 0%, transparent 50%, var(--nyx-accent-str) 100%));
+  background-size: 300% 300%;
+  animation: gold-shimmer-sweep 9s ease-in-out infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+.nyx-gold-frame > * { position: relative; z-index: 1; }
+
+/* ── Luxury ornate label / badge ────────────────────────────────── */
+.nyx-luxury-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 6px 22px;
+  background: var(--nyx-card-border, linear-gradient(135deg, #7a5210, #C9A84C, #f0d060, #C9A84C, #7a5210));
+  background-size: 200% 100%;
+  animation: gold-shimmer-sweep 9s ease-in-out infinite;
+  color: #1a0e00;
+  font-weight: 800;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: 2px 2px 4px 4px;
+  box-shadow:
+    0 0 0 1px rgba(201,168,76,0.6),
+    0 2px 8px rgba(0,0,0,0.55),
+    inset 0 1px 0 rgba(255,255,255,0.35);
+  clip-path: polygon(8px 0%, calc(100% - 8px) 0%, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0% calc(100% - 8px), 0% 8px);
+}
+.nyx-luxury-label::before {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border: 1px solid rgba(201,168,76,0.45);
+  clip-path: inherit;
+  pointer-events: none;
 }
 
 .card-glow {
