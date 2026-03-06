@@ -22,7 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <meta name="theme-color" content="#C9A84C" />
         {/* Apply saved theme immediately — prevents flash of wrong theme */}
-        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('nyxaegis-theme')||'luxury';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();` }} />
+        <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('nyxaegis-theme')||'luxury';var h=document.documentElement;h.setAttribute('data-theme',t);var m={backgrounds:'--nyx-page-bg',sidebar:'--nyx-sidebar-tex',cards:'--nyx-card-texture'};Object.keys(m).forEach(function(k){var v=localStorage.getItem('nyxaegis-bg-'+t+'-'+k);if(v)h.style.setProperty(m[k],"url('"+v+"')");});if(localStorage.getItem('nyxaegis-bg-tile-'+t)==='1'){h.style.setProperty('--nyx-page-bg-size','400px 400px');h.style.setProperty('--nyx-page-bg-repeat','repeat');}}catch(e){}})();` }} />
       </head>
       <body className={inter.className}>
         <Providers>{children}</Providers>

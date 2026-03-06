@@ -635,10 +635,17 @@ export default function SettingsClient() {
               })}
             </div>
           )}
+          {bgTab === "cards" && (
+            <div style={{ marginTop: 14 }}>
+              <div style={{ fontSize: "0.7rem", color: "var(--nyx-text-muted)", marginBottom: 8, letterSpacing: "0.06em", opacity: 0.7 }}>LIVE PREVIEW</div>
+              <div className="gold-card" style={{ minHeight: 64, padding: "14px 20px", display: "flex", alignItems: "center", gap: 12 }}>
+                <div style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--nyx-accent)", flexShrink: 0 }} />
+                <span style={{ fontSize: "0.8rem", color: "var(--nyx-text)", opacity: 0.7 }}>Card texture preview — select an image above</span>
+              </div>
+            </div>
+          )}
         </div>
       </Section>
-
-      {/*  ORGANISATION  */}
       <Section title="Organization">
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
           <div>
