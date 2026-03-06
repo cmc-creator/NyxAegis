@@ -252,6 +252,18 @@ const BG_VAR_MAP: Record<string, string> = {
   sidebar:     "--nyx-sidebar-tex",
   cards:       "--nyx-card-texture",
 };
+function injectCardTexStyle(url: string) {
+  if (typeof document === "undefined") return;
+  let st = document.getElementById("nyx-card-tex-style") as HTMLStyleElement | null;
+  if (!st) { st = document.createElement("style"); st.id = "nyx-card-tex-style"; document.head.appendChild(st); }
+  st.textContent = url
+    ? `[style*="var(--nyx-card)"]{position:relative!important;overflow:hidden}` +
+      `[style*="var(--nyx-card)"]::after{content:"";position:absolute;inset:0;border-radius:inherit;` +
+      `background-image:url('${url}');background-size:cover;background-position:center;` +
+      `opacity:0.14;pointer-events:none;z-index:1}` +
+      `[style*="var(--nyx-card)"]>*{position:relative;z-index:2}`
+    : "";
+}
 function applyStoredBgs(themeKey: string) {
   if (typeof document === "undefined") return;
   const theme = THEMES.find(t => t.key === themeKey);
@@ -261,6 +273,7 @@ function applyStoredBgs(themeKey: string) {
     const cssVar = BG_VAR_MAP[type];
     if (stored) {
       html.style.setProperty(cssVar, `url('${stored}')`);
+      if (type === "cards") injectCardTexStyle(stored);
     } else {
       // Reset to theme default
       if (type === "backgrounds") {
@@ -270,6 +283,7 @@ function applyStoredBgs(themeKey: string) {
           ? (theme.vars["--nyx-sidebar-tex"] || "none")
           : (theme.vars["--nyx-card-texture"] || "none");
         html.style.setProperty(cssVar, defVal);
+        if (type === "cards") injectCardTexStyle("");
       }
     }
   });
@@ -477,6 +491,7 @@ export default function SettingsClient() {
     if (url) {
       localStorage.setItem(lsKey, url);
       document.documentElement.style.setProperty(cssVar, `url('${url}')`);
+      if (bgTab === "cards") injectCardTexStyle(url);
     } else {
       localStorage.removeItem(lsKey);
       if (bgTab === "backgrounds") {
@@ -486,6 +501,7 @@ export default function SettingsClient() {
           ? (theme?.vars["--nyx-sidebar-tex"] || "none")
           : (theme?.vars["--nyx-card-texture"] || "none");
         document.documentElement.style.setProperty(cssVar, defVal);
+        if (bgTab === "cards") injectCardTexStyle("");
       }
     }
     setBgSelections((prev: Record<string, string>) => ({ ...prev, [lsKey]: url }));
