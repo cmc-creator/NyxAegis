@@ -29,7 +29,7 @@ const THEMES: Theme[] = [
       "--nyx-accent-mid":  "rgba(201,168,76,0.15)",
       "--nyx-accent-str":  "rgba(201,168,76,0.30)",
       "--nyx-bg":          "#100805",
-      "--nyx-card":        "rgba(201,168,76,0.032)",
+      "--nyx-card":        "rgba(8,5,2,0.82)",
       "--nyx-border":      "rgba(201,168,76,0.13)",
       "--nyx-sidebar-bg":  "rgba(7,3,1,0.998)",
       "--nyx-text":        "#EDE4CF",
@@ -216,6 +216,99 @@ function applyTheme(key: string) {
   Object.entries(theme.vars).forEach(([k, v]) => html.style.setProperty(k, v));
 }
 
+// ─── Elegant per-theme icon — replaces the old gem/diamond cartoon ─────────
+function ThemeIcon({ accent, themeKey, size = 32 }: { accent: string; themeKey: string; size?: number }) {
+  const f = accent; // petal fill at low fillOpacity
+  const petal = (deg: number, r: number) => {
+    const a = (deg - 90) * Math.PI / 180;
+    return { cx: 16 + r * Math.cos(a), cy: 16 + r * Math.sin(a) };
+  };
+  const icons: Record<string, React.ReactNode> = {
+    luxury: (
+      <>
+        <path d="M6,23 L6,14 L10.5,18.5 L16,8 L21.5,18.5 L26,14 L26,23 Z"
+          stroke={f} strokeWidth="1.2" strokeLinejoin="round" fill={f} fillOpacity="0.12" />
+        <line x1="6" y1="23" x2="26" y2="23" stroke={f} strokeWidth="1.2" strokeLinecap="round" />
+        <circle cx="16" cy="8"  r="1.3" fill={f} />
+        <circle cx="6"  cy="14" r="0.9" fill={f} fillOpacity="0.65" />
+        <circle cx="26" cy="14" r="0.9" fill={f} fillOpacity="0.65" />
+      </>
+    ),
+    glass: (
+      <>
+        <polygon points="16,4 26,10 26,22 16,28 6,22 6,10"
+          stroke={f} strokeWidth="1.2" fill={f} fillOpacity="0.10" strokeLinejoin="round" />
+        <line x1="6" y1="10" x2="26" y2="22" stroke={f} strokeWidth="0.7" strokeOpacity="0.5" />
+        <circle cx="16" cy="16" r="1.6" fill={f} fillOpacity="0.85" />
+      </>
+    ),
+    emerald: (
+      <>
+        <path d="M16,4 C22,8 24,16 16,28 C8,16 10,8 16,4 Z"
+          stroke={f} strokeWidth="1.2" fill={f} fillOpacity="0.12" />
+        <line x1="16" y1="6" x2="16" y2="26" stroke={f} strokeWidth="0.7" strokeOpacity="0.5" strokeLinecap="round" />
+        <path d="M16,13 C18,12 20,14 21,16" stroke={f} strokeWidth="0.7" strokeOpacity="0.5" strokeLinecap="round" fill="none" />
+        <path d="M16,19 C14,18 12,20 11,22" stroke={f} strokeWidth="0.7" strokeOpacity="0.5" strokeLinecap="round" fill="none" />
+      </>
+    ),
+    violet: (
+      <>
+        <ellipse cx="16" cy="10" rx="3" ry="7" stroke={f} strokeWidth="1.1" fill={f} fillOpacity="0.10" />
+        <ellipse cx="16" cy="22" rx="3" ry="7" stroke={f} strokeWidth="1.1" fill={f} fillOpacity="0.10" />
+        <ellipse cx="10" cy="16" rx="7" ry="3" stroke={f} strokeWidth="1.1" fill={f} fillOpacity="0.10" />
+        <ellipse cx="22" cy="16" rx="7" ry="3" stroke={f} strokeWidth="1.1" fill={f} fillOpacity="0.10" />
+        <circle cx="16" cy="16" r="2.2" fill={f} fillOpacity="0.9" />
+      </>
+    ),
+    hotpink: (
+      <>
+        {[0,72,144,216,288].map((deg, i) => {
+          const { cx, cy } = petal(deg, 7);
+          return <ellipse key={i} cx={cx} cy={cy} rx="3" ry="4.5"
+            transform={`rotate(${deg}, ${cx}, ${cy})`}
+            stroke={f} strokeWidth="1" fill={f} fillOpacity="0.14" />;
+        })}
+        <circle cx="16" cy="16" r="2.5" fill={f} fillOpacity="0.85" />
+      </>
+    ),
+    rose: (
+      <>
+        <path d="M16,26 C8,20 4,14 7,9 C9,6 13,6 16,10 C19,6 23,6 25,9 C28,14 24,20 16,26 Z"
+          stroke={f} strokeWidth="1.2" fill={f} fillOpacity="0.12" strokeLinejoin="round" />
+        <path d="M10,11 C10,9 12,8 14,10" stroke={f} strokeWidth="0.7" strokeOpacity="0.5" strokeLinecap="round" fill="none" />
+      </>
+    ),
+    light: (
+      <>
+        <circle cx="16" cy="16" r="5" stroke={f} strokeWidth="1.2" fill={f} fillOpacity="0.12" />
+        {[0,45,90,135,180,225,270,315].map((deg, i) => {
+          const a = deg * Math.PI / 180;
+          return <line key={i}
+            x1={16 + 7  * Math.cos(a)} y1={16 + 7  * Math.sin(a)}
+            x2={16 + 11 * Math.cos(a)} y2={16 + 11 * Math.sin(a)}
+            stroke={f} strokeWidth={i % 2 === 0 ? "1.1" : "0.7"} strokeLinecap="round" />;
+        })}
+      </>
+    ),
+    blush: (
+      <>
+        {[0,60,120,180,240,300].map((deg, i) => {
+          const { cx, cy } = petal(deg, 7);
+          return <ellipse key={i} cx={cx} cy={cy} rx="2.8" ry="4"
+            transform={`rotate(${deg}, ${cx}, ${cy})`}
+            stroke={f} strokeWidth="1" fill={f} fillOpacity="0.12" />;
+        })}
+        <circle cx="16" cy="16" r="2.2" fill={f} fillOpacity="0.8" />
+      </>
+    ),
+  };
+  return (
+    <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
+      {icons[themeKey] ?? icons.luxury}
+    </svg>
+  );
+}
+
 /*  Sub-components  */
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -328,36 +421,9 @@ export default function SettingsClient() {
                 boxShadow: isActive ? `0 0 22px ${t.accent}38, 0 4px 20px rgba(0,0,0,0.5)` : "none",
                 transition: "all 0.22s", position: "relative", overflow: "hidden",
               }}>
-                {/* Gem / swatch */}
+                {/* Theme icon */}
                 <div style={{ position: "relative", width: 32, height: 32, margin: "0 auto 10px" }}>
-                  <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                    {/* Pavilion */}
-                    <polygon points="3,13 29,13 16,29" fill={`${t.accent}22`} stroke={t.accent} strokeWidth="1" strokeOpacity="0.8" />
-                    {/* Crown */}
-                    <polygon points="10,4 22,4 29,13 3,13" fill={`${t.accent}32`} stroke={t.accent} strokeWidth="1" strokeOpacity="0.85" />
-                    {/* Table */}
-                    <rect x="10" y="4" width="12" height="4" fill={`${t.accent}55`} />
-                    {/* Crown facet lines */}
-                    <line x1="10" y1="4" x2="3" y2="13" stroke={t.accent} strokeWidth="0.6" strokeOpacity="0.55" />
-                    <line x1="22" y1="4" x2="29" y2="13" stroke={t.accent} strokeWidth="0.6" strokeOpacity="0.55" />
-                    <line x1="10" y1="8" x2="7" y2="13" stroke={t.accent} strokeWidth="0.5" strokeOpacity="0.4" />
-                    <line x1="22" y1="8" x2="25" y2="13" stroke={t.accent} strokeWidth="0.5" strokeOpacity="0.4" />
-                    <line x1="13" y1="4" x2="10" y2="8" stroke={t.accent} strokeWidth="0.5" strokeOpacity="0.4" />
-                    <line x1="16" y1="4" x2="16" y2="8" stroke={t.accent} strokeWidth="0.6" strokeOpacity="0.5" />
-                    <line x1="19" y1="4" x2="22" y2="8" stroke={t.accent} strokeWidth="0.5" strokeOpacity="0.4" />
-                    {/* Pavilion facets */}
-                    <line x1="10" y1="13" x2="16" y2="29" stroke={t.accent} strokeWidth="0.6" strokeOpacity="0.45" />
-                    <line x1="22" y1="13" x2="16" y2="29" stroke={t.accent} strokeWidth="0.6" strokeOpacity="0.45" />
-                    <line x1="7" y1="13" x2="16" y2="29" stroke={t.accent} strokeWidth="0.4" strokeOpacity="0.25" />
-                    <line x1="25" y1="13" x2="16" y2="29" stroke={t.accent} strokeWidth="0.4" strokeOpacity="0.25" />
-                    <line x1="16" y1="13" x2="16" y2="29" stroke={t.accent} strokeWidth="0.4" strokeOpacity="0.2" />
-                    {/* Table highlight */}
-                    <polygon points="13,4 19,4 16,8" fill="white" fillOpacity="0.32" />
-                    {/* Girdle */}
-                    <line x1="3" y1="13" x2="29" y2="13" stroke={t.accent} strokeWidth="0.9" strokeOpacity="0.65" />
-                    {/* Crown shine */}
-                    <line x1="11" y1="5" x2="15" y2="7" stroke="white" strokeWidth="0.8" strokeOpacity="0.5" />
-                  </svg>
+                  <ThemeIcon accent={t.accent} themeKey={t.key} />
                   {isActive && (
                     <div style={{ position: "absolute", inset: 0, borderRadius: "50%", background: `radial-gradient(circle, ${t.accent}22 0%, transparent 70%)`, pointerEvents: "none" }} />
                   )}
@@ -369,13 +435,7 @@ export default function SettingsClient() {
           })}
         </div>
         <div style={{ marginTop: 16, padding: "10px 14px", borderRadius: 8, background: "rgba(0,0,0,0.3)", border: "1px solid var(--nyx-border)", display: "flex", alignItems: "center", gap: 10 }}>
-          <svg width="18" height="18" viewBox="0 0 32 32" fill="none">
-            <polygon points="3,13 29,13 16,29" fill={`${curTheme.accent}22`} stroke={curTheme.accent} strokeWidth="1.2" strokeOpacity="0.8" />
-            <polygon points="10,4 22,4 29,13 3,13" fill={`${curTheme.accent}35`} stroke={curTheme.accent} strokeWidth="1.2" strokeOpacity="0.85" />
-            <rect x="10" y="4" width="12" height="4" fill={`${curTheme.accent}55`} />
-            <polygon points="13,4 19,4 16,8" fill="white" fillOpacity="0.32" />
-            <line x1="3" y1="13" x2="29" y2="13" stroke={curTheme.accent} strokeWidth="1" strokeOpacity="0.6" />
-          </svg>
+          <ThemeIcon accent={curTheme.accent} themeKey={curTheme.key} size={18} />
           <span style={{ fontSize: "0.78rem", color: "var(--nyx-text-muted)" }}>
             Active: <strong style={{ color: curTheme.accent }}>{curTheme.label}</strong>
             <span style={{ marginLeft: 8, fontFamily: "monospace", fontSize: "0.72rem", opacity: 0.7 }}>{curTheme.accent}</span>

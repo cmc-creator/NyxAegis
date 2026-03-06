@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 
 const CYAN       = "var(--nyx-accent)";
-const BG_SIDEBAR = "var(--nyx-sidebar-bg)";
 const BORDER     = "var(--nyx-border)";
 const TEXT_MUTED = "var(--nyx-text-muted)";
 const TEXT       = "var(--nyx-text)";
@@ -202,7 +201,7 @@ export function Sidebar({ role, userName, userEmail }: SidebarProps) {
   const nav = getNav(role);
 
   return (
-    <aside style={{ width: 220, minHeight: "100vh", background: BG_SIDEBAR, borderRight: `1px solid ${BORDER}`, display: "flex", flexDirection: "column", flexShrink: 0, position: "sticky", top: 0, height: "100vh", overflowY: "auto" }}>
+    <aside className="nyx-sidebar" style={{ width: 220, minHeight: "100vh", borderRight: `1px solid ${BORDER}`, display: "flex", flexDirection: "column", flexShrink: 0, position: "sticky", top: 0, height: "100vh", overflowY: "auto" }}>
       {/* Logo */}
       <div style={{ padding: "20px 18px 16px", borderBottom: `1px solid ${BORDER}` }}>
         <div style={{ display: "flex", alignItems: "center", gap: 9 }}>

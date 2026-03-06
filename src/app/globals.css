@@ -17,7 +17,7 @@
   --nyx-accent-mid:   rgba(201,168,76,0.15);
   --nyx-accent-str:   rgba(201,168,76,0.30);
   --nyx-bg:           #100805;
-  --nyx-card:         rgba(201,168,76,0.032);
+  --nyx-card:         rgba(8,5,2,0.82);
   --nyx-border:       rgba(201,168,76,0.13);
   --nyx-sidebar-bg:   rgba(7,3,1,0.998);
   --nyx-text:         #EDE4CF;
@@ -216,6 +216,14 @@
       inset 0 1px 0 rgba(255,255,255,0.07),
       0 4px 24px rgba(0,0,0,0.4);
   }
+}
+
+/* Sidebar leather texture overlay */
+.nyx-sidebar {
+  background-color: var(--nyx-sidebar-bg);
+  background-image: var(--nyx-texture, none);
+  background-size: 192px 192px;
+  background-blend-mode: screen;
 }
 
 /* Gradient border — looks like polished metal at any radius */
