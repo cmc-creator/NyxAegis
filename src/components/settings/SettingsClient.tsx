@@ -498,7 +498,8 @@ export default function SettingsClient() {
   const curTheme = THEMES.find(t => t.key === activeTheme) ?? THEMES[0];
 
   return (
-    <div style={{ maxWidth: 740 }}>
+    <>
+      <div style={{ maxWidth: 740, paddingBottom: 80 }}>
       <div style={{ marginBottom: 32 }}>
         <p style={{ color: "var(--nyx-accent)", opacity: 0.55, fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 4 }}>CONFIGURATION</p>
         <h1 style={{ fontSize: "1.9rem", fontWeight: 900, color: "var(--nyx-text)", letterSpacing: "-0.025em" }}>Settings</h1>
@@ -620,9 +621,6 @@ export default function SettingsClient() {
             <input style={inp} type="email" value={supportEmail} onChange={e => setSupportEmail(e.target.value)} />
           </div>
         </div>
-        <div style={{ marginTop: 16, display: "flex", justifyContent: "flex-end" }}>
-          <button onClick={saveOrg} style={{ background: "var(--nyx-accent-dim)", border: "1px solid var(--nyx-accent-mid)", borderRadius: 7, padding: "8px 22px", color: "var(--nyx-accent)", cursor: "pointer", fontSize: "0.875rem", fontWeight: 700 }}>{saved ? "Saved \u2713" : "Save Changes"}</button>
-        </div>
       </Section>
 
       {/*  NOTIFICATIONS  */}
@@ -713,5 +711,31 @@ export default function SettingsClient() {
         )}
       </Section>
     </div>
+
+    {/* Sticky save bar */}
+    <div style={{
+      position: "fixed", bottom: 0, left: 220, right: 0, zIndex: 100,
+      background: "rgba(0,0,0,0.72)", backdropFilter: "blur(18px) saturate(1.4)",
+      borderTop: "1px solid var(--nyx-border)",
+      display: "flex", alignItems: "center", justifyContent: "flex-end",
+      padding: "14px 40px", gap: 14,
+    }}>
+      <span style={{ fontSize: "0.78rem", color: "var(--nyx-text-muted)", opacity: saved ? 0 : 0.7, transition: "opacity 0.3s" }}>
+        Organization settings
+      </span>
+      <button onClick={saveOrg} style={{
+        background: saved ? "rgba(52,211,153,0.18)" : "var(--nyx-accent)",
+        border: `1px solid ${saved ? "rgba(52,211,153,0.45)" : "transparent"}`,
+        borderRadius: 8, padding: "10px 28px",
+        color: saved ? "#34d399" : "#fff",
+        cursor: "pointer", fontSize: "0.875rem", fontWeight: 700,
+        boxShadow: saved ? "none" : "0 4px 18px var(--nyx-accent-glow)",
+        transition: "all 0.25s", letterSpacing: "0.01em",
+        minWidth: 140,
+      }}>
+        {saved ? "Saved ✓" : "Save Changes"}
+      </button>
+    </div>
+    </>
   );
 }
