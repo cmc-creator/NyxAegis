@@ -475,6 +475,28 @@ const THEMES: Theme[] = [
       "--nyx-card-border": "linear-gradient(135deg, #0a0618 0%, #302060 12%, #9B7FCC 22%, #c0a0f0 30%, #e8e0ff 38%, #7858b0 48%, #584090 58%, #c0a0f0 68%, #e8e0ff 77%, #302060 90%, #0a0618 100%)",
     },
   },
+  {
+    key: "future", label: "Fancy Future", desc: "Neon Void & Holographic Cyan",
+    accent: "#00E5FF",
+    vars: {
+      "--nyx-accent": "#00E5FF", "--nyx-accent-glow": "rgba(0,229,255,0.24)", "--nyx-accent-dim": "rgba(0,229,255,0.08)", "--nyx-accent-mid": "rgba(0,229,255,0.16)", "--nyx-accent-str": "rgba(0,229,255,0.35)",
+      "--nyx-bg": "#020812", "--nyx-card": "rgba(2,8,18,0.90)", "--nyx-bg-scrim": "rgba(2,8,18,0.72)", "--nyx-border": "rgba(0,229,255,0.16)", "--nyx-sidebar-bg": "rgba(1,4,10,0.99)",
+      "--nyx-text": "#C0F0FF", "--nyx-text-muted": "rgba(192,240,255,0.65)", "--nyx-input-bg": "rgba(0,0,0,0.44)", "--nyx-scrollbar": "rgba(0,229,255,0.24)", "--nyx-accent-label": "rgba(0,229,255,0.72)",
+      "--nyx-texture": "none", "--nyx-sidebar-tex": "", "--nyx-card-texture": "none",
+      "--nyx-card-border": "linear-gradient(135deg, #001020 0%, #003858 12%, #00A8C8 22%, #00E5FF 30%, #aaf8ff 38%, #0090b8 48%, #006888 58%, #00E5FF 68%, #aaf8ff 77%, #003858 90%, #001020 100%)",
+    },
+  },
+  {
+    key: "medieval", label: "Medieval", desc: "Castle Stone & Torch Amber",
+    accent: "#C8853C",
+    vars: {
+      "--nyx-accent": "#C8853C", "--nyx-accent-glow": "rgba(200,133,60,0.22)", "--nyx-accent-dim": "rgba(200,133,60,0.08)", "--nyx-accent-mid": "rgba(200,133,60,0.15)", "--nyx-accent-str": "rgba(200,133,60,0.30)",
+      "--nyx-bg": "#0A0806", "--nyx-card": "rgba(10,8,6,0.90)", "--nyx-bg-scrim": "rgba(10,8,6,0.72)", "--nyx-border": "rgba(200,133,60,0.15)", "--nyx-sidebar-bg": "rgba(6,4,2,0.99)",
+      "--nyx-text": "#E8D8B0", "--nyx-text-muted": "rgba(232,216,176,0.65)", "--nyx-input-bg": "rgba(0,0,0,0.44)", "--nyx-scrollbar": "rgba(200,133,60,0.22)", "--nyx-accent-label": "rgba(200,133,60,0.70)",
+      "--nyx-texture": "none", "--nyx-sidebar-tex": "", "--nyx-card-texture": "none",
+      "--nyx-card-border": "linear-gradient(135deg, #1c0800 0%, #6a2c04 12%, #C8853C 22%, #e8b060 30%, #fff0c8 38%, #a86820 48%, #7c4c08 58%, #e8b060 68%, #fff0c8 77%, #6a2c04 90%, #1c0800 100%)",
+    },
+  },
 ];
 
 /*  Helpers  */
