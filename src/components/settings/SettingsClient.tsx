@@ -14,7 +14,7 @@ type NyxVars = {
   "--nyx-accent-mid": string; "--nyx-accent-str": string; "--nyx-bg": string;
   "--nyx-card": string; "--nyx-border": string; "--nyx-sidebar-bg": string;
   "--nyx-text": string; "--nyx-text-muted": string; "--nyx-input-bg": string;
-  "--nyx-scrollbar": string; "--nyx-accent-label": string; "--nyx-texture": string;
+  "--nyx-scrollbar": string; "--nyx-accent-label": string; "--nyx-texture": string; "--nyx-card-texture": string;
 };
 interface Theme { key: string; label: string; desc: string; accent: string; vars: NyxVars; }
 
@@ -38,6 +38,7 @@ const THEMES: Theme[] = [
       "--nyx-scrollbar":   "rgba(201,168,76,0.20)",
       "--nyx-accent-label":"rgba(201,168,76,0.60)",
       "--nyx-texture":     "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='.52 .38' numOctaves='7' seed='19' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.22 0 0 0 0.08  0.11 0 0 0 0.04  0 0 0 0 0  0 0 0 0.10 0'/></filter><filter id='w'><feTurbulence type='turbulence' baseFrequency='.028 .022' numOctaves='5' seed='8' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.15 0 0 0 0.06  0.07 0 0 0 0.025  0 0 0 0 0  0 0 0 0.07 0'/></filter><rect width='256' height='256' filter='url(%23g)'/><rect width='256' height='256' filter='url(%23w)'/></svg>\")",
+      "--nyx-card-texture": "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512'><filter id='c'><feTurbulence type='fractalNoise' baseFrequency='.015 .010' numOctaves='8' seed='23' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.18 0 0 0 0.10  0.14 0 0 0 0.07  0.04 0 0 0 0.02  0 0 0 0.12 0'/></filter><filter id='v'><feTurbulence type='turbulence' baseFrequency='.004 .002' numOctaves='4' seed='7' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.30 0 0 0 0.15  0.18 0 0 0 0.08  0 0 0 0 0  0 0 0 0.08 0'/></filter><rect width='512' height='512' filter='url(%23c)'/><rect width='512' height='512' filter='url(%23v)'/></svg>\")",
     },
   },
   {
@@ -59,6 +60,7 @@ const THEMES: Theme[] = [
       "--nyx-scrollbar":   "rgba(0,212,255,0.18)",
       "--nyx-accent-label":"rgba(0,212,255,0.60)",
       "--nyx-texture":     "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.65 .60' numOctaves='5' seed='7' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 0  0.05 0 0 0 0.02  0.10 0 0 0 0.04  0 0 0 0.05 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>\")",
+      "--nyx-card-texture": "none",
     },
   },
   {
@@ -80,6 +82,7 @@ const THEMES: Theme[] = [
       "--nyx-scrollbar":   "rgba(52,211,153,0.18)",
       "--nyx-accent-label":"rgba(52,211,153,0.60)",
       "--nyx-texture":     "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.70 .65' numOctaves='5' seed='11' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 0  0.10 0 0 0 0.04  0.05 0 0 0 0.02  0 0 0 0.05 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>\")",
+      "--nyx-card-texture": "none",
     },
   },
   {
@@ -101,6 +104,7 @@ const THEMES: Theme[] = [
       "--nyx-scrollbar":   "rgba(167,139,250,0.18)",
       "--nyx-accent-label":"rgba(167,139,250,0.60)",
       "--nyx-texture":     "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.66 .60' numOctaves='5' seed='5' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.06 0 0 0 0.03  0 0 0 0 0.01  0.08 0 0 0 0.04  0 0 0 0.05 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>\")",
+      "--nyx-card-texture": "none",
     },
   },
   {
@@ -122,6 +126,7 @@ const THEMES: Theme[] = [
       "--nyx-scrollbar":   "rgba(236,72,153,0.18)",
       "--nyx-accent-label":"rgba(236,72,153,0.60)",
       "--nyx-texture":     "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.67 .61' numOctaves='5' seed='13' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.15 0 0 0 0.07  0 0 0 0 0.01  0.08 0 0 0 0.04  0 0 0 0.055 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>\")",
+      "--nyx-card-texture": "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512'><filter id='c'><feTurbulence type='fractalNoise' baseFrequency='.012 .008' numOctaves='7' seed='17' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.22 0 0 0 0.12  0.06 0 0 0 0.02  0.10 0 0 0 0.05  0 0 0 0.10 0'/></filter><filter id='v'><feTurbulence type='turbulence' baseFrequency='.004 .002' numOctaves='4' seed='11' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.30 0 0 0 0.15  0.18 0 0 0 0.08  0 0 0 0 0  0 0 0 0.09 0'/></filter><rect width='512' height='512' filter='url(%23c)'/><rect width='512' height='512' filter='url(%23v)'/></svg>\")",
     },
   },
   {
@@ -143,6 +148,7 @@ const THEMES: Theme[] = [
       "--nyx-scrollbar":   "rgba(248,113,113,0.18)",
       "--nyx-accent-label":"rgba(248,113,113,0.60)",
       "--nyx-texture":     "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.68 .63' numOctaves='5' seed='9' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.12 0 0 0 0.06  0 0 0 0 0.01  0.02 0 0 0 0.01  0 0 0 0.05 0'/></filter><rect width='256' height='256' filter='url(%23l)'/></svg>\")",
+      "--nyx-card-texture": "url(\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512'><filter id='c'><feTurbulence type='fractalNoise' baseFrequency='.013 .009' numOctaves='7' seed='31' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.20 0 0 0 0.12  0.08 0 0 0 0.04  0.08 0 0 0 0.04  0 0 0 0.10 0'/></filter><filter id='v'><feTurbulence type='turbulence' baseFrequency='.005 .002' numOctaves='4' seed='5' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0.08 0 0 0 0.04  0.04 0 0 0 0.02  0.04 0 0 0 0.02  0 0 0 0.09 0'/></filter><rect width='512' height='512' filter='url(%23c)'/><rect width='512' height='512' filter='url(%23v)'/></svg>\")",
     },
   },
   {
@@ -164,6 +170,7 @@ const THEMES: Theme[] = [
       "--nyx-scrollbar":   "rgba(99,102,241,0.25)",
       "--nyx-accent-label":"rgba(99,102,241,0.70)",
       "--nyx-texture":     "none",
+      "--nyx-card-texture": "none",
     },
   },
   {
@@ -185,6 +192,7 @@ const THEMES: Theme[] = [
       "--nyx-scrollbar":   "rgba(190,24,93,0.22)",
       "--nyx-accent-label":"rgba(190,24,93,0.65)",
       "--nyx-texture":     "none",
+      "--nyx-card-texture": "none",
     },
   },
 ];
