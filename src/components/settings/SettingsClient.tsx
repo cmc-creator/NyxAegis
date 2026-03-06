@@ -542,70 +542,65 @@ export default function SettingsClient() {
             <span style={{ marginLeft: 8, fontFamily: "monospace", fontSize: "0.72rem", opacity: 0.7 }}>{curTheme.accent}</span>
           </span>
         </div>
-      </Section>
 
-      {/* BACKGROUNDS */}
-      <Section title="Backgrounds &amp; Textures">
-        <p style={{ fontSize: "0.78rem", color: "var(--nyx-text-muted)", marginBottom: 14 }}>
-          Customize the body, sidebar, and card textures for{" "}
-          <strong style={{ color: curTheme.accent }}>{curTheme.label}</strong>.{" "}
-          Drop images into{" "}
-          <code style={{ fontFamily: "monospace", fontSize: "0.7rem", opacity: 0.8 }}>public/themes/{activeTheme}/</code>{" "}
-          to add more options.
-        </p>
-        {/* Tabs */}
-        <div style={{ display: "flex", gap: 6, marginBottom: 14 }}>
-          {(["backgrounds", "sidebar", "cards"] as const).map(tab => (
-            <button key={tab} type="button" onClick={() => setBgTab(tab)} style={{
-              background: bgTab === tab ? "var(--nyx-accent-dim)" : "transparent",
-              border: `1px solid ${bgTab === tab ? "var(--nyx-accent-mid)" : "var(--nyx-border)"}`,
-              borderRadius: 7, padding: "5px 14px", cursor: "pointer", fontSize: "0.78rem",
-              color: bgTab === tab ? "var(--nyx-accent)" : "var(--nyx-text-muted)",
-              fontWeight: bgTab === tab ? 700 : 400, transition: "all 0.15s",
-            }}>
-              {tab === "backgrounds" ? "Body" : tab === "sidebar" ? "Sidebar" : "Cards"}
-            </button>
-          ))}
-        </div>
-        {/* Thumbnails */}
-        {bgLoading ? (
-          <div style={{ fontSize: "0.78rem", color: "var(--nyx-text-muted)", padding: "16px 0" }}>Loading…</div>
-        ) : (
-          <div style={{ display: "flex", gap: 10, overflowX: "auto", paddingBottom: 8, alignItems: "flex-start" }}>
-            {/* Clear / default */}
-            <button type="button" onClick={() => selectBg("")} style={{
-              flexShrink: 0, width: 72, height: 72, borderRadius: 8, display: "flex", flexDirection: "column",
-              alignItems: "center", justifyContent: "center", gap: 4, cursor: "pointer",
-              background: !bgSelections[`nyxaegis-bg-${activeTheme}-${bgTab}`] ? "var(--nyx-accent-dim)" : "rgba(0,0,0,0.25)",
-              border: `2px solid ${!bgSelections[`nyxaegis-bg-${activeTheme}-${bgTab}`] ? "var(--nyx-accent)" : "var(--nyx-border)"}`,
-              color: "var(--nyx-text-muted)", fontSize: "0.65rem", fontWeight: 600, transition: "all 0.15s",
-            }}>
-              <span style={{ fontSize: "1.1rem", lineHeight: 1 }}>∅</span>
-              Default
-            </button>
-            {bgAssets.length === 0 ? (
-              <div style={{ fontSize: "0.75rem", color: "var(--nyx-text-muted)", padding: "22px 10px", lineHeight: 1.7, alignSelf: "center" }}>
-                No images yet. Add images to{" "}
-                <code style={{ fontFamily: "monospace", fontSize: "0.7rem" }}>public/themes/{activeTheme}/{bgTab}/</code>
+        {/* ── Background picker ── */}
+        <div style={{ marginTop: 24, borderTop: "1px solid var(--nyx-border)", paddingTop: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14, flexWrap: "wrap", gap: 10 }}>
+            <div>
+              <div style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--nyx-accent)", letterSpacing: "0.10em", textTransform: "uppercase", opacity: 0.7, marginBottom: 3 }}>Backgrounds &amp; Textures</div>
+              <div style={{ fontSize: "0.75rem", color: "var(--nyx-text-muted)" }}>
+                Customize backgrounds for <strong style={{ color: curTheme.accent }}>{curTheme.label}</strong>
               </div>
-            ) : bgAssets.map(url => {
-              const isSelected = bgSelections[`nyxaegis-bg-${activeTheme}-${bgTab}`] === url;
-              return (
-                <button key={url} type="button" onClick={() => selectBg(url)} title={url.split("/").pop()} style={{
-                  flexShrink: 0, width: 80, height: 72, borderRadius: 8, cursor: "pointer",
-                  backgroundImage: `url(${url})`, backgroundSize: "cover", backgroundPosition: "center",
-                  border: `2px solid ${isSelected ? "var(--nyx-accent)" : "transparent"}`,
-                  outline: isSelected ? "2px solid var(--nyx-accent-mid)" : "none",
-                  outlineOffset: 2,
-                  boxShadow: isSelected ? "0 0 14px var(--nyx-accent-glow)" : "0 2px 8px rgba(0,0,0,0.4)",
-                  transition: "all 0.15s",
-                }} />
-              );
-            })}
+            </div>
+            <div style={{ display: "flex", gap: 6 }}>
+              {(["backgrounds", "sidebar", "cards"] as const).map(tab => (
+                <button key={tab} type="button" onClick={() => setBgTab(tab)} style={{
+                  background: bgTab === tab ? "var(--nyx-accent-dim)" : "transparent",
+                  border: `1px solid ${bgTab === tab ? "var(--nyx-accent-mid)" : "var(--nyx-border)"}`,
+                  borderRadius: 7, padding: "5px 12px", cursor: "pointer", fontSize: "0.75rem",
+                  color: bgTab === tab ? "var(--nyx-accent)" : "var(--nyx-text-muted)",
+                  fontWeight: bgTab === tab ? 700 : 400, transition: "all 0.15s",
+                }}>
+                  {tab === "backgrounds" ? "Body" : tab === "sidebar" ? "Sidebar" : "Cards"}
+                </button>
+              ))}
+            </div>
           </div>
-        )}
-        <div style={{ marginTop: 10, fontSize: "0.68rem", color: "var(--nyx-text-muted)", opacity: 0.6 }}>
-          ▸ <code style={{ fontFamily: "monospace" }}>public/themes/{activeTheme}/{bgTab}/</code>
+          {bgLoading ? (
+            <div style={{ fontSize: "0.78rem", color: "var(--nyx-text-muted)", padding: "14px 0" }}>Loading…</div>
+          ) : (
+            <div style={{ display: "flex", gap: 10, overflowX: "auto", paddingBottom: 8, alignItems: "flex-start" }}>
+              <button type="button" onClick={() => selectBg("")} style={{
+                flexShrink: 0, width: 68, height: 68, borderRadius: 8, display: "flex", flexDirection: "column",
+                alignItems: "center", justifyContent: "center", gap: 3, cursor: "pointer",
+                background: !bgSelections[`nyxaegis-bg-${activeTheme}-${bgTab}`] ? "var(--nyx-accent-dim)" : "rgba(0,0,0,0.25)",
+                border: `2px solid ${!bgSelections[`nyxaegis-bg-${activeTheme}-${bgTab}`] ? "var(--nyx-accent)" : "var(--nyx-border)"}`,
+                color: "var(--nyx-text-muted)", fontSize: "0.62rem", fontWeight: 600, transition: "all 0.15s",
+              }}>
+                <span style={{ fontSize: "1.1rem", lineHeight: 1 }}>∅</span>
+                Default
+              </button>
+              {bgAssets.length === 0 ? (
+                <div style={{ fontSize: "0.75rem", color: "var(--nyx-text-muted)", padding: "20px 10px", lineHeight: 1.7, alignSelf: "center" }}>
+                  No images yet — drop images into{" "}
+                  <code style={{ fontFamily: "monospace", fontSize: "0.68rem" }}>public/themes/{activeTheme}/{bgTab}/</code>
+                </div>
+              ) : bgAssets.map(url => {
+                const isSelected = bgSelections[`nyxaegis-bg-${activeTheme}-${bgTab}`] === url;
+                return (
+                  <button key={url} type="button" onClick={() => selectBg(url)} title={url.split("/").pop()} style={{
+                    flexShrink: 0, width: 80, height: 68, borderRadius: 8, cursor: "pointer",
+                    backgroundImage: `url(${url})`, backgroundSize: "cover", backgroundPosition: "center",
+                    border: `2px solid ${isSelected ? "var(--nyx-accent)" : "transparent"}`,
+                    outline: isSelected ? "2px solid var(--nyx-accent-mid)" : "none",
+                    outlineOffset: 2,
+                    boxShadow: isSelected ? "0 0 14px var(--nyx-accent-glow)" : "0 2px 8px rgba(0,0,0,0.4)",
+                    transition: "all 0.15s",
+                  }} />
+                );
+              })}
+            </div>
+          )}
         </div>
       </Section>
 
