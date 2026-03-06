@@ -1,4 +1,5 @@
-﻿import { prisma } from "@/lib/prisma";
+﻿import React from "react";
+import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatRelativeTime } from "@/lib/utils";
 import Link from "next/link";
 
@@ -10,7 +11,7 @@ const TEXT_MUTED = "var(--nyx-text-muted)";
 function Icon({ id, color }: { id: string; color: string }) {
   const s = { stroke: color, fill: "none", strokeWidth: "1.6", strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
   const f = { fill: color, stroke: "none" };
-  const icons: Record<string, JSX.Element | null> = {
+  const icons: Record<string, React.JSX.Element | null> = {
     reps: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
         <circle cx="12" cy="8" r="4" {...s}/>
