@@ -239,7 +239,7 @@ const THEMES: Theme[] = [
 
 /*  Helpers  */
 const BG_VAR_MAP: Record<string, string> = {
-  backgrounds: "--nyx-texture",
+  backgrounds: "--nyx-page-bg",
   sidebar:     "--nyx-sidebar-tex",
   cards:       "--nyx-card-texture",
 };
@@ -255,7 +255,7 @@ function applyStoredBgs(themeKey: string) {
     } else if (theme) {
       // Reset to theme default
       const def: Record<string, string> = {
-        backgrounds: theme.vars["--nyx-texture"],
+        backgrounds: "",
         sidebar:     theme.vars["--nyx-sidebar-tex"],
         cards:       theme.vars["--nyx-card-texture"],
       };
