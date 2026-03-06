@@ -275,7 +275,6 @@
     background-position: center top, 0 0;
     background-attachment: fixed, scroll;
     background-blend-mode: normal, overlay;
-    image-rendering: var(--nyx-page-bg-render, auto);
     color: var(--nyx-text);
     transition: background-color 0.3s ease, color 0.3s ease;
   }

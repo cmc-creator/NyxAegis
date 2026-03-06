@@ -508,9 +508,9 @@ export default function SettingsClient() {
   }
 
   function applyTileMode(tiled: boolean) {
-    document.documentElement.style.setProperty("--nyx-page-bg-size", tiled ? "200px 200px" : "cover");
+    document.documentElement.style.setProperty("--nyx-page-bg-size", tiled ? "auto" : "cover");
     document.documentElement.style.setProperty("--nyx-page-bg-repeat", tiled ? "repeat" : "no-repeat");
-    document.documentElement.style.setProperty("--nyx-page-bg-render", tiled ? "pixelated" : "auto");
+    document.documentElement.style.removeProperty("--nyx-page-bg-render");
   }
 
   function selectTile(tiled: boolean) {
