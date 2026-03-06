@@ -7,6 +7,85 @@ const BORDER = "var(--nyx-accent-dim)";
 const TEXT = "var(--nyx-text)";
 const TEXT_MUTED = "var(--nyx-text-muted)";
 
+function Icon({ id, color }: { id: string; color: string }) {
+  const s = { stroke: color, fill: "none", strokeWidth: "1.6", strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+  const f = { fill: color, stroke: "none" };
+  const icons: Record<string, JSX.Element | null> = {
+    reps: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="8" r="4" {...s}/>
+        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" {...s}/>
+      </svg>
+    ),
+    hospitals: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="7" width="18" height="14" rx="1" {...s}/>
+        <path d="M9 21V11h6v10M3 11l9-7 9 7" {...s}/>
+        <path d="M11 14h2M12 13v2" {...s}/>
+      </svg>
+    ),
+    leads: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="9" {...s}/>
+        <circle cx="12" cy="12" r="5" {...s}/>
+        <circle cx="12" cy="12" r="1.5" style={f}/>
+        <line x1="12" y1="3" x2="12" y2="5" {...s}/>
+        <line x1="12" y1="19" x2="12" y2="21" {...s}/>
+        <line x1="3" y1="12" x2="5" y2="12" {...s}/>
+        <line x1="19" y1="12" x2="21" y2="12" {...s}/>
+      </svg>
+    ),
+    opportunities: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="13" width="4" height="8" rx="1" {...s}/>
+        <rect x="10" y="8" width="4" height="13" rx="1" {...s}/>
+        <rect x="17" y="3" width="4" height="18" rx="1" {...s}/>
+        <path d="M5 13l5-5 4 3 5-6" stroke={color} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+      </svg>
+    ),
+    won: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="9" {...s}/>
+        <path d="M8 12l3 3 5-5" {...s}/>
+      </svg>
+    ),
+    invoices: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <rect x="4" y="2" width="16" height="20" rx="2" {...s}/>
+        <path d="M8 8h8M8 12h5" {...s}/>
+        <path d="M12 16v4m-2-2h4" {...s}/>
+      </svg>
+    ),
+    hospital_q: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="7" width="18" height="14" rx="1" {...s}/>
+        <path d="M9 21V11h6v10M3 11l9-7 9 7" {...s}/>
+      </svg>
+    ),
+    target: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="9" {...s}/>
+        <circle cx="12" cy="12" r="5" {...s}/>
+        <circle cx="12" cy="12" r="1.5" style={f}/>
+      </svg>
+    ),
+    chart: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="13" width="4" height="8" rx="1" {...s}/>
+        <rect x="10" y="8" width="4" height="13" rx="1" {...s}/>
+        <rect x="17" y="3" width="4" height="18" rx="1" {...s}/>
+      </svg>
+    ),
+    user: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="8" r="4" {...s}/>
+        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" {...s}/>
+      </svg>
+    ),
+  };
+  return <>{icons[id] ?? null}</>;
+}
+
 export default async function AdminDashboard() {
   const [
     repCount, hospitalCount, leadCount, openOpps, closedWon,
@@ -23,19 +102,19 @@ export default async function AdminDashboard() {
   ]);
 
   const stats = [
-    { label: "Active Reps", value: repCount, icon: "🤝", href: "/admin/reps" },
-    { label: "Active Hospitals", value: hospitalCount, icon: "🏥", href: "/admin/hospitals" },
-    { label: "Open Leads", value: leadCount, icon: "🎯", href: "/admin/leads" },
-    { label: "Open Opportunities", value: openOpps, icon: "📊", href: "/admin/opportunities" },
-    { label: "Closed Won", value: closedWon, icon: "✅", href: "/admin/opportunities" },
-    { label: "Pending Invoices", value: pendingInvoices, icon: "💳", href: "/admin/invoices" },
+    { label: "Active Reps",         value: repCount,        icon: "reps",          href: "/admin/reps" },
+    { label: "Active Hospitals",    value: hospitalCount,   icon: "hospitals",     href: "/admin/hospitals" },
+    { label: "Open Leads",          value: leadCount,       icon: "leads",         href: "/admin/leads" },
+    { label: "Open Opportunities",  value: openOpps,        icon: "opportunities", href: "/admin/opportunities" },
+    { label: "Closed Won",          value: closedWon,       icon: "won",           href: "/admin/opportunities" },
+    { label: "Pending Invoices",    value: pendingInvoices, icon: "invoices",      href: "/admin/invoices" },
   ];
 
   const quickActions = [
-    { label: "Add Hospital", href: "/admin/hospitals", icon: "🏥" },
-    { label: "Add Lead", href: "/admin/leads", icon: "🎯" },
-    { label: "New Opportunity", href: "/admin/opportunities", icon: "📊" },
-    { label: "Add Rep", href: "/admin/reps", icon: "🤝" },
+    { label: "Add Hospital",    href: "/admin/hospitals",    icon: "hospital_q" },
+    { label: "Add Lead",        href: "/admin/leads",         icon: "target" },
+    { label: "New Opportunity", href: "/admin/opportunities", icon: "chart" },
+    { label: "Add Rep",         href: "/admin/reps",          icon: "user" },
   ];
 
   const stageColor: Record<string, string> = {
@@ -57,8 +136,8 @@ export default async function AdminDashboard() {
         {stats.map((s) => (
           <Link key={s.label} href={s.href} style={{ textDecoration: "none" }}>
             <div className="gold-card" style={{ borderRadius: 12, padding: "20px 18px", cursor: "pointer", transition: "box-shadow 0.2s" }}>
-              <div style={{ fontSize: "1.4rem", marginBottom: 8 }}>{s.icon}</div>
-              <div style={{ fontSize: "1.8rem", fontWeight: 900, color: CYAN, textShadow: "0 0 20px var(--nyx-accent-label)", lineHeight: 1, marginBottom: 4 }}>{s.value}</div>
+              <div style={{ marginBottom: 10, opacity: 0.85 }}><Icon id={s.icon} color={"var(--nyx-accent)"} /></div>
+              <div style={{ fontSize: "1.8rem", fontWeight: 900, color: TEXT, lineHeight: 1, marginBottom: 4 }}>{s.value}</div>
               <div style={{ fontSize: "0.75rem", color: TEXT_MUTED, fontWeight: 500 }}>{s.label}</div>
             </div>
           </Link>
@@ -71,7 +150,7 @@ export default async function AdminDashboard() {
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
           {quickActions.map((a) => (
             <Link key={a.label} href={a.href} style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "var(--nyx-accent-dim)", border: `1px solid var(--nyx-accent-mid)`, borderRadius: 8, padding: "8px 14px", textDecoration: "none", color: CYAN, fontSize: "0.8rem", fontWeight: 600 }}>
-              <span>{a.icon}</span> {a.label}
+              <Icon id={a.icon} color={"var(--nyx-accent)"} /> {a.label}
             </Link>
           ))}
         </div>

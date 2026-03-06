@@ -262,7 +262,7 @@
   background: var(--nyx-card-border, linear-gradient(135deg, var(--nyx-accent-str) 0%, var(--nyx-accent-dim) 30%, transparent 50%, var(--nyx-accent-dim) 70%, var(--nyx-accent-str) 100%));
   background-size: 300% 300%;
   animation: gold-shimmer-sweep 9s ease-in-out infinite;
-  z-index: 0;
+  z-index: -1;
   pointer-events: none;
 }
 .gold-card > * { position: relative; z-index: 1; }
@@ -277,7 +277,7 @@
   background-position: center;
   opacity: 0.10;
   pointer-events: none;
-  z-index: 0;
+  z-index: -1;
 }
 
 @keyframes gold-shimmer-sweep {
