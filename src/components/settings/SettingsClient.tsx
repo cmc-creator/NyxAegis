@@ -445,7 +445,6 @@ export default function SettingsClient() {
 
       {/*  ORGANISATION  */}
       <Section title="Organization">
-        <button onClick={saveOrg} style={{ background: "var(--nyx-accent-dim)", border: "1px solid var(--nyx-accent-mid)", borderRadius: 7, padding: "8px 22px", color: "var(--nyx-accent)", cursor: "pointer", fontSize: "0.875rem", fontWeight: 700, marginBottom: 16 }}>{saved ? "Saved \u2713" : "Save Changes"}</button>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
           <div>
             <label style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", display: "block", marginBottom: 4 }}>ORG / BRAND NAME</label>
@@ -455,6 +454,9 @@ export default function SettingsClient() {
             <label style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", display: "block", marginBottom: 4 }}>SUPPORT EMAIL</label>
             <input style={inp} type="email" value={supportEmail} onChange={e => setSupportEmail(e.target.value)} />
           </div>
+        </div>
+        <div style={{ marginTop: 16, display: "flex", justifyContent: "flex-end" }}>
+          <button onClick={saveOrg} style={{ background: "var(--nyx-accent-dim)", border: "1px solid var(--nyx-accent-mid)", borderRadius: 7, padding: "8px 22px", color: "var(--nyx-accent)", cursor: "pointer", fontSize: "0.875rem", fontWeight: 700 }}>{saved ? "Saved \u2713" : "Save Changes"}</button>
         </div>
       </Section>
 
