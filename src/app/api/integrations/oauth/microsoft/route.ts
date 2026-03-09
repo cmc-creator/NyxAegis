@@ -5,7 +5,7 @@ export const maxDuration = 10;
 
 // GET /api/integrations/oauth/microsoft
 // Redirects the user to Microsoft OAuth consent screen
-export async function GET(req: NextRequest) {
+export async function GET(_req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 

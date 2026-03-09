@@ -89,7 +89,7 @@ function statusBadge(status: string) {
 // ── Sub-components ────────────────────────────────────────────────────────────
 
 function IntegrationBadge({
-  token, providerKey, label, icon, color, onConnect, onDisconnect,
+  token, providerKey: _providerKey, label, icon, color, onConnect, onDisconnect,
 }: {
   token?: IntegrationToken;
   providerKey: string;
@@ -143,7 +143,7 @@ interface Props {
   role: "ADMIN" | "REP" | "ACCOUNT";
 }
 
-export default function CommunicationsHub({ role }: Props) {
+export default function CommunicationsHub({ role: _role }: Props) {
   // State
   const [activeTab, setActiveTab]             = useState<"compose" | "history" | "templates">("compose");
   const [tokens, setTokens]                   = useState<IntegrationToken[]>([]);
@@ -242,7 +242,7 @@ export default function CommunicationsHub({ role }: Props) {
     setActiveTab("compose");
   }
 
-  function askAI() {
+  function _askAI() {
     const prompt = `Draft a professional ${CATEGORY_LABELS[tplCategory] ?? "email"} message${to ? ` to ${toName || to}` : ""}${subject ? ` regarding: ${subject}` : ""}. Make it concise, warm, and professional. Return just the message body text.`;
     window.dispatchEvent(new CustomEvent("aegis:prompt", { detail: prompt }));
   }
@@ -638,7 +638,7 @@ export default function CommunicationsHub({ role }: Props) {
                 ["Introduction", "Write 'meeting request' in subject and click AI Draft"],
                 ["Follow-Up", "Write 'follow up on our last meeting' in subject, AI Draft"],
                 ["Proposal", "Write 'proposal for [name]' in subject, AI Draft"],
-              ].map(([label, tip]) => (
+              ].map(([label, _tip]) => (
                 <button
                   key={label}
                   onClick={() => {
