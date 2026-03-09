@@ -688,6 +688,7 @@ export default function CommunicationsHub({ role: _role }: Props) {
               No messages yet. Start by composing one.
             </div>
           ) : (
+            <div className="nyx-table-scroll">
             <table style={{ width: "100%", borderCollapse: "collapse" }}>
               <thead>
                 <tr style={{ borderBottom: `1px solid ${BORDER}` }}>
@@ -722,6 +723,7 @@ export default function CommunicationsHub({ role: _role }: Props) {
                 ))}
               </tbody>
             </table>
+            </div>
           )}
         </div>
       )}

@@ -165,6 +165,7 @@ export default function ContractsClient({ hospitals, reps }: { hospitals: Hospit
 
       <div className="gold-card" style={{ borderRadius: 12 }}>
         <div style={{ background: C.card, borderRadius: 12, overflow: "hidden" }}>
+        <div className="nyx-table-scroll">
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: `1px solid ${C.border}` }}>
@@ -194,6 +195,7 @@ export default function ContractsClient({ hospitals, reps }: { hospitals: Hospit
             ))}
           </tbody>
         </table>
+        </div>
         </div>
       </div>
 
