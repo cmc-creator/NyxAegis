@@ -63,29 +63,62 @@ export default function RouteIQButton({ hospitals }: RouteIQButtonProps) {
   if (hospitals.length === 0) return null;
 
   return (
-    <button
-      onClick={handleClick}
-      title="Open optimised route in your native map app"
-      style={{
-        background: "var(--nyx-accent-dim)",
-        border: "1px solid var(--nyx-accent-str)",
-        borderRadius: 8,
-        padding: "10px 18px",
-        color: "var(--nyx-accent)",
-        cursor: "pointer",
-        fontWeight: 700,
-        fontSize: "0.875rem",
-        display: "flex",
-        alignItems: "center",
-        gap: 8,
-        whiteSpace: "nowrap",
-      }}
-    >
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
-        <circle cx="12" cy="9" r="2.5"/>
-      </svg>
-      Route IQ
-    </button>
+    <>
+      <style>{`
+        @keyframes nyx-tracer {
+          0%   { background-position: 200% center; }
+          100% { background-position: -200% center; }
+        }
+        .routeiq-btn {
+          position: relative;
+          background: var(--nyx-accent-dim);
+          border: 1px solid var(--nyx-accent-str);
+          border-radius: 8px;
+          padding: 10px 18px;
+          color: var(--nyx-accent);
+          cursor: pointer;
+          font-weight: 700;
+          font-size: 0.875rem;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          white-space: nowrap;
+          overflow: hidden;
+          transition: box-shadow 0.2s;
+        }
+        .routeiq-btn::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(212,175,55,0.18) 30%,
+            rgba(255,215,80,0.55) 50%,
+            rgba(212,175,55,0.18) 70%,
+            transparent 100%
+          );
+          background-size: 200% 100%;
+          animation: nyx-tracer 2.2s linear infinite;
+          border-radius: inherit;
+          pointer-events: none;
+        }
+        .routeiq-btn:hover {
+          box-shadow: 0 0 14px rgba(212,175,55,0.35), 0 0 4px rgba(212,175,55,0.2);
+          border-color: rgba(212,175,55,0.8);
+        }
+      `}</style>
+      <button
+        onClick={handleClick}
+        className="routeiq-btn"
+        title="Open optimised route in your native map app"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+          <circle cx="12" cy="9" r="2.5"/>
+        </svg>
+        Route IQ
+      </button>
+    </>
   );
 }
