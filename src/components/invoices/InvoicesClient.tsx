@@ -20,7 +20,7 @@ const sel: React.CSSProperties = { ...inp, appearance: "none" };
 const STATUS_CLR: Record<InvoiceStatus, string> = { DRAFT: "#94a3b8", SENT: "#60a5fa", PAID: "#34d399", OVERDUE: "#f87171", VOID: "#475569" };
 const STATUSES: InvoiceStatus[] = ["DRAFT","SENT","PAID","OVERDUE","VOID"];
 const fmt = (v: string | number | null | undefined) => v ? `$${Number(v).toLocaleString("en-US", { minimumFractionDigits: 2 })}` : "$0.00";
-const fmtDate = (d: string | null | undefined) => d ? new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "—";
+const fmtDate = (d: string | null | undefined) => d ? new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "-";
 const genInvoiceNum = () => `INV-${new Date().getFullYear()}-${String(Math.floor(Math.random()*9000)+1000)}`;
 
 interface LineItem { description: string; qty: number; unitPrice: number }
@@ -80,7 +80,7 @@ function InvoiceModal({ invoice, hospitals, onClose, onSave, onDelete }: {
             <div>
               <label style={{ fontSize: "0.72rem", color: C.muted, display: "block", marginBottom: 4 }}>HOSPITAL *</label>
               <select style={sel} required value={form.hospitalId ?? ""} onChange={e => set("hospitalId", e.target.value)}>
-                <option value="">— Select Hospital —</option>
+                <option value="">Select Account</option>
                 {hospitals.map(h => <option key={h.id} value={h.id}>{h.hospitalName}</option>)}
               </select>
             </div>

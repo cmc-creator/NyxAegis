@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { signOut } from "next-auth/react";
@@ -240,27 +241,9 @@ export function Sidebar({ role, userName, userEmail }: SidebarProps) {
       <div style={{ padding: "20px 18px 16px", borderBottom: `1px solid ${BORDER}` }}>
         <div style={{ display: "flex", alignItems: "center", gap: 9, justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-          <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-            {/* Diamond gem — faceted */}
-            <polygon points="16,2 30,14 16,30 2,14"
-              style={{ fill: ACCENT_DIM, stroke: CYAN, strokeWidth: "1.15", strokeOpacity: "0.75" }} />
-            {/* Girdle line */}
-            <line x1="2" y1="14" x2="30" y2="14"
-              style={{ stroke: CYAN, strokeWidth: "0.65", strokeOpacity: "0.45" }} />
-            {/* Crown facets */}
-            <line x1="16" y1="2" x2="9" y2="14"  style={{ stroke: CYAN, strokeWidth: "0.55", strokeOpacity: "0.35" }} />
-            <line x1="16" y1="2" x2="23" y2="14" style={{ stroke: CYAN, strokeWidth: "0.55", strokeOpacity: "0.35" }} />
-            <line x1="16" y1="2" x2="8" y2="8"   style={{ stroke: CYAN, strokeWidth: "0.5",  strokeOpacity: "0.28" }} />
-            <line x1="16" y1="2" x2="24" y2="8"  style={{ stroke: CYAN, strokeWidth: "0.5",  strokeOpacity: "0.28" }} />
-            {/* Table highlight */}
-            <polygon points="11,8 16,3 21,8"
-              style={{ fill: ACCENT_MID, stroke: "none" }} />
-            {/* Pavillon facets */}
-            <line x1="2"  y1="14" x2="10" y2="24" style={{ stroke: CYAN, strokeWidth: "0.5", strokeOpacity: "0.22" }} />
-            <line x1="30" y1="14" x2="22" y2="24" style={{ stroke: CYAN, strokeWidth: "0.5", strokeOpacity: "0.22" }} />
-            {/* Culet sparkle */}
-            <circle cx="16" cy="10" r="1.4" style={{ fill: CYAN, fillOpacity: "0.92" }} />
-          </svg>
+          <div style={{ width: 34, height: 34, borderRadius: 8, overflow: "hidden", flexShrink: 0 }}>
+            <Image src="/Aegislogo.png" alt="NyxAegis" width={34} height={34} style={{ objectFit: "cover", width: "100%", height: "100%" }} />
+          </div>
           <div>
             <div style={{ fontWeight: 900, fontSize: "0.95rem", color: TEXT, letterSpacing: "-0.01em", lineHeight: 1 }}>NyxAegis</div>
             <div style={{ fontSize: "0.62rem", color: TEXT_MUTED, letterSpacing: "0.08em", marginTop: 2 }}>{role === "ADMIN" ? "ADMIN" : role === "REP" ? "BD REP" : "ACCOUNT"}</div>

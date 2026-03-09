@@ -63,7 +63,7 @@ export default function PaycomIntegrationPage() {
       if (res.ok) setResult(data);
       else setImportError(data.error ?? "Import failed");
     } catch {
-      setImportError("Network error — please try again");
+      setImportError("Network error. Please try again");
     }
     setImporting(false);
   };

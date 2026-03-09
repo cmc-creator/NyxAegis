@@ -91,7 +91,7 @@ export default function UsaTileMap({ repTerritories }: Props) {
             return (
               <div
                 key={abbr}
-                title={info ? `${abbr} — ${info.repName}` : `${abbr} — Uncovered`}
+                title={info ? `${abbr}: ${info.repName}` : `${abbr}: Uncovered`}
                 style={{
                   aspectRatio: "1",
                   borderRadius: 6,

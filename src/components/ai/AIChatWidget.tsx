@@ -108,7 +108,7 @@ export default function AIChatWidget() {
       };
       setMessages((prev) => [...prev, reply]);
     } catch {
-      setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "assistant", content: "Network error — please try again." }]);
+      setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "assistant", content: "Network error. Please try again." }]);
     } finally {
       setLoading(false);
     }

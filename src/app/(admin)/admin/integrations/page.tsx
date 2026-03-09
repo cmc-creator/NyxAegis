@@ -48,7 +48,7 @@ const featuredIntegrations = [
   {
     name: "Paycom",
     badges: [{ label: "SETUP REQUIRED", color: "#f59e0b" }, { label: "HR / PAYROLL", color: "#a78bfa" }],
-    desc: "Sync rep employee records and commission payouts from Paycom. Import your BD team roster, update title and contact info, and log commission payments — all from your Paycom payroll exports.",
+    desc: "Sync rep employee records and commission payouts from Paycom. Import your BD team roster, update title and contact info, and log commission payments, all from your Paycom payroll exports.",
     href: "/admin/integrations/paycom",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">

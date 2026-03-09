@@ -20,8 +20,8 @@ const sel: React.CSSProperties = { ...inp, appearance: "none" };
 
 const STATUS_CLR: Record<ContractStatus, string> = { DRAFT: "#94a3b8", SENT: "#60a5fa", SIGNED: "#a78bfa", ACTIVE: "#34d399", EXPIRED: "#fbbf24", TERMINATED: "#f87171" };
 const STATUSES: ContractStatus[] = ["DRAFT","SENT","SIGNED","ACTIVE","EXPIRED","TERMINATED"];
-const fmt = (v: string | number | null | undefined) => v ? `$${Number(v).toLocaleString()}` : "—";
-const fmtDate = (d: string | null | undefined) => d ? new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "—";
+const fmt = (v: string | number | null | undefined) => v ? `$${Number(v).toLocaleString()}` : "-";
+const fmtDate = (d: string | null | undefined) => d ? new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "-";
 
 function ContractModal({ contract, hospitals, reps, onClose, onSave, onDelete }: {
   contract: Contract | null; hospitals: Hospital[]; reps: Rep[]; onClose: () => void;
@@ -49,19 +49,19 @@ function ContractModal({ contract, hospitals, reps, onClose, onSave, onDelete }:
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
             <div style={{ gridColumn: "1/-1" }}>
               <label style={{ fontSize: "0.72rem", color: C.muted, display: "block", marginBottom: 4 }}>CONTRACT TITLE *</label>
-              <input style={inp} required value={form.title ?? ""} onChange={e => set("title", e.target.value)} placeholder="Service Agreement — FY2026" />
+              <input style={inp} required value={form.title ?? ""} onChange={e => set("title", e.target.value)} placeholder="Service Agreement: FY2026" />
             </div>
             <div>
               <label style={{ fontSize: "0.72rem", color: C.muted, display: "block", marginBottom: 4 }}>HOSPITAL *</label>
               <select style={sel} required value={form.hospitalId ?? ""} onChange={e => set("hospitalId", e.target.value)}>
-                <option value="">— Select Hospital —</option>
+                <option value="">Select Account</option>
                 {hospitals.map(h => <option key={h.id} value={h.id}>{h.hospitalName}</option>)}
               </select>
             </div>
             <div>
               <label style={{ fontSize: "0.72rem", color: C.muted, display: "block", marginBottom: 4 }}>ASSIGNED REP</label>
               <select style={sel} value={form.assignedRepId ?? ""} onChange={e => set("assignedRepId", e.target.value || null)}>
-                <option value="">— None —</option>
+                <option value="">None</option>
                 {reps.map(r => <option key={r.id} value={r.id}>{r.user.name ?? r.user.email}</option>)}
               </select>
             </div>
@@ -152,7 +152,7 @@ export default function ContractsClient({ hospitals, reps }: { hospitals: Hospit
         <div>
           <p style={{ color: "var(--nyx-accent-label)", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 4 }}>AGREEMENTS</p>
           <h1 style={{ fontSize: "1.8rem", fontWeight: 900, color: C.text }}>Contracts</h1>
-          <p style={{ color: C.muted, fontSize: "0.875rem", marginTop: 4 }}>{contracts.length} contracts — {fmt(totalActive)} active value</p>
+          <p style={{ color: C.muted, fontSize: "0.875rem", marginTop: 4 }}>{contracts.length} contracts · {fmt(totalActive)} active value</p>
         </div>
         <button onClick={() => setModal("add")} style={{ background: "var(--nyx-accent-dim)", border: "1px solid var(--nyx-accent-str)", borderRadius: 8, padding: "10px 20px", color: C.cyan, cursor: "pointer", fontWeight: 700 }}>+ New Contract</button>
       </div>
@@ -188,7 +188,7 @@ export default function ContractsClient({ hospitals, reps }: { hospitals: Hospit
                 <td style={{ padding: "12px 14px", fontSize: "0.85rem", color: C.cyan, fontWeight: 600 }}>{fmt(c.value)}</td>
                 <td style={{ padding: "12px 14px", fontSize: "0.78rem", color: C.muted }}>{fmtDate(c.startDate)}</td>
                 <td style={{ padding: "12px 14px", fontSize: "0.78rem", color: c.status === "EXPIRED" ? "#fbbf24" : C.muted }}>{fmtDate(c.endDate)}</td>
-                <td style={{ padding: "12px 14px", fontSize: "0.78rem", color: C.muted }}>{c.assignedRep?.user.name ?? "—"}</td>
+                <td style={{ padding: "12px 14px", fontSize: "0.78rem", color: C.muted }}>{c.assignedRep?.user.name ?? "-"}</td>
                 <td style={{ padding: "12px 14px", fontSize: "0.75rem", color: C.cyan }}>Edit →</td>
               </tr>
             ))}

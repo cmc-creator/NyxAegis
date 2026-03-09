@@ -26,7 +26,7 @@ const STAGE_CLR: Record<Stage, string> = {
 };
 const SVC_LINES: SvcLine[] = ["CARDIOLOGY","ONCOLOGY","ORTHOPEDICS","NEUROLOGY","WOMENS_HEALTH","PEDIATRICS","BEHAVIORAL_HEALTH","PRIMARY_CARE","SURGICAL_SERVICES","EMERGENCY_MEDICINE","RADIOLOGY","LABORATORY","PHARMACY","REHABILITATION","HOME_HEALTH","TELEHEALTH","REVENUE_CYCLE","SUPPLY_CHAIN","IT_SOLUTIONS","STAFFING","OTHER"];
 const lbl = (s: string) => s.replace(/_/g, " ");
-const fmt = (v: string | number | null | undefined) => v ? `$${Number(v).toLocaleString()}` : "—";
+const fmt = (v: string | number | null | undefined) => v ? `$${Number(v).toLocaleString()}` : "-";
 
 function OppModal({ opp, hospitals, reps, onClose, onSave, onDelete }: {
   opp: Opp | null; hospitals: Hospital[]; reps: Rep[]; onClose: () => void;
@@ -58,14 +58,14 @@ function OppModal({ opp, hospitals, reps, onClose, onSave, onDelete }: {
             <div>
               <label style={{ fontSize: "0.72rem", color: C.muted, display: "block", marginBottom: 4 }}>HOSPITAL *</label>
               <select style={sel} required value={form.hospitalId ?? ""} onChange={e => set("hospitalId", e.target.value)}>
-                <option value="">— Select Hospital —</option>
+                <option value="">Select Account</option>
                 {hospitals.map(h => <option key={h.id} value={h.id}>{h.hospitalName}</option>)}
               </select>
             </div>
             <div>
               <label style={{ fontSize: "0.72rem", color: C.muted, display: "block", marginBottom: 4 }}>ASSIGNED REP</label>
               <select style={sel} value={form.assignedRepId ?? ""} onChange={e => set("assignedRepId", e.target.value || null)}>
-                <option value="">— Unassigned —</option>
+                <option value="">Unassigned</option>
                 {reps.map(r => <option key={r.id} value={r.id}>{r.user.name ?? r.user.email}</option>)}
               </select>
             </div>
@@ -251,7 +251,7 @@ export default function OpportunitiesClient({ hospitals, reps }: { hospitals: Ho
                   </td>
                   <td style={{ padding: "12px 14px", fontSize: "0.78rem", color: C.muted }}>{lbl(opp.serviceLine)}</td>
                   <td style={{ padding: "12px 14px", fontSize: "0.85rem", color: C.cyan, fontWeight: 600 }}>{fmt(opp.value)}</td>
-                  <td style={{ padding: "12px 14px", fontSize: "0.78rem", color: C.muted }}>{opp.assignedRep?.user.name ?? "—"}</td>
+                  <td style={{ padding: "12px 14px", fontSize: "0.78rem", color: C.muted }}>{opp.assignedRep?.user.name ?? "-"}</td>
                   <td style={{ padding: "12px 14px", fontSize: "0.68rem", fontWeight: 700, color: opp.priority === "URGENT" ? "#f87171" : opp.priority === "HIGH" ? "#fbbf24" : C.muted }}>{opp.priority}</td>
                   <td style={{ padding: "12px 14px", fontSize: "0.75rem", color: C.cyan }}>Edit →</td>
                 </tr>

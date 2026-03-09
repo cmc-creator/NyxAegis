@@ -198,7 +198,7 @@ export default function QuickActionsWidget() {
       {/* Active action buttons */}
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: editing ? 16 : 0 }}>
         {active.length === 0 ? (
-          <span style={{ fontSize: "0.78rem", color: MUTED, fontStyle: "italic" }}>No actions selected — use Customize to add some.</span>
+          <span style={{ fontSize: "0.78rem", color: MUTED, fontStyle: "italic" }}>No actions selected. Use Customize to add some.</span>
         ) : (
           active.map((a) => (
             <Link key={a.id} href={a.href} style={{ display: "inline-flex", alignItems: "center", gap: 7, background: "var(--nyx-accent-dim)", border: "1px solid var(--nyx-accent-mid)", borderRadius: 8, padding: "8px 14px", textDecoration: "none", color: CYAN, fontSize: "0.8rem", fontWeight: 600 }}>

@@ -58,7 +58,7 @@ export default function ICANotesIntegrationPage() {
       if (res.ok) setResult(data);
       else setImportError(data.error ?? "Import failed");
     } catch {
-      setImportError("Network error — please try again");
+      setImportError("Network error. Please try again");
     }
     setImporting(false);
   };
@@ -271,7 +271,7 @@ export default function ICANotesIntegrationPage() {
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 24, marginBottom: 16 }}>
             <h3 style={{ fontSize: "1rem", fontWeight: 800, color: C.text, marginBottom: 12 }}>What is ICANotes?</h3>
             <p style={{ fontSize: "0.875rem", color: C.muted, lineHeight: 1.75 }}>
-              ICANotes (icanotes.com) is a cloud-based EHR designed specifically for behavioral health organizations — including psychiatric hospitals, substance use treatment centers, and outpatient mental health practices. Its referral management module tracks outgoing and incoming referrals with authorization tracking.
+              ICANotes (icanotes.com) is a cloud-based EHR designed specifically for behavioral health organizations, including psychiatric hospitals, substance use treatment centers, and outpatient mental health practices. Its referral management module tracks outgoing and incoming referrals with authorization tracking.
             </p>
           </div>
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 24 }}>

@@ -380,8 +380,8 @@ export default function RepsClient() {
                         </div>
                       </div>
                     </td>
-                    <td style={{ padding: "10px 12px", color: C.muted }}>{rep.title ?? "—"}</td>
-                    <td style={{ padding: "10px 12px", color: C.muted, whiteSpace: "nowrap" }}>{rep.territory ? rep.territory.slice(0,28) + (rep.territory.length > 28 ? "…" : "") : "—"}</td>
+                    <td style={{ padding: "10px 12px", color: C.muted }}>{rep.title ?? "-"}</td>
+                    <td style={{ padding: "10px 12px", color: C.muted, whiteSpace: "nowrap" }}>{rep.territory ? rep.territory.slice(0,28) + (rep.territory.length > 28 ? "…" : "") : "-"}</td>
                     <td style={{ padding: "10px 12px" }}>
                       <span style={{ fontSize: "0.68rem", fontWeight: 700, color: STATUS_CLR[rep.status], background: "rgba(0,0,0,0.35)", padding: "2px 8px", borderRadius: 4 }}>{lbl(rep.status)}</span>
                     </td>

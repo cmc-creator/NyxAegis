@@ -307,7 +307,7 @@ function ActivityModal({ activity, defaultDate, hospitals, reps, onSave, onDelet
             <label style={lbl}>Hospital (optional)</label>
             <select value={hospitalId} onChange={e => setHospId(e.target.value)}
               style={{ ...inp, cursor:"pointer" }}>
-              <option value="">— None —</option>
+              <option value="">None</option>
               {hospitals.map(h => <option key={h.id} value={h.id}>{h.hospitalName}</option>)}
             </select>
           </div>
@@ -317,7 +317,7 @@ function ActivityModal({ activity, defaultDate, hospitals, reps, onSave, onDelet
             <label style={lbl}>BD Rep (optional)</label>
             <select value={repId} onChange={e => setRepId(e.target.value)}
               style={{ ...inp, cursor:"pointer" }}>
-              <option value="">— Unassigned —</option>
+              <option value="">Unassigned</option>
               {reps.map(r => <option key={r.id} value={r.id}>{r.user.name ?? r.user.email}</option>)}
             </select>
           </div>
@@ -557,7 +557,7 @@ function WeekView({
             <div style={{ display:"flex", flexDirection:"column", gap:4 }}>
               {dayEvents.length === 0 && (
                 <div style={{ fontSize:"0.65rem", color:C.dim, textAlign:"center", paddingTop:8 }}>
-                  —
+                  -
                 </div>
               )}
               {dayEvents.map(a => (
@@ -606,7 +606,7 @@ function ListView({
             textTransform:"uppercase",
             color: isToday ? C.cyan : C.muted,
           }}>
-            {isToday ? "TODAY — " : ""}{fmtDayHeader(d)}
+            {isToday ? "TODAY · " : ""}{fmtDayHeader(d)}
           </div>
           <div style={{ flex:1, height:1, background:C.border }} />
         </div>

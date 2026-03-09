@@ -302,7 +302,7 @@ export default function HospitalsClient({ initialHospitals }: { initialHospitals
             <tbody>
               {filtered.length === 0 && (
                 <tr><td colSpan={7} style={{ padding: 32, textAlign: "center", color: C.muted, fontSize: "0.9rem" }}>
-                  {search ? "No hospitals match your search." : "No hospitals yet — click + Add Hospital to get started."}
+                  {search ? "No hospitals match your search." : "No hospitals yet. Click + Add Hospital to get started."}
                 </td></tr>
               )}
               {filtered.map(h => (
@@ -313,7 +313,7 @@ export default function HospitalsClient({ initialHospitals }: { initialHospitals
                     <div style={{ fontWeight: 600, fontSize: "0.875rem", color: C.text }}>{h.hospitalName}</div>
                     <div style={{ fontSize: "0.75rem", color: C.muted }}>{h.city}{h.city && h.state ? ", " : ""}{h.state}</div>
                   </td>
-                  <td style={{ padding: "14px 16px", fontSize: "0.85rem", color: C.muted }}>{h.systemName ?? "—"}</td>
+                  <td style={{ padding: "14px 16px", fontSize: "0.85rem", color: C.muted }}>{h.systemName ?? "-"}</td>
                   <td style={{ padding: "14px 16px" }}>
                     <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: "0.72rem", fontWeight: 600, color: "var(--nyx-accent)", background: "var(--nyx-accent-dim)", border: "1px solid var(--nyx-accent-str)", padding: "2px 8px", borderRadius: 5, whiteSpace: "nowrap" }}>
                       {typeIcon(h.hospitalType)} {lbl(h.hospitalType)}

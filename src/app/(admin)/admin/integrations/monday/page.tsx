@@ -85,10 +85,10 @@ export default function MondayIntegrationPage() {
         setSavedKey(apiKey);
         setConnected(true);
       } else {
-        setConnError(data.error ?? "Connection failed — check your API key");
+        setConnError(data.error ?? "Connection failed. Check your API key");
       }
     } catch {
-      setConnError("Network error — please try again");
+      setConnError("Network error. Please try again");
     }
     setTesting(false);
   };
@@ -124,7 +124,7 @@ export default function MondayIntegrationPage() {
       if (res.ok) setResult(data);
       else setImportError(data.error ?? "Import failed");
     } catch {
-      setImportError("Network error — please try again");
+      setImportError("Network error. Please try again");
     }
     setImporting(false);
   };
@@ -195,7 +195,7 @@ export default function MondayIntegrationPage() {
           {connected && boards.length > 0 && (
             <div style={{ background: "rgba(52,211,153,0.05)", border: "1px solid rgba(52,211,153,0.2)", borderRadius: 10, padding: 16, marginTop: 20 }}>
               <p style={{ color: C.green, fontWeight: 700, fontSize: "0.85rem", marginBottom: 10 }}>
-                Connected — {boards.length} board{boards.length !== 1 ? "s" : ""} found
+                Connected: {boards.length} board{boards.length !== 1 ? "s" : ""} found
               </p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 {boards.slice(0, 10).map((b) => (
@@ -230,7 +230,7 @@ export default function MondayIntegrationPage() {
               <select value={selectedBoard} onChange={(e) => handleBoardChange(e.target.value)}
                 disabled={!savedKey || boards.length === 0}
                 style={{ ...inp, appearance: "none" }}>
-                <option value="">— Choose a board —</option>
+                <option value="">Choose a board</option>
                 {boards.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
               </select>
             </div>
@@ -259,7 +259,7 @@ export default function MondayIntegrationPage() {
                       <label style={{ display: "block", fontSize: "0.65rem", fontWeight: 700, color: C.muted, marginBottom: 4, letterSpacing: "0.08em" }}>{label}</label>
                       <select value={mapping[key] ?? ""} onChange={(e) => setMapping((m) => ({ ...m, [key]: e.target.value }))}
                         style={{ ...inp, appearance: "none" }}>
-                        <option value="">— skip —</option>
+                        <option value="">skip</option>
                         {boardCols.map((c) => <option key={c.id} value={c.id}>{c.title}</option>)}
                       </select>
                     </div>
@@ -316,7 +316,7 @@ export default function MondayIntegrationPage() {
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 24, marginBottom: 16 }}>
             <h3 style={{ fontSize: "1rem", fontWeight: 800, color: C.text, marginBottom: 12 }}>What does this integration do?</h3>
             <p style={{ fontSize: "0.875rem", color: C.muted, lineHeight: 1.75 }}>
-              Many hospital BD teams use Monday.com to manage outreach pipelines before adopting a dedicated CRM. This integration lets you pull your Monday.com board data — leads, accounts, or deals — directly into NyxAegis so nothing is lost during the transition. Deduplication ensures existing records are updated rather than duplicated.
+              Many hospital BD teams use Monday.com to manage outreach pipelines before adopting a dedicated CRM. This integration lets you pull your Monday.com board data (leads, accounts, or deals) directly into NyxAegis so nothing is lost during the transition. Deduplication ensures existing records are updated rather than duplicated.
             </p>
           </div>
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 24 }}>

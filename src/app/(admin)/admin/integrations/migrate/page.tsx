@@ -175,7 +175,7 @@ export default function MigratePage() {
       if (res.ok) setResult(data);
       else setImportError(data.error ?? "Import failed");
     } catch {
-      setImportError("Network error — please try again");
+      setImportError("Network error. Please try again");
     }
     setImporting(false);
   };
@@ -337,7 +337,7 @@ export default function MigratePage() {
           <h3 style={{ fontSize: "0.85rem", fontWeight: 800, color: C.text, marginBottom: 12 }}>Import order matters</h3>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {[
-              { step: "1", label: "Hospital Accounts", desc: "Import these first — all other records link back to an account." },
+              { step: "1", label: "Hospital Accounts", desc: "Import these first. All other records link back to an account." },
               { step: "2", label: "Contacts",          desc: "Matched and linked to accounts by name." },
               { step: "3", label: "Leads",             desc: "Can be imported independently or linked to an existing account." },
               { step: "4", label: "Opportunities",     desc: "Must match an existing account by name." },
@@ -346,7 +346,7 @@ export default function MigratePage() {
                 <span style={{ width: 22, height: 22, background: "rgba(96,165,250,0.15)", border: "1px solid rgba(96,165,250,0.3)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.68rem", fontWeight: 900, color: C.blue, flexShrink: 0 }}>{item.step}</span>
                 <div>
                   <span style={{ fontSize: "0.8rem", fontWeight: 700, color: C.text }}>{item.label}</span>
-                  <span style={{ fontSize: "0.78rem", color: C.muted }}> — {item.desc}</span>
+                  <span style={{ fontSize: "0.78rem", color: C.muted }}>: {item.desc}</span>
                 </div>
               </div>
             ))}

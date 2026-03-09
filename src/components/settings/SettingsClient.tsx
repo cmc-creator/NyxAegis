@@ -894,7 +894,7 @@ export default function SettingsClient() {
               </button>
               {bgAssets.length === 0 ? (
                 <div style={{ fontSize: "0.75rem", color: "var(--nyx-text-muted)", padding: "20px 10px", lineHeight: 1.7, alignSelf: "center" }}>
-                  No images yet — drop images into{" "}
+                  No images yet, drop images into{" "}
                   <code style={{ fontFamily: "monospace", fontSize: "0.68rem" }}>public/themes/{activeTheme}/{bgTab}/</code>
                 </div>
               ) : bgAssets.map(url => {
@@ -918,7 +918,7 @@ export default function SettingsClient() {
               <div style={{ fontSize: "0.7rem", color: "var(--nyx-text-muted)", marginBottom: 8, letterSpacing: "0.06em", opacity: 0.7 }}>LIVE PREVIEW</div>
               <div className="gold-card" style={{ minHeight: 64, padding: "14px 20px", display: "flex", alignItems: "center", gap: 12 }}>
                 <div style={{ width: 10, height: 10, borderRadius: "50%", background: "var(--nyx-accent)", flexShrink: 0 }} />
-                <span style={{ fontSize: "0.8rem", color: "var(--nyx-text)", opacity: 0.7 }}>Card texture preview — select an image above</span>
+                <span style={{ fontSize: "0.8rem", color: "var(--nyx-text)", opacity: 0.7 }}>Card texture preview: select an image above</span>
               </div>
             </div>
           )}
@@ -960,7 +960,7 @@ export default function SettingsClient() {
           <div>
             <div style={{ fontSize: "0.78rem", fontWeight: 800, color: "#f87171", letterSpacing: "0.06em", marginBottom: 4 }}>ADMIN / OWNER ACCESS ONLY</div>
             <div style={{ fontSize: "0.75rem", color: "var(--nyx-text-muted)", lineHeight: 1.55 }}>
-              Destructive actions are <strong style={{ color: "#f87171" }}>permanent and irreversible</strong>. Clear All Data will permanently delete every record — no undo, no backup, no recovery.
+              Destructive actions are <strong style={{ color: "#f87171" }}>permanent and irreversible</strong>. Clear All Data will permanently delete every record. No undo, no backup, no recovery.
             </div>
           </div>
         </div>

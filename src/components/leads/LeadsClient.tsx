@@ -29,7 +29,7 @@ const SOURCES: LeadSource[] = ["REFERRAL","COLD_OUTREACH","CONFERENCE","INBOUND"
 const H_TYPES: HospitalType[] = ["ACUTE_CARE","CRITICAL_ACCESS","SPECIALTY","HEALTH_SYSTEM","AMBULATORY","LONG_TERM_CARE","BEHAVIORAL_HEALTH","REHABILITATION","CHILDRENS","CANCER_CENTER","OTHER"];
 const PRIORITIES = ["LOW","MEDIUM","HIGH","URGENT"];
 
-const fmt = (v: string | number | null | undefined) => v ? `$${Number(v).toLocaleString()}` : "—";
+const fmt = (v: string | number | null | undefined) => v ? `$${Number(v).toLocaleString()}` : "-";
 const fmtDate = (d: string) => new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 const lbl = (s: string) => s.replace(/_/g, " ");
 
@@ -146,7 +146,7 @@ function LeadModal({ lead, reps, onClose, onSave, onDelete }: {
             <div>
               <label style={{ fontSize: "0.72rem", color: C.muted, display: "block", marginBottom: 4 }}>ASSIGNED REP</label>
               <select style={sel} value={form.assignedRepId ?? ""} onChange={e => set("assignedRepId", e.target.value || null)}>
-                <option value="">— Unassigned —</option>
+                <option value="">Unassigned</option>
                 {reps.map(r => <option key={r.id} value={r.id}>{r.user.name ?? r.user.email}</option>)}
               </select>
             </div>
@@ -362,7 +362,7 @@ export default function LeadsClient({ reps }: { reps: Rep[] }) {
       }
     } catch (e) {
       console.error("Lead save error:", e);
-      alert("Network error — could not save lead.");
+      alert("Network error. Could not save lead.");
       return;
     }
     setModal(null);
@@ -472,7 +472,7 @@ export default function LeadsClient({ reps }: { reps: Rep[] }) {
                   {lead.state && <div style={{ fontSize: "0.7rem", color: C.muted }}>{lead.city ? `${lead.city}, ` : ""}{lead.state}</div>}
                 </td>
                 <td style={{ padding: "13px 14px" }}>
-                  <div style={{ fontSize: "0.82rem", color: C.text }}>{lead.contactName ?? "—"}</div>
+                  <div style={{ fontSize: "0.82rem", color: C.text }}>{lead.contactName ?? "-"}</div>
                   <div style={{ fontSize: "0.7rem", color: C.muted }}>{lead.contactTitle ?? ""}</div>
                 </td>
                 <td style={{ padding: "13px 14px" }}>
@@ -519,7 +519,7 @@ export default function LeadsClient({ reps }: { reps: Rep[] }) {
           <select value={bulkRepId} onChange={e => setBulkRepId(e.target.value)}
             style={{ ...sel, width: "auto", minWidth: 150, padding: "5px 10px", fontSize: "0.78rem" }}>
             <option value="">Assign rep…</option>
-            <option value="__none__">— Unassign —</option>
+            <option value="__none__">Unassign</option>
             {reps.map(r => <option key={r.id} value={r.id}>{r.user.name ?? r.user.email}</option>)}
           </select>
           {bulkRepId && (

@@ -342,7 +342,7 @@ export default function CommunicationsHub({ role: _role }: Props) {
           </h1>
         </div>
         <p style={{ fontSize: "0.85rem", color: TEXT_MUTED, margin: 0 }}>
-          Send emails, Teams messages, and internal notes — all tracked in one place.
+          Send emails, Teams messages, and internal notes, all tracked in one place.
         </p>
       </div>
 
@@ -587,7 +587,7 @@ export default function CommunicationsHub({ role: _role }: Props) {
               >
                 <option value="">Use a template…</option>
                 {templates.map((t) => (
-                  <option key={t.id} value={t.id}>{CATEGORY_LABELS[t.category]} — {t.name}</option>
+                  <option key={t.id} value={t.id}>{CATEGORY_LABELS[t.category]}: {t.name}</option>
                 ))}
               </select>
               <button
@@ -627,7 +627,7 @@ export default function CommunicationsHub({ role: _role }: Props) {
                   : <div style={{ fontSize: "0.8rem", color: "#f87171" }}>⚠ Teams webhook not configured. <button onClick={() => setShowTeamsWebhook(true)} style={{ color: "#5558AF", background: "none", border: "none", cursor: "pointer", textDecoration: "underline", fontSize: "inherit" }}>Configure</button></div>
               )}
               {channel === "INTERNAL" && (
-                <div style={{ fontSize: "0.8rem", color: TEXT_MUTED }}>Internal note — stored in the platform, not sent externally.</div>
+                <div style={{ fontSize: "0.8rem", color: TEXT_MUTED }}>Internal note: stored in the platform, not sent externally.</div>
               )}
             </div>
 
@@ -642,7 +642,7 @@ export default function CommunicationsHub({ role: _role }: Props) {
                 <button
                   key={label}
                   onClick={() => {
-                    setSubject(label === "Introduction" ? "Introduction — NyxAegis" : label === "Follow-Up" ? "Following up on our conversation" : "Proposal for your review");
+                    setSubject(label === "Introduction" ? "Introduction: NyxAegis" : label === "Follow-Up" ? "Following up on our conversation" : "Proposal for your review");
                     fillBodyFromAI();
                   }}
                   style={{ display: "block", width: "100%", textAlign: "left", padding: "8px 10px",
@@ -709,7 +709,7 @@ export default function CommunicationsHub({ role: _role }: Props) {
                       </span>
                     </td>
                     <td style={{ padding: "12px 16px", fontSize: "0.82rem", color: TEXT }}>
-                      {log.toName ?? log.toEmail ?? <span style={{ color: TEXT_MUTED }}>—</span>}
+                      {log.toName ?? log.toEmail ?? <span style={{ color: TEXT_MUTED }}>-</span>}
                     </td>
                     <td style={{ padding: "12px 16px", fontSize: "0.82rem", color: TEXT_MUTED }}>
                       {log.subject ?? <span style={{ fontStyle: "italic" }}>no subject</span>}
