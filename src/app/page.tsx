@@ -284,7 +284,7 @@ export default function LandingPage() {
                 items: ["Engagement & referral summaries", "Active proposals and invoices", "Contract and document access", "Branded white-label experience"],
               },
             ].map((portal) => (
-              <div key={portal.role} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: "32px 28px", transition: "border-color 0.25s" }}>
+              <div key={portal.role} className="portal-card" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, padding: "32px 28px", transition: "border-color 0.25s", position: "relative", overflow: "hidden" }}>
                 <div style={{ display: "inline-block", background: `${portal.color}12`, border: `1px solid ${portal.color}25`, borderRadius: 999, padding: "4px 14px", fontSize: "0.65rem", fontWeight: 800, color: portal.color, letterSpacing: "0.12em", marginBottom: 16 }}>{portal.role}</div>
                 <h3 style={{ fontSize: "1.05rem", fontWeight: 700, color: C.text, marginBottom: 10 }}>{portal.title}</h3>
                 <p style={{ fontSize: "0.85rem", color: C.muted, lineHeight: 1.6, marginBottom: 20 }}>{portal.desc}</p>
@@ -311,7 +311,7 @@ export default function LandingPage() {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 20 }}>
             {pricing.map((p) => (
-              <div key={p.name} style={{ position: "relative", background: p.highlight ? "var(--nyx-accent-dim)" : C.card, border: `1px solid ${p.highlight ? "var(--nyx-border)" : C.border}`, borderRadius: 14, padding: "32px 28px", boxShadow: p.highlight ? "0 0 40px var(--nyx-accent-dim)" : "none" }}>
+              <div key={p.name} className={`pricing-card${p.highlight ? " pricing-card--highlight" : ""}`} style={{ position: "relative", background: p.highlight ? "var(--nyx-accent-dim)" : C.card, border: `1px solid ${p.highlight ? "var(--nyx-border)" : C.border}`, borderRadius: 14, padding: "32px 28px", boxShadow: p.highlight ? "0 0 40px var(--nyx-accent-dim)" : "none", overflow: "hidden" }}>
                 {p.highlight && <div style={{ position: "absolute", top: -1, left: "50%", transform: "translateX(-50%)", background: "var(--nyx-accent)", color: "#000", padding: "4px 18px", borderRadius: "0 0 10px 10px", fontSize: "0.62rem", fontWeight: 900, letterSpacing: "0.12em" }}>MOST POPULAR</div>}
                 <div style={{ fontSize: "0.72rem", fontWeight: 800, color: C.cyan, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 10 }}>{p.name}</div>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 8 }}>

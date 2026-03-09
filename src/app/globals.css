@@ -1135,6 +1135,67 @@ img[data-nimg] {
   box-shadow: 0 0 28px var(--nyx-accent-dim), 0 8px 32px rgba(0,0,0,0.35);
 }
 
+/* ── Gold Border Tracers ──────────────────────────────────────────────────── */
+@property --nyx-tracer-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes nyx-tracer {
+  to { --nyx-tracer-angle: 360deg; }
+}
+@keyframes nyx-tracer-fast {
+  to { --nyx-tracer-angle: 360deg; }
+}
+
+.feature-card::before,
+.portal-card::before,
+.pricing-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from var(--nyx-tracer-angle) at 50% 50%,
+    transparent 0deg,
+    transparent 310deg,
+    rgba(201,168,76,0.08) 325deg,
+    rgba(201,168,76,0.5) 340deg,
+    #f0d060 350deg,
+    rgba(255,248,180,0.9) 353deg,
+    #f0d060 356deg,
+    rgba(201,168,76,0.5) 358deg,
+    transparent 360deg
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: nyx-tracer 5s linear infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.pricing-card--highlight::before {
+  background: conic-gradient(
+    from var(--nyx-tracer-angle) at 50% 50%,
+    transparent 0deg,
+    transparent 290deg,
+    rgba(201,168,76,0.15) 315deg,
+    rgba(201,168,76,0.7) 335deg,
+    #f0d060 346deg,
+    #fffce0 350deg,
+    #f0d060 354deg,
+    rgba(201,168,76,0.7) 358deg,
+    transparent 360deg
+  );
+  animation: nyx-tracer 3s linear infinite;
+  padding: 1.5px;
+}
+
 /* ── Mobile Responsive ──────────────────────────────────────────────────────── */
 
 /* Sidebar base — needed for transform to work */
