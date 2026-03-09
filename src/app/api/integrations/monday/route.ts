@@ -141,9 +141,6 @@ export async function POST(req: NextRequest) {
     let imported = 0, updated = 0, skipped = 0, errors = 0;
     const errorLog: string[] = [];
 
-    const get = (item: (typeof items)[0], key: string): string =>
-      map[key] ? colVal(item, map[key]) : item.name;
-
     for (let i = 0; i < items.length; i++) {
       const item = items[i];
       try {
@@ -184,6 +181,7 @@ export async function POST(req: NextRequest) {
           });
 
           if (existing) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             await (prisma.hospital as any).update({
               where: { id: existing.id },
               data: {

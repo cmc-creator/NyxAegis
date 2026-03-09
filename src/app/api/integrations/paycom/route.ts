@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
 
   let imported = 0, updated = 0, skipped = 0, errors = 0;
   const errorLog: string[] = [];
-  let importId = `paycom-${mode}-${Date.now()}`;
+  const importId = `paycom-${mode}-${Date.now()}`;
 
   // ── REP ROSTER MODE ──────────────────────────────────────────────────────
   if (mode === "reps") {
@@ -138,12 +138,14 @@ export async function POST(req: NextRequest) {
         }
 
         // Upsert — deduplicate by repId + paidAt date
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const existing = await (prisma as any).repPayment.findFirst({
           where: { repId: existingUser.rep.id, paidAt: payDate },
         });
 
         if (existing) { skipped++; continue; }
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         await (prisma as any).repPayment.create({
           data: {
             repId: existingUser.rep.id,

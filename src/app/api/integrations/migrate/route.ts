@@ -156,7 +156,8 @@ export async function POST(req: NextRequest) {
         primaryContactPhone:  get(row, "primaryContactPhone") || undefined,
         primaryContactTitle:  get(row, "primaryContactTitle") || undefined,
         notes:                get(row, "notes")               || undefined,
-        hospitalType:         (mapEnum(get(row, "hospitalType"), HOSPITAL_TYPE_MAP, "OTHER") as any),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        hospitalType:         mapEnum(get(row, "hospitalType"), HOSPITAL_TYPE_MAP, "OTHER") as any,
         status:               "PROSPECT" as const,
       };
 
@@ -229,7 +230,9 @@ export async function POST(req: NextRequest) {
             serviceInterest: get(row, "serviceInterest") || undefined,
             estimatedValue:  safeDecimal(valRaw) ?? undefined,
             notes:           get(row, "notes")           || undefined,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             source:          mapEnum(sourceRaw, LEAD_SOURCE_MAP, "OTHER") as any,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             status:          mapEnum(statusRaw, LEAD_STATUS_MAP, "NEW") as any,
           },
         });
@@ -276,7 +279,9 @@ export async function POST(req: NextRequest) {
           data: {
             title,
             hospitalId:  hospital.id,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             stage:       mapEnum(stageRaw, STAGE_MAP, "DISCOVERY") as any,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             serviceLine: "OTHER" as any,
             value:       safeDecimal(valRaw) ?? undefined,
             closeDate:   safeDate(get(row, "closeDate")),
@@ -332,7 +337,7 @@ export async function POST(req: NextRequest) {
             phone:       get(row, "phone")      || undefined,
             department:  get(row, "department") || undefined,
             notes:       get(row, "notes")      || undefined,
-            type:        mapEnum(typeRaw, CONTACT_TYPE_MAP, "OTHER") as any,
+            type:        mapEnum(typeRaw, CONTACT_TYPE_MAP, "OTHER") as Parameters<typeof prisma.contact.create>[0]["data"]["type"],
           },
         });
         imported++;

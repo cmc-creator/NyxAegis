@@ -205,7 +205,7 @@ export default function MigratePage() {
 
       {/* Source CRM picker */}
       <div style={{ marginBottom: 24 }}>
-        <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: C.muted, marginBottom: 10, letterSpacing: "0.08em" }}>I'M MIGRATING FROM</label>
+        <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: C.muted, marginBottom: 10, letterSpacing: "0.08em" }}>I&apos;M MIGRATING FROM</label>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           {(Object.keys(CRM_LABELS) as SourceCRM[]).map((crm) => (
             <button key={crm} onClick={() => handleCRMChange(crm)}
