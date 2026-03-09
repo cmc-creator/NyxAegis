@@ -149,9 +149,8 @@ export default function LandingPage() {
             {/* Logo + badge */}
             <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20 }}>
               <Image src="/Aegislogo.png" alt="NyxAegis" width={280} height={280} placeholder="empty" style={{ background: "transparent", filter: "drop-shadow(0 0 48px rgba(201,168,76,0.65))", flexShrink: 0 }} />
-              <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--nyx-accent-dim)", border: "1px solid var(--nyx-accent-mid)", borderRadius: 999, padding: "7px 18px" }}>
-                <span style={{ width: 7, height: 7, borderRadius: "50%", background: C.cyan, display: "inline-block", boxShadow: `0 0 8px ${C.cyan}` }} />
-                <span style={{ fontSize: "0.7rem", color: C.cyan, fontWeight: 700, letterSpacing: "0.1em" }}>BD &amp; REFERRAL TRACKING PLATFORM</span>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "linear-gradient(135deg, rgba(201,168,76,0.12), rgba(201,168,76,0.05))", border: "1px solid var(--nyx-accent-mid)", borderRadius: 999, padding: "10px 24px", boxShadow: "0 0 18px rgba(201,168,76,0.12), inset 0 1px 0 rgba(255,255,255,0.04)" }}>
+                <span style={{ fontSize: "0.72rem", color: "var(--nyx-accent)", fontWeight: 800, letterSpacing: "0.14em", textTransform: "uppercase" }}>Referral Tracking Platform</span>
               </div>
             </div>
             {/* Tagline - prominent */}
