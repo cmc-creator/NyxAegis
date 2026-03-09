@@ -24,6 +24,7 @@ const icons = {
   mobile: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>),
   check: (<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>),
   arrow: (<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>),
+  ai: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9.5 3 11 7.5 15.5 9 11 10.5 9.5 15 8 10.5 3.5 9 8 7.5z"/><path d="M18 13l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/></svg>),
 };
 
 const features = [
@@ -33,17 +34,18 @@ const features = [
   { icon: icons.activity, color: "#a78bfa",   title: "Activity Logging",           desc: "Log visits, lunches, calls, and events in seconds - from anywhere. Auto-reminders for follow-ups so no relationship slips through the cracks." },
   { icon: icons.shield,   color: "var(--nyx-accent)", title: "Compliance Document Management", desc: "Store and track agreements, certifications, licenses, and training records. Automated expiration alerts keep your team compliant and audit-ready." },
   { icon: icons.mobile,   color: "#f59e0b",   title: "Mobile-First Design",        desc: "Built for people on the move. Log a visit, update a referral count, or review your territory from any device, anywhere." },
+  { icon: icons.ai,       color: "#a78bfa",   title: "AI-Powered Insights",         desc: "NyxAegis AI surfaces your highest-value referral sources, flags relationships at risk of going cold, and generates plain-English performance summaries - so you always know where to focus next." },
 ];
 
 const workflow = [
   { n: "01", title: "Add Referral Sources",      desc: "Build your directory of partners, contacts, and organizations with relationship history, contact details, and referral volume goals." },
   { n: "02", title: "Track Engagement Activity",  desc: "Log every visit, call, lunch, and touchpoint as you go. Capture time, location, and outcome so nothing is forgotten." },
   { n: "03", title: "Count Referrals Received",   desc: "When a referral comes in, log it back to the source. Watch your referral-per-source metrics update in real time." },
-  { n: "04", title: "Report to Leadership",       desc: "Auto-generated dashboards show referral volume, source performance, team activity, and territory coverage - ready for any stakeholder meeting." },
+  { n: "04", title: "Report to Leadership",       desc: "AI-generated dashboards show referral volume, source performance, team activity, and territory coverage. Ask questions in plain English - get instant answers from your own data." },
 ];
 
 const stats = [
-  { value: "100%",      label: "Purpose-Built CRM",      sub: "Adaptable to any business type" },
+  { value: "AI",        label: "Built-In Assistant",      sub: "Ask questions, get instant answers" },
   { value: "Real-Time", label: "Referral Counts",        sub: "Know your ROI from day one" },
   { value: "Mobile",    label: "Field-Ready",            sub: "Log visits between stops" },
   { value: "HIPAA",     label: "Compliance Tracking",    sub: "Docs, certs & alerts built-in" },
@@ -59,13 +61,13 @@ const pricing = [
   {
     name: "Team", price: "$199", period: "/mo",
     desc: "For teams of 2-10 with shared analytics, territory management, and collaboration.",
-    features: ["Unlimited referral sources", "Team referral dashboards", "Territory assignment & maps", "Member performance KPIs", "Contract management", "Compliance doc management", "Priority support"],
+    features: ["Unlimited referral sources", "Team referral dashboards", "Territory assignment & maps", "Member performance KPIs", "AI insights & smart recommendations", "Contract management", "Compliance doc management", "Priority support"],
     cta: "Start Free Trial", highlight: true,
   },
   {
     name: "Enterprise", price: "Custom", period: "",
     desc: "For large organizations and multi-location operations.",
-    features: ["Everything in Team", "White-label branding", "Custom integrations", "SSO / SAML", "Dedicated success manager", "SLA guarantee"],
+    features: ["Everything in Team", "Advanced AI analytics & forecasting", "White-label branding", "Custom integrations", "SSO / SAML", "Dedicated success manager", "SLA guarantee"],
     cta: "Contact Sales", highlight: false,
   },
 ];
@@ -239,6 +241,71 @@ export default function LandingPage() {
               <p style={{ fontSize: "0.85rem", color: C.muted, lineHeight: 1.7 }}>{f.desc}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* AI SHOWCASE */}
+      <section style={{ position: "relative", zIndex: 1, padding: "96px 2rem", borderTop: `1px solid ${C.border}` }}>
+        <div style={{ maxWidth: 1300, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }}>
+          {/* Left: copy */}
+          <div>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "rgba(167,139,250,0.08)", border: "1px solid rgba(167,139,250,0.25)", borderRadius: 999, padding: "8px 18px", marginBottom: 28 }}>
+              <span style={{ color: "#a78bfa" }}>{icons.ai}</span>
+              <span style={{ fontSize: "0.68rem", fontWeight: 800, letterSpacing: "0.15em", textTransform: "uppercase", color: "#a78bfa" }}>Built-In AI Assistant</span>
+            </div>
+            <h2 style={{ fontSize: "clamp(1.8rem, 3.5vw, 2.6rem)", fontWeight: 900, letterSpacing: "-0.025em", marginBottom: 16, lineHeight: 1.1 }}>
+              Your data,<br /><span style={{ color: "var(--nyx-accent)" }}>made smarter.</span>
+            </h2>
+            <p style={{ color: C.muted, fontSize: "1rem", lineHeight: 1.75, marginBottom: 28, maxWidth: 480 }}>
+              NyxAegis AI analyzes your referral patterns, predicts drop-offs before they happen, and surfaces your highest-value opportunities - all without touching a spreadsheet.
+            </p>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 14 }}>
+              {[
+                "Smart summaries of team activity, generated automatically",
+                "Referral trend forecasting - know who is drifting before volume drops",
+                "Relationship health scores for every source in your directory",
+                "Ask questions in plain English - get instant answers from your data",
+              ].map((item) => (
+                <li key={item} style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: "0.9rem", color: C.muted }}>
+                  <span style={{ color: "#a78bfa", flexShrink: 0, marginTop: 2 }}>{icons.check}</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+          {/* Right: AI chat mock */}
+          <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, overflow: "hidden" }}>
+            <div style={{ background: "rgba(167,139,250,0.07)", borderBottom: `1px solid ${C.border}`, padding: "14px 20px", display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#a78bfa", boxShadow: "0 0 8px rgba(167,139,250,0.6)" }} />
+              <span style={{ fontSize: "0.75rem", fontWeight: 700, color: C.muted, letterSpacing: "0.08em" }}>NyxAegis AI Assistant</span>
+            </div>
+            <div style={{ padding: "24px 20px", display: "flex", flexDirection: "column", gap: 16 }}>
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <div style={{ background: "var(--nyx-accent-dim)", border: "1px solid var(--nyx-accent-mid)", borderRadius: "12px 12px 4px 12px", padding: "10px 16px", maxWidth: "80%", fontSize: "0.82rem", color: C.text }}>
+                  Which referral sources haven&apos;t we visited in 30+ days?
+                </div>
+              </div>
+              <div style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                <div style={{ width: 28, height: 28, borderRadius: "50%", background: "rgba(167,139,250,0.15)", border: "1px solid rgba(167,139,250,0.3)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: "14px", color: "#a78bfa" }}>✦</div>
+                <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: "12px 12px 12px 4px", padding: "14px 16px", fontSize: "0.82rem", color: C.muted, lineHeight: 1.6 }}>
+                  <p style={{ margin: "0 0 12px", color: C.text, fontWeight: 600 }}>3 high-value sources are 30+ days overdue:</p>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 12 }}>
+                    {[
+                      { name: "Cornerstone Partners", days: "38 days", risk: "high" },
+                      { name: "Metro Wellness Group", days: "45 days", risk: "critical" },
+                      { name: "Valley Associates",    days: "31 days", risk: "medium" },
+                    ].map((r) => (
+                      <div key={r.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "6px 10px", background: "rgba(255,255,255,0.03)", borderRadius: 6 }}>
+                        <span style={{ fontSize: "0.8rem" }}>{r.name}</span>
+                        <span style={{ fontSize: "0.72rem", fontWeight: 700, color: r.risk === "critical" ? "#f87171" : r.risk === "high" ? "#f59e0b" : C.muted }}>{r.days}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <p style={{ margin: 0, fontSize: "0.75rem", color: "#a78bfa", fontStyle: "italic" }}>Want me to schedule follow-up reminders for all three?</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
