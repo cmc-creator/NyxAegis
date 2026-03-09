@@ -1031,9 +1031,6 @@ export default function SettingsClient() {
         gap: 14, marginTop: 32, paddingTop: 20, paddingBottom: 32,
         borderTop: "1px solid var(--nyx-border)",
       }}>
-        <span style={{ fontSize: "0.78rem", color: "var(--nyx-text-muted)", opacity: saved ? 0 : 0.7, transition: "opacity 0.3s" }}>
-          Organization settings
-        </span>
         <button onClick={saveOrg} style={{
           background: saved ? "rgba(52,211,153,0.18)" : "var(--nyx-accent)",
           border: `1px solid ${saved ? "rgba(52,211,153,0.45)" : "transparent"}`,
