@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import { signOut } from "next-auth/react";
 
 const CYAN       = "var(--nyx-accent)";
@@ -199,12 +200,39 @@ interface SidebarProps {
 export function Sidebar({ role, userName, userEmail }: SidebarProps) {
   const pathname = usePathname();
   const nav = getNav(role);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <aside className="nyx-sidebar" style={{ width: 220, minHeight: "100vh", borderRight: `1px solid ${BORDER}`, display: "flex", flexDirection: "column", flexShrink: 0, position: "sticky", top: 0, height: "100vh", overflowY: "auto" }}>
+    <>
+      {/* Mobile hamburger button */}
+      <button
+        className="nyx-hamburger"
+        onClick={() => setMobileOpen(true)}
+        style={{ display: "none", position: "fixed", top: 14, left: 14, zIndex: 400, background: "var(--nyx-card)", border: "1px solid var(--nyx-accent-dim)", borderRadius: 8, padding: "8px 10px", cursor: "pointer", flexDirection: "column", gap: 4 }}
+        aria-label="Open menu"
+      >
+        <span style={{ display: "block", width: 18, height: 2, background: "var(--nyx-accent)", borderRadius: 2 }} />
+        <span style={{ display: "block", width: 18, height: 2, background: "var(--nyx-accent)", borderRadius: 2 }} />
+        <span style={{ display: "block", width: 18, height: 2, background: "var(--nyx-accent)", borderRadius: 2 }} />
+      </button>
+
+      {/* Mobile overlay backdrop */}
+      {mobileOpen && (
+        <div
+          className="nyx-mobile-overlay"
+          onClick={() => setMobileOpen(false)}
+          style={{ display: "none" }}
+        />
+      )}
+
+      <aside
+        className={`nyx-sidebar${mobileOpen ? " is-open" : ""}`}
+        style={{ width: 220, minHeight: "100vh", borderRight: `1px solid ${BORDER}`, display: "flex", flexDirection: "column", flexShrink: 0, position: "sticky", top: 0, height: "100vh", overflowY: "auto" }}
+      >
       {/* Logo */}
       <div style={{ padding: "20px 18px 16px", borderBottom: `1px solid ${BORDER}` }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 9, justifyContent: "space-between" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
           <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
             {/* Diamond gem — faceted */}
             <polygon points="16,2 30,14 16,30 2,14"
@@ -230,6 +258,14 @@ export function Sidebar({ role, userName, userEmail }: SidebarProps) {
             <div style={{ fontWeight: 900, fontSize: "0.95rem", color: TEXT, letterSpacing: "-0.01em", lineHeight: 1 }}>NyxAegis</div>
             <div style={{ fontSize: "0.62rem", color: TEXT_MUTED, letterSpacing: "0.08em", marginTop: 2 }}>{role === "ADMIN" ? "ADMIN" : role === "REP" ? "BD REP" : "ACCOUNT"}</div>
           </div>
+          </div>
+          {/* Close button — mobile only */}
+          <button
+            className="nyx-hamburger"
+            onClick={() => setMobileOpen(false)}
+            style={{ display: "none", background: "transparent", border: "none", cursor: "pointer", padding: 4, color: TEXT_MUTED, fontSize: "1.2rem", lineHeight: 1 }}
+            aria-label="Close menu"
+          >✕</button>
         </div>
       </div>
 
@@ -244,6 +280,7 @@ export function Sidebar({ role, userName, userEmail }: SidebarProps) {
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={() => setMobileOpen(false)}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -288,5 +325,6 @@ export function Sidebar({ role, userName, userEmail }: SidebarProps) {
         </button>
       </div>
     </aside>
+    </>
   );
 }

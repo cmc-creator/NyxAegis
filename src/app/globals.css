@@ -1129,3 +1129,75 @@
   border-color: var(--nyx-accent-mid) !important;
   box-shadow: 0 0 28px var(--nyx-accent-dim), 0 8px 32px rgba(0,0,0,0.35);
 }
+
+/* ── Mobile Responsive ──────────────────────────────────────────────────────── */
+
+/* Sidebar base — needed for transform to work */
+.nyx-sidebar {
+  background: var(--nyx-card);
+  transition: transform 0.25s ease;
+}
+
+/* Mobile layout adjustments */
+@media (max-width: 768px) {
+  /* Sidebar becomes a slide-in drawer */
+  .nyx-sidebar {
+    position: fixed !important;
+    z-index: 300;
+    transform: translateX(-100%) !important;
+    top: 0 !important;
+    left: 0 !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+  }
+  .nyx-sidebar.is-open {
+    transform: translateX(0) !important;
+  }
+
+  /* Overlay backdrop — shown only when sidebar is open */
+  .nyx-mobile-overlay {
+    display: block !important;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 299;
+  }
+
+  /* Hamburger button — show on mobile */
+  .nyx-hamburger {
+    display: flex !important;
+  }
+
+  /* 2-column page grids collapse to 1 column */
+  .nyx-page-grid-2col {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Tables get horizontal scroll */
+  .nyx-table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Add breathing room at the top for the hamburger button */
+  main {
+    padding-top: 52px;
+  }
+}
+
+/* Desktop — keep sidebar always visible */
+@media (min-width: 769px) {
+  .nyx-sidebar {
+    transform: none !important;
+    position: sticky !important;
+  }
+  .nyx-mobile-overlay {
+    display: none !important;
+  }
+  .nyx-hamburger {
+    display: none !important;
+  }
+  main {
+    padding-top: 0;
+  }
+}

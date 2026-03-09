@@ -53,8 +53,8 @@ export default async function AccountEngagementsPage() {
         ))}
       </div>
 
-      <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, overflow: "hidden" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <div className="nyx-table-scroll" style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, overflow: "hidden" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 600 }}>
           <thead>
             <tr style={{ borderBottom: `1px solid ${BORDER}` }}>
               {["Engagement", "Stage", "Service Line", "BD Rep", "Value", "Close Date"].map((h) => (

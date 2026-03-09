@@ -48,8 +48,8 @@ export default async function RepTerritoryPage() {
         </div>
       )}
 
-      <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, overflow: "hidden" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <div className="nyx-table-scroll" style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, overflow: "hidden" }}>
+        <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 480 }}>
           <thead>
             <tr style={{ borderBottom: `1px solid ${BORDER}` }}>
               {["State", "Region", "City", "Notes"].map((h) => (

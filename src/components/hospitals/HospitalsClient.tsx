@@ -1,7 +1,7 @@
 "use client";
 import { useState, useCallback } from "react";
 
-type HospitalType = "ACUTE_CARE"|"CRITICAL_ACCESS"|"SPECIALTY"|"HEALTH_SYSTEM"|"AMBULATORY"|"LONG_TERM_CARE"|"BEHAVIORAL_HEALTH"|"REHABILITATION"|"CHILDRENS"|"CANCER_CENTER"|"OTHER";
+type HospitalType = "ACUTE_CARE"|"CRITICAL_ACCESS"|"SPECIALTY"|"HEALTH_SYSTEM"|"AMBULATORY"|"OUTPATIENT"|"LONG_TERM_CARE"|"BEHAVIORAL_HEALTH"|"REHABILITATION"|"CHILDRENS"|"CANCER_CENTER"|"URGENT_CARE"|"PCP"|"PRIVATE_PRACTICE"|"OTHER";
 type HospitalStatus = "ACTIVE"|"INACTIVE"|"PROSPECT"|"CHURNED";
 
 interface Hospital {
@@ -35,10 +35,24 @@ const STATUS_COLOR: Record<HospitalStatus, string> = {
   ACTIVE: "#34d399", INACTIVE: "#94a3b8", PROSPECT: "var(--nyx-accent)", CHURNED: "#f87171",
 };
 
-const HOSPITAL_TYPES: HospitalType[] = ["ACUTE_CARE","CRITICAL_ACCESS","SPECIALTY","HEALTH_SYSTEM","AMBULATORY","LONG_TERM_CARE","BEHAVIORAL_HEALTH","REHABILITATION","CHILDRENS","CANCER_CENTER","OTHER"];
+const HOSPITAL_TYPES: HospitalType[] = ["ACUTE_CARE","CRITICAL_ACCESS","SPECIALTY","HEALTH_SYSTEM","AMBULATORY","OUTPATIENT","LONG_TERM_CARE","BEHAVIORAL_HEALTH","REHABILITATION","CHILDRENS","CANCER_CENTER","URGENT_CARE","PCP","PRIVATE_PRACTICE","OTHER"];
 const STATUSES: HospitalStatus[] = ["ACTIVE","INACTIVE","PROSPECT","CHURNED"];
 
-const lbl = (s: string) => s.replace(/_/g, " ");
+const TYPE_LABEL: Record<string, string> = {
+  ACUTE_CARE: "Acute Care", CRITICAL_ACCESS: "Critical Access", SPECIALTY: "Specialty",
+  HEALTH_SYSTEM: "Health System", AMBULATORY: "Ambulatory", OUTPATIENT: "Outpatient",
+  LONG_TERM_CARE: "Long-Term Care", BEHAVIORAL_HEALTH: "Behavioral Health",
+  REHABILITATION: "Rehabilitation", CHILDRENS: "Children's", CANCER_CENTER: "Cancer Center",
+  URGENT_CARE: "Urgent Care", PCP: "Primary Care (PCP)", PRIVATE_PRACTICE: "Private Practice", OTHER: "Other",
+};
+const TYPE_ICON: Record<string, string> = {
+  ACUTE_CARE: "🏥", CRITICAL_ACCESS: "🚨", SPECIALTY: "💊", HEALTH_SYSTEM: "🏛️",
+  AMBULATORY: "🚶", OUTPATIENT: "🏢", LONG_TERM_CARE: "🛏️", BEHAVIORAL_HEALTH: "🧠",
+  REHABILITATION: "♻️", CHILDRENS: "👶", CANCER_CENTER: "🎗️", URGENT_CARE: "⚡",
+  PCP: "👨‍⚕️", PRIVATE_PRACTICE: "🏠", OTHER: "🏗️",
+};
+const lbl = (s: string) => TYPE_LABEL[s] ?? s.replace(/_/g, " ");
+const typeIcon = (t: string) => TYPE_ICON[t] ?? "🏥";
 const fmtDate = (d: string) => new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 
 const inp: React.CSSProperties = { width: "100%", background: C.input, border: `1px solid ${C.border}`, borderRadius: 7, padding: "8px 12px", color: C.text, fontSize: "0.875rem", outline: "none", boxSizing: "border-box" };
@@ -196,6 +210,8 @@ export default function HospitalsClient({ initialHospitals }: { initialHospitals
   const [hospitals, setHospitals] = useState<Hospital[]>(initialHospitals);
   const [modal, setModal] = useState<Hospital | "add" | null>(null);
   const [search, setSearch] = useState("");
+  const [filterType, setFilterType] = useState<string>("ALL");
+  const [filterStatus, setFilterStatus] = useState<string>("ALL");
 
   const load = useCallback(async (q?: string) => {
     const url = q ? `/api/hospitals?search=${encodeURIComponent(q)}` : "/api/hospitals";
@@ -204,6 +220,8 @@ export default function HospitalsClient({ initialHospitals }: { initialHospitals
   }, []);
 
   const filtered = hospitals.filter(h => {
+    if (filterType !== "ALL" && h.hospitalType !== filterType) return false;
+    if (filterStatus !== "ALL" && h.status !== filterStatus) return false;
     if (!search) return true;
     const q = search.toLowerCase();
     return (h.hospitalName?.toLowerCase().includes(q) || h.systemName?.toLowerCase()?.includes(q) ||
@@ -242,7 +260,30 @@ export default function HospitalsClient({ initialHospitals }: { initialHospitals
         </button>
       </div>
 
-      {/* Search */}
+      {/* Status filters */}
+      <div style={{ display: "flex", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
+        {(["ALL", ...STATUSES] as const).map(s => (
+          <button key={s} onClick={() => setFilterStatus(s)}
+            style={{ fontSize: "0.72rem", fontWeight: 700, padding: "4px 12px", borderRadius: 20, border: `1px solid ${filterStatus === s ? STATUS_COLOR[s as HospitalStatus] ?? "var(--nyx-accent)" : C.border}`, background: filterStatus === s ? "rgba(0,0,0,0.3)" : "transparent", color: filterStatus === s ? STATUS_COLOR[s as HospitalStatus] ?? "var(--nyx-accent)" : C.muted, cursor: "pointer", whiteSpace: "nowrap" }}>
+            {s === "ALL" ? "All Statuses" : s}
+          </button>
+        ))}
+      </div>
+
+      {/* Account type filters */}
+      <div style={{ display: "flex", gap: 6, marginBottom: 14, flexWrap: "wrap" }}>
+        <button onClick={() => setFilterType("ALL")}
+          style={{ fontSize: "0.7rem", padding: "3px 10px", borderRadius: 16, border: `1px solid ${filterType === "ALL" ? "var(--nyx-accent-str)" : C.border}`, background: filterType === "ALL" ? "var(--nyx-accent-dim)" : "transparent", color: filterType === "ALL" ? "var(--nyx-accent)" : C.muted, cursor: "pointer", whiteSpace: "nowrap" }}>
+          All Types
+        </button>
+        {HOSPITAL_TYPES.map(t => (
+          <button key={t} onClick={() => setFilterType(filterType === t ? "ALL" : t)}
+            style={{ fontSize: "0.7rem", padding: "3px 10px", borderRadius: 16, border: `1px solid ${filterType === t ? "var(--nyx-accent-str)" : C.border}`, background: filterType === t ? "var(--nyx-accent-dim)" : "transparent", color: filterType === t ? "var(--nyx-accent)" : C.muted, cursor: "pointer", whiteSpace: "nowrap" }}>
+            {typeIcon(t)} {lbl(t)}
+          </button>
+        ))}
+      </div>
+
       <div style={{ marginBottom: 16 }}>
         <input style={inp2} value={search} onChange={e => setSearch(e.target.value)} placeholder="Search hospitals, city, state…" />
       </div>
@@ -273,7 +314,11 @@ export default function HospitalsClient({ initialHospitals }: { initialHospitals
                     <div style={{ fontSize: "0.75rem", color: C.muted }}>{h.city}{h.city && h.state ? ", " : ""}{h.state}</div>
                   </td>
                   <td style={{ padding: "14px 16px", fontSize: "0.85rem", color: C.muted }}>{h.systemName ?? "—"}</td>
-                  <td style={{ padding: "14px 16px", fontSize: "0.8rem", color: C.muted }}>{lbl(h.hospitalType)}</td>
+                  <td style={{ padding: "14px 16px" }}>
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: "0.72rem", fontWeight: 600, color: "var(--nyx-accent)", background: "var(--nyx-accent-dim)", border: "1px solid var(--nyx-accent-str)", padding: "2px 8px", borderRadius: 5, whiteSpace: "nowrap" }}>
+                      {typeIcon(h.hospitalType)} {lbl(h.hospitalType)}
+                    </span>
+                  </td>
                   <td style={{ padding: "14px 16px" }}>
                     <span style={{ fontSize: "0.72rem", fontWeight: 700, color: STATUS_COLOR[h.status] ?? "var(--nyx-accent)", background: "rgba(0,0,0,0.3)", padding: "3px 9px", borderRadius: 4 }}>{h.status}</span>
                   </td>

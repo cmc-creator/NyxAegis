@@ -1,6 +1,7 @@
 ﻿import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
 const CYAN = "var(--nyx-accent)";
@@ -9,9 +10,40 @@ const BORDER = "var(--nyx-accent-dim)";
 const TEXT = "var(--nyx-text)";
 const TEXT_MUTED = "var(--nyx-text-muted)";
 
+const HOSPITAL_TYPE_LABELS: Record<string, string> = {
+  ACUTE_CARE: "🏥 Acute Care",
+  CRITICAL_ACCESS: "🚨 Critical Access",
+  SPECIALTY: "⭐ Specialty",
+  HEALTH_SYSTEM: "🏛️ Health System",
+  AMBULATORY: "🏢 Ambulatory",
+  OUTPATIENT: "🏢 Outpatient",
+  LONG_TERM_CARE: "🏠 Long-Term Care",
+  BEHAVIORAL_HEALTH: "🧠 Behavioral Health",
+  REHABILITATION: "💪 Rehabilitation",
+  CHILDRENS: "🧒 Children's",
+  CANCER_CENTER: "🎗️ Cancer Center",
+  URGENT_CARE: "⚡ Urgent Care",
+  PCP: "👨‍⚕️ Primary Care (PCP)",
+  PRIVATE_PRACTICE: "🏠 Private Practice",
+  OTHER: "🏷️ Other",
+};
+
 export default async function AccountDashboard() {
   const session = await auth();
   if (!session) redirect("/login");
+
+  async function updateHospitalType(formData: FormData) {
+    "use server";
+    const sess = await auth();
+    if (!sess) return;
+    const type = formData.get("type") as string;
+    if (!type) return;
+    await prisma.hospital.update({
+      where: { userId: sess.user.id },
+      data: { hospitalType: type as "ACUTE_CARE" },
+    });
+    revalidatePath("/account/dashboard");
+  }
 
   const hospital = await prisma.hospital.findUnique({
     where: { userId: session.user.id },
@@ -69,6 +101,20 @@ export default async function AccountDashboard() {
           {hospital.systemName && `${hospital.systemName} · `}
           {hospital.city}{hospital.city && hospital.state ? ", " : ""}{hospital.state}
         </p>
+        {/* Account type badge + inline editor */}
+        <form action={updateHospitalType} style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
+          <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--nyx-accent)", background: "var(--nyx-accent-dim)", border: "1px solid var(--nyx-accent-str)", padding: "3px 10px", borderRadius: 6 }}>
+            {HOSPITAL_TYPE_LABELS[hospital.hospitalType ?? ""] ?? "🏥 Uncategorized"}
+          </span>
+          <select name="type" defaultValue={hospital.hospitalType ?? ""}
+            style={{ background: "var(--nyx-card)", border: "1px solid var(--nyx-accent-dim)", borderRadius: 6, color: "var(--nyx-text-muted)", fontSize: "0.75rem", padding: "3px 8px", cursor: "pointer" }}>
+            <option value="">Select type…</option>
+            {Object.entries(HOSPITAL_TYPE_LABELS).map(([v, l]) => (
+              <option key={v} value={v}>{l}</option>
+            ))}
+          </select>
+          <button type="submit" style={{ background: "var(--nyx-accent-dim)", border: "1px solid var(--nyx-accent-str)", borderRadius: 6, color: "var(--nyx-accent)", fontSize: "0.72rem", fontWeight: 700, padding: "3px 10px", cursor: "pointer" }}>Update</button>
+        </form>
       </div>
 
       {/* Stats */}
@@ -87,7 +133,7 @@ export default async function AccountDashboard() {
         ))}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+      <div className="nyx-page-grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
         {/* Active Engagements */}
         <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: "20px" }}>
           <p style={{ fontSize: "0.7rem", fontWeight: 700, color: "var(--nyx-accent-label)", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 14 }}>ACTIVE ENGAGEMENTS</p>

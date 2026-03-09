@@ -2,6 +2,7 @@
 import { prisma } from "@/lib/prisma";
 import { formatCurrency, formatRelativeTime } from "@/lib/utils";
 import Link from "next/link";
+import TerritoryMapWrapper from "@/components/maps/TerritoryMapWrapper";
 
 const CYAN = "var(--nyx-accent)";
 const BORDER = "var(--nyx-accent-dim)";
@@ -88,9 +89,11 @@ function Icon({ id, color }: { id: string; color: string }) {
 }
 
 export default async function AdminDashboard() {
+  const REP_COLORS = ["var(--nyx-accent)","#34d399","#fbbf24","#a78bfa","#f59e0b","#60a5fa","#f87171","#fb923c"];
+
   const [
     repCount, hospitalCount, leadCount, openOpps, closedWon,
-    pendingInvoices, recentActivities, recentOpps
+    pendingInvoices, recentActivities, recentOpps, mapReps, mapHospitalsRaw
   ] = await Promise.all([
     prisma.rep.count({ where: { status: "ACTIVE" } }),
     prisma.hospital.count({ where: { status: { not: "CHURNED" } } }),
@@ -100,7 +103,28 @@ export default async function AdminDashboard() {
     prisma.invoice.count({ where: { status: { in: ["SENT", "OVERDUE"] } } }),
     prisma.activity.findMany({ take: 8, orderBy: { createdAt: "desc" }, include: { hospital: { select: { hospitalName: true } }, rep: { include: { user: { select: { name: true } } } } } }),
     prisma.opportunity.findMany({ take: 6, orderBy: { createdAt: "desc" }, include: { hospital: { select: { hospitalName: true } }, assignedRep: { include: { user: { select: { name: true } } } } } }),
+    prisma.rep.findMany({ where: { status: "ACTIVE" }, include: { user: { select: { name: true, email: true } }, territories: true } }),
+    prisma.hospital.findMany({ select: { id: true, hospitalName: true, city: true, state: true, status: true, assignedRepId: true }, orderBy: { hospitalName: "asc" } }),
   ]);
+
+  const repTerritories = mapReps.map((rep, i) => ({
+    id: rep.id,
+    name: rep.user.name ?? rep.user.email ?? "Unknown",
+    color: REP_COLORS[i % REP_COLORS.length],
+    states: [...new Set([
+      ...(rep.licensedStates ?? []),
+      ...rep.territories.map((t: { state: string }) => t.state),
+    ])],
+  }));
+
+  const mapHospitals = mapHospitalsRaw.map(h => ({
+    id: h.id,
+    hospitalName: h.hospitalName,
+    city: h.city,
+    state: h.state,
+    status: h.status,
+    assignedRepName: h.assignedRepId ? (mapReps.find(r => r.id === h.assignedRepId)?.user.name ?? null) : null,
+  }));
 
   const stats = [
     { label: "Active Reps",         value: repCount,        icon: "reps",          href: "/admin/reps" },
@@ -157,7 +181,22 @@ export default async function AdminDashboard() {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+      {/* Territory Overview */}
+      <div style={{ marginBottom: 32 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+          <p style={{ fontSize: "0.7rem", fontWeight: 700, color: "var(--nyx-accent-label)", letterSpacing: "0.12em", textTransform: "uppercase" }}>TERRITORY OVERVIEW</p>
+          <Link href="/admin/territory" style={{ fontSize: "0.75rem", color: CYAN, textDecoration: "none", opacity: 0.7 }}>Full view →</Link>
+        </div>
+        <div className="gold-card" style={{ borderRadius: 12 }}>
+          <div style={{ background: "var(--nyx-card)", borderRadius: 12, padding: "16px 20px" }}>
+            <div style={{ width: "100%", minHeight: 260, borderRadius: 10, overflow: "hidden" }}>
+              <TerritoryMapWrapper hospitals={mapHospitals} repTerritories={repTerritories} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="nyx-page-grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
         {/* Recent Opportunities */}
         <div className="gold-card" style={{ borderRadius: 12, padding: "20px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
