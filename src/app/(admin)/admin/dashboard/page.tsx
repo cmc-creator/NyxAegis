@@ -84,6 +84,14 @@ function Icon({ id, color }: { id: string; color: string }) {
         <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" {...s}/>
       </svg>
     ),
+    referral: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" {...s}/>
+        <circle cx="9" cy="7" r="4" {...s}/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87" {...s}/>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" {...s}/>
+      </svg>
+    ),
   };
   return <>{icons[id] ?? null}</>;
 }
@@ -136,7 +144,7 @@ export default async function AdminDashboard() {
   ];
 
   const quickActions = [
-    { label: "Add Hospital",    href: "/admin/hospitals",    icon: "hospital_q" },
+    { label: "Add Referral",    href: "/admin/leads",         icon: "referral" },
     { label: "Add Lead",        href: "/admin/leads",         icon: "target" },
     { label: "New Opportunity", href: "/admin/opportunities", icon: "chart" },
     { label: "Add Rep",         href: "/admin/reps",          icon: "user" },
