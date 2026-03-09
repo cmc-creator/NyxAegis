@@ -227,7 +227,7 @@ export function Sidebar({ role, userName, userEmail }: SidebarProps) {
 
       <aside
         className={`nyx-sidebar${mobileOpen ? " is-open" : ""}`}
-        style={{ width: 220, minHeight: "100vh", borderRight: `1px solid ${BORDER}`, display: "flex", flexDirection: "column", flexShrink: 0, position: "sticky", top: 0, height: "100vh", overflowY: "auto" }}
+        style={{ width: 248, minHeight: "100vh", borderRight: `1px solid ${BORDER}`, display: "flex", flexDirection: "column", flexShrink: 0, position: "sticky", top: 0, height: "100vh", overflowY: "auto" }}
       >
       {/* Logo */}
       <div style={{ padding: "20px 18px 16px", borderBottom: `1px solid ${BORDER}` }}>
