@@ -4,6 +4,7 @@ import { formatCurrency, formatRelativeTime } from "@/lib/utils";
 import Link from "next/link";
 import TerritoryMapWrapper from "@/components/maps/TerritoryMapWrapper";
 import QuickActionsWidget from "@/components/dashboard/QuickActionsWidget";
+import AIInsightsPanel from "@/components/ai/AIInsightsPanel";
 
 const CYAN = "var(--nyx-accent)";
 const BORDER = "var(--nyx-accent-dim)";
@@ -173,6 +174,11 @@ export default async function AdminDashboard() {
 
       {/* Quick Actions */}
       <QuickActionsWidget />
+
+      {/* AI Insights */}
+      <div style={{ marginBottom: 32 }}>
+        <AIInsightsPanel role="admin" />
+      </div>
 
       {/* Territory Overview */}
       <div style={{ marginBottom: 32 }}>

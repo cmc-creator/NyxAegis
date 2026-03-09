@@ -21,7 +21,7 @@ const BG = "var(--nyx-bg)";
 const WELCOME_MESSAGE: Message = {
   id: "welcome",
   role: "assistant",
-  content: "Hi! I'm **Aegis**, your NyxAegis AI assistant. I can help with leads, opportunities, drafting outreach, territory strategy, and navigating the platform. What do you need?",
+  content: "Hi! I'm **Aegis**, your NyxAegis AI assistant. I can help you track referrals, review your pipeline, draft outreach, surface at-risk relationships, and navigate the platform. What do you need?",
 };
 
 function renderMarkdown(text: string): string {
@@ -53,6 +53,7 @@ export default function AIChatWidget() {
   const [loading, setLoading]   = useState(false);
   const bottomRef               = useRef<HTMLDivElement>(null);
   const inputRef                = useRef<HTMLTextAreaElement>(null);
+  const pendingPromptRef        = useRef<string | null>(null);
 
   useEffect(() => {
     if (open) bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -61,6 +62,23 @@ export default function AIChatWidget() {
   useEffect(() => {
     if (open) setTimeout(() => inputRef.current?.focus(), 80);
   }, [open]);
+
+  // External trigger: aegis:prompt pre-fills + auto-sends, aegis:open just opens
+  useEffect(() => {
+    const handlePrompt = (e: Event) => {
+      const prompt = (e as CustomEvent<string>).detail;
+      setOpen(true);
+      setInput(prompt);
+      pendingPromptRef.current = prompt;
+    };
+    const handleOpen = () => setOpen(true);
+    window.addEventListener("aegis:prompt", handlePrompt);
+    window.addEventListener("aegis:open", handleOpen);
+    return () => {
+      window.removeEventListener("aegis:prompt", handlePrompt);
+      window.removeEventListener("aegis:open", handleOpen);
+    };
+  }, []);
 
   const send = useCallback(async () => {
     const text = input.trim();
@@ -95,6 +113,14 @@ export default function AIChatWidget() {
       setLoading(false);
     }
   }, [input, loading, messages]);
+
+  // Auto-send when a pending prompt has been set into input
+  useEffect(() => {
+    if (pendingPromptRef.current && input === pendingPromptRef.current && !loading) {
+      pendingPromptRef.current = null;
+      send();
+    }
+  }, [input, loading, send]);
 
   const handleKey = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }

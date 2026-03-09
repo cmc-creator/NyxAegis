@@ -2,6 +2,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { formatCurrency, formatRelativeTime } from "@/lib/utils";
+import AIInsightsPanel from "@/components/ai/AIInsightsPanel";
 
 const CYAN = "var(--nyx-accent)";
 const CARD = "var(--nyx-card)";
@@ -55,6 +56,11 @@ export default async function RepDashboard() {
             <div style={{ fontSize: "0.72rem", color: TEXT_MUTED }}>{s.label}</div>
           </div>
         ))}
+      </div>
+
+      {/* AI Insights */}
+      <div style={{ marginBottom: 28 }}>
+        <AIInsightsPanel role="rep" />
       </div>
 
       <div className="nyx-page-grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>

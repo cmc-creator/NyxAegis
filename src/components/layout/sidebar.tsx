@@ -318,6 +318,16 @@ export function Sidebar({ role, userName, userEmail }: SidebarProps) {
           </div>
         </div>
         <button
+          onClick={() => window.dispatchEvent(new Event("aegis:open"))}
+          style={{ width: "100%", background: ACCENT_DIM, border: `1px solid ${ACCENT_MID}`, borderRadius: 6, padding: "7px", fontSize: "0.78rem", color: CYAN, cursor: "pointer", fontWeight: 700, marginBottom: 6, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
+        >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9.5 3 11 7.5 15.5 9 11 10.5 9.5 15 8 10.5 3.5 9 8 7.5z"/>
+            <path d="M18 13l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/>
+          </svg>
+          Ask Aegis AI
+        </button>
+        <button
           onClick={() => signOut({ callbackUrl: "/login" })}
           style={{ width: "100%", background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.12)", borderRadius: 6, padding: "7px", fontSize: "0.78rem", color: "#f87171", cursor: "pointer", fontWeight: 500 }}
         >
