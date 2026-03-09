@@ -143,7 +143,7 @@ export default function LandingPage() {
       </nav>
 
       {/* HERO */}
-      <section style={{ position: "relative", zIndex: 1, padding: "100px 2rem 0", maxWidth: 1200, margin: "0 auto" }}>
+      <section style={{ position: "relative", zIndex: 1, padding: "100px 2rem 0", maxWidth: 1400, margin: "0 auto" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
           <div>
             {/* Logo + badge */}
@@ -195,7 +195,7 @@ export default function LandingPage() {
       </section>
 
       {/* PHOTOGRAPHY STRIP */}
-      <section style={{ position: "relative", zIndex: 1, padding: "0 2rem 80px", maxWidth: 1200, margin: "0 auto" }}>
+      <section style={{ position: "relative", zIndex: 1, padding: "0 2rem 80px", maxWidth: 1400, margin: "0 auto" }}>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 14 }}>
           {[
             { src: "/Landing/desk.png",    label: "Built for the field",       sub: "Log visits and referrals on the go" },
@@ -218,7 +218,7 @@ export default function LandingPage() {
       </section>
 
       {/* FEATURES */}
-      <section id="features" style={{ position: "relative", zIndex: 1, padding: "96px 2rem", maxWidth: 1200, margin: "0 auto" }}>
+      <section id="features" style={{ position: "relative", zIndex: 1, padding: "96px 2rem", maxWidth: 1400, margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: 60 }}>
           <p style={{ color: C.cyan, fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 14 }}>Platform Features</p>
           <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 900, letterSpacing: "-0.025em", marginBottom: 14 }}>Built for how you actually work</h2>
@@ -238,7 +238,7 @@ export default function LandingPage() {
 
       {/* WORKFLOW */}
       <section style={{ position: "relative", zIndex: 1, padding: "96px 2rem", borderTop: `1px solid ${C.border}`, background: "var(--nyx-accent-dim)" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ maxWidth: 1300, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: 64 }}>
             <p style={{ color: C.cyan, fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 14 }}>How It Works</p>
             <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 900, letterSpacing: "-0.025em" }}>From first visit to proven ROI</h2>
@@ -260,7 +260,7 @@ export default function LandingPage() {
 
       {/* PORTALS */}
       <section style={{ position: "relative", zIndex: 1, padding: "96px 2rem" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ maxWidth: 1300, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: 56 }}>
             <p style={{ color: C.cyan, fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 14 }}>Role-Based Access</p>
             <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 900, letterSpacing: "-0.025em", marginBottom: 12 }}>A portal for every stakeholder</h2>
@@ -304,7 +304,7 @@ export default function LandingPage() {
 
       {/* PRICING */}
       <section id="pricing" style={{ position: "relative", zIndex: 1, padding: "96px 2rem", borderTop: `1px solid ${C.border}`, background: "var(--nyx-accent-dim)" }}>
-        <div style={{ maxWidth: 1080, margin: "0 auto" }}>
+        <div style={{ maxWidth: 1260, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: 56 }}>
             <p style={{ color: C.cyan, fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 14 }}>Pricing</p>
             <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 900, letterSpacing: "-0.025em" }}>Simple, transparent pricing</h2>
@@ -355,7 +355,7 @@ export default function LandingPage() {
 
       {/* FOOTER */}
       <footer style={{ position: "relative", zIndex: 1, borderTop: `1px solid ${C.border}`, padding: "48px 2rem 32px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ maxWidth: 1300, margin: "0 auto" }}>
           {/* Footer top */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 32, marginBottom: 40 }}>
             {/* Brand block */}
