@@ -138,7 +138,7 @@ export default async function AdminDashboard() {
 
   const stats = [
     { label: "Active Reps",         value: repCount,        icon: "reps",          href: "/admin/reps" },
-    { label: "Active Hospitals",    value: hospitalCount,   icon: "hospitals",     href: "/admin/hospitals" },
+    { label: "Active Clients",       value: hospitalCount,   icon: "hospitals",     href: "/admin/hospitals" },
     { label: "Open Leads",          value: leadCount,       icon: "leads",         href: "/admin/leads" },
     { label: "Open Opportunities",  value: openOpps,        icon: "opportunities", href: "/admin/opportunities" },
     { label: "Closed Won",          value: closedWon,       icon: "won",           href: "/admin/opportunities" },
@@ -156,7 +156,7 @@ export default async function AdminDashboard() {
       <div style={{ marginBottom: 28 }}>
         <p style={{ color: "var(--nyx-accent-label)", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 4 }}>NYXAEGIS</p>
         <h1 style={{ fontSize: "1.8rem", fontWeight: 900, color: TEXT, letterSpacing: "-0.02em" }}>Command Center</h1>
-        <p style={{ color: TEXT_MUTED, fontSize: "0.875rem", marginTop: 4 }}>Hospital Business Development Overview</p>
+        <p style={{ color: TEXT_MUTED, fontSize: "0.875rem", marginTop: 4 }}>Business Development Overview</p>
       </div>
 
       {/* Stats Grid */}

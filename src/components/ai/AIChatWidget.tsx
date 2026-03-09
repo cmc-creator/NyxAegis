@@ -21,7 +21,7 @@ const BG = "var(--nyx-bg)";
 const WELCOME_MESSAGE: Message = {
   id: "welcome",
   role: "assistant",
-  content: "Hi! I'm **Aegis**, your NyxAegis AI assistant. I can help you track referrals, review your pipeline, draft outreach, surface at-risk relationships, and navigate the platform. What do you need?",
+  content: "Hi! I'm **Aegis**, your intelligent NyxAegis assistant. I can help you manage your pipeline, find new referral sources by location, draft outreach, surface relationships at risk, navigate the platform, and proactively suggest your next best action. What can I help you with?",
 };
 
 function renderMarkdown(text: string): string {
@@ -189,7 +189,7 @@ export default function AIChatWidget() {
             <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
           </svg>
         ) : (
-          <Image src="/Aegislogo.png" alt="Aegis AI" width={38} height={38} style={{ objectFit: "contain", borderRadius: "50%" }} />
+          <Image src="/Aegislogo.png" alt="Aegis AI" width={56} height={56} style={{ objectFit: "cover", width: "100%", height: "100%" }} />
         )}
       </button>
 
@@ -216,8 +216,8 @@ export default function AIChatWidget() {
             background: `linear-gradient(135deg, rgba(201,168,76,0.1) 0%, rgba(0,0,0,0) 100%)`,
             flexShrink: 0,
           }}>
-            <div style={{ width: 36, height: 36, borderRadius: "50%", border: `1.5px solid ${GOLD_MID}`, overflow: "hidden", flexShrink: 0 }}>
-              <Image src="/Aegislogo.png" alt="Aegis" width={36} height={36} style={{ objectFit: "contain", width: "100%", height: "100%" }} />
+            <div style={{ width: 36, height: 36, borderRadius: "50%", overflow: "hidden", flexShrink: 0, background: "rgba(201,168,76,0.15)" }}>
+              <Image src="/Aegislogo.png" alt="Aegis" width={36} height={36} style={{ objectFit: "cover", width: "100%", height: "100%" }} />
             </div>
             <div style={{ flex: 1 }}>
               <p style={{ margin: 0, fontWeight: 800, fontSize: "0.9rem", color: GOLD, letterSpacing: "0.03em" }}>Aegis AI</p>
@@ -249,8 +249,8 @@ export default function AIChatWidget() {
             {messages.map((m) => (
               <div key={m.id} style={{ display: "flex", gap: 9, alignItems: "flex-start", flexDirection: m.role === "user" ? "row-reverse" : "row" }}>
                 {m.role === "assistant" && (
-                  <div style={{ width: 28, height: 28, borderRadius: "50%", border: `1px solid ${GOLD_MID}`, overflow: "hidden", flexShrink: 0, marginTop: 2 }}>
-                    <Image src="/Aegislogo.png" alt="Aegis" width={28} height={28} style={{ objectFit: "contain", width: "100%", height: "100%" }} />
+                  <div style={{ width: 28, height: 28, borderRadius: "50%", overflow: "hidden", flexShrink: 0, marginTop: 2, background: "rgba(201,168,76,0.15)" }}>
+                    <Image src="/Aegislogo.png" alt="Aegis" width={28} height={28} style={{ objectFit: "cover", width: "100%", height: "100%" }} />
                   </div>
                 )}
                 <div
@@ -266,8 +266,8 @@ export default function AIChatWidget() {
             ))}
             {loading && (
               <div style={{ display: "flex", gap: 9, alignItems: "flex-start" }}>
-                <div style={{ width: 28, height: 28, borderRadius: "50%", border: `1px solid ${GOLD_MID}`, overflow: "hidden", flexShrink: 0, marginTop: 2 }}>
-                  <Image src="/Aegislogo.png" alt="Aegis" width={28} height={28} style={{ objectFit: "contain", width: "100%", height: "100%" }} />
+                <div style={{ width: 28, height: 28, borderRadius: "50%", overflow: "hidden", flexShrink: 0, marginTop: 2, background: "rgba(201,168,76,0.15)" }}>
+                  <Image src="/Aegislogo.png" alt="Aegis" width={28} height={28} style={{ objectFit: "cover", width: "100%", height: "100%" }} />
                 </div>
                 <div className="aegis-msg-ai" style={{ borderRadius: "4px 14px 14px 14px", padding: "10px 14px" }}>
                   <TypingDots />

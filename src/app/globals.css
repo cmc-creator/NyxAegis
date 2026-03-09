@@ -861,10 +861,10 @@ img[data-nimg] {
   p, h1, h2, h3, h4, h5, h6, li, td, th, div { text-wrap: pretty; }
 }
 
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
-::-webkit-scrollbar-thumb { background: var(--nyx-scrollbar); border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: var(--nyx-accent-mid); }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: rgba(0,0,0,0.15); border-radius: 99px; }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--nyx-accent), var(--nyx-scrollbar)); border-radius: 99px; min-height: 40px; border: 1.5px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background: var(--nyx-accent); border-radius: 99px; min-height: 40px; }
 
 /* ── Gold card border system ─────────────────────────────────────── */
 @keyframes gold-card-shine {

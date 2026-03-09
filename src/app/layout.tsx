@@ -11,7 +11,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "NyxAegis CRM",
-  description: "Hospital Business Development Platform for healthcare BD teams",
+  description: "Business Development CRM Platform for high-performance BD teams",
   icons: { icon: "/icon.svg", shortcut: "/icon.svg" },
 };
 

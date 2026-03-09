@@ -26,7 +26,7 @@ export default async function CompliancePage() {
     <div>
       <div style={{ marginBottom: 28 }}>
         <p style={{ color: "var(--nyx-accent-label)", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 4 }}>INTELLIGENCE</p>
-        <h1 style={{ fontSize: "1.8rem", fontWeight: 900, color: TEXT }}>Healthcare Compliance</h1>
+        <h1 style={{ fontSize: "1.8rem", fontWeight: 900, color: TEXT }}>Compliance Center</h1>
         <p style={{ color: TEXT_MUTED, fontSize: "0.875rem", marginTop: 4 }}>HIPAA training, licenses, and compliance document management</p>
       </div>
 

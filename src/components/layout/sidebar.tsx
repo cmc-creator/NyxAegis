@@ -105,9 +105,9 @@ const ADMIN_NAV: NavGroup[] = [
     ],
   },
   {
-    group: "Accounts", tint: "green",
+    group: "Clients", tint: "green",
     items: [
-      { href: "/admin/hospitals",  label: "Hospitals" },
+      { href: "/admin/hospitals",  label: "Accounts" },
       { href: "/admin/territory",  label: "Territory Map" },
     ],
   },

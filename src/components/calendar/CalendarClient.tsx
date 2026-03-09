@@ -183,6 +183,8 @@ function ActivityModal({ activity, defaultDate, hospitals, reps, onSave, onDelet
   const [notes,         setNotes]    = useState(activity?.notes ?? "");
   const [schedDate,     setSchedDate]= useState(activity?.scheduledAt ? activity.scheduledAt.slice(0,10) : (defaultDate ?? ""));
   const [schedTime,     setSchedTime]= useState(getInitialTime(activity?.scheduledAt));
+  const [syncCal,      setSyncCal]  = useState(false);
+  const [syncStatus,   setSyncStatus] = useState<"idle"|"syncing"|"done"|"error">("idle");
   const [done,          setDone]     = useState(!!activity?.completedAt);
   const [hospitalId,    setHospId]   = useState(activity?.hospitalId ?? activity?.hospital?.id ?? "");
   const [repId,         setRepId]    = useState(activity?.repId ?? "");
@@ -201,16 +203,40 @@ function ActivityModal({ activity, defaultDate, hospitals, reps, onSave, onDelet
   const handleSave = async () => {
     if (!title.trim()) return;
     setSaving(true);
+    const scheduledAt = buildScheduledAt();
     await onSave({
       id: activity?.id,
       type,
       title: title.trim(),
       notes: notes.trim() || null,
-      scheduledAt: buildScheduledAt(),
+      scheduledAt,
       completedAt: done ? (activity?.completedAt ?? new Date().toISOString()) : null,
       hospitalId: hospitalId || null,
       repId: repId || null,
     });
+
+    // Optionally push to connected calendar
+    if (syncCal && scheduledAt) {
+      setSyncStatus("syncing");
+      try {
+        const start = new Date(scheduledAt);
+        const end   = new Date(start.getTime() + 60 * 60 * 1000); // +1 hour default
+        const calRes = await fetch("/api/calendar/event", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: title.trim(),
+            description: notes.trim() || undefined,
+            start: start.toISOString(),
+            end: end.toISOString(),
+          }),
+        });
+        setSyncStatus(calRes.ok ? "done" : "error");
+      } catch {
+        setSyncStatus("error");
+      }
+    }
+
     setSaving(false);
   };
 
@@ -318,6 +344,27 @@ function ActivityModal({ activity, defaultDate, hospitals, reps, onSave, onDelet
               {done && <span style={{ color:C.cyan, fontSize:"0.7rem", fontWeight:900 }}>✓</span>}
             </div>
             <span style={{ fontSize:"0.85rem", color:C.muted }}>Mark as completed</span>
+          </label>
+
+          {/* Sync to calendar */}
+          <label style={{ display:"flex", alignItems:"center", gap:10, cursor:"pointer" }}>
+            <div
+              onClick={() => { setSyncCal(v => !v); setSyncStatus("idle"); }}
+              style={{
+                width:18, height:18, borderRadius:4, flexShrink:0,
+                border:`1.5px solid ${syncCal ? "#60a5fa" : C.border}`,
+                background: syncCal ? "rgba(96,165,250,0.18)" : "rgba(0,0,0,0.3)",
+                display:"flex", alignItems:"center", justifyContent:"center",
+              }}
+            >
+              {syncCal && <span style={{ color:"#60a5fa", fontSize:"0.7rem", fontWeight:900 }}>✓</span>}
+            </div>
+            <span style={{ fontSize:"0.85rem", color:C.muted }}>
+              Sync to Outlook / Google Calendar&nbsp;
+              {syncStatus === "syncing" && <span style={{ color:"#fbbf24" }}>syncing…</span>}
+              {syncStatus === "done"    && <span style={{ color:"#34d399" }}>✓ synced</span>}
+              {syncStatus === "error"   && <span style={{ color:"#f87171" }}>⚠ no calendar connected</span>}
+            </span>
           </label>
         </div>
 
