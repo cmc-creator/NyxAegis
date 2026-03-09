@@ -127,11 +127,11 @@ export default function LandingPage() {
 
       {/* NAV */}
       <nav style={{ position: "sticky", top: 0, zIndex: 50, borderBottom: `1px solid ${C.border}`, padding: "0 2rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64, background: "color-mix(in srgb, var(--nyx-bg) 85%, transparent)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <Image src="/Aegislogo.png" alt="NyxAegis" width={38} height={38} style={{ objectFit: "contain" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <Image src="/Aegislogo.png" alt="NyxAegis" width={50} height={50} style={{ objectFit: "contain", filter: "drop-shadow(0 0 8px rgba(201,168,76,0.35))" }} />
           <div>
-            <span style={{ fontWeight: 900, fontSize: "1.1rem", letterSpacing: "-0.03em", display: "block", lineHeight: 1.1 }}>NyxAegis</span>
-            <span style={{ fontSize: "0.6rem", color: C.muted, letterSpacing: "0.08em", textTransform: "uppercase" }}>Hospital BD Platform</span>
+            <span style={{ fontWeight: 900, fontSize: "1.15rem", letterSpacing: "-0.03em", display: "block", lineHeight: 1.1 }}>NyxAegis<sup style={{ fontSize: "0.6em", verticalAlign: "super", marginLeft: 1, color: "var(--nyx-accent)" }}>™</sup></span>
+            <span style={{ fontSize: "0.62rem", color: C.muted, letterSpacing: "0.06em", fontStyle: "italic" }}>Where Relationships Become Referrals.</span>
           </div>
         </div>
         <div style={{ display: "flex", gap: "2rem", alignItems: "center" }}>
@@ -146,16 +146,18 @@ export default function LandingPage() {
       <section style={{ position: "relative", zIndex: 1, padding: "100px 2rem 0", maxWidth: 1200, margin: "0 auto" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 28 }}>
-              <Image src="/Aegislogo.png" alt="NyxAegis" width={56} height={56} style={{ objectFit: "contain", filter: "drop-shadow(0 0 16px rgba(201,168,76,0.4))" }} />
-              <div>
-                <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--nyx-accent-dim)", border: "1px solid var(--nyx-accent-mid)", borderRadius: 999, padding: "5px 14px", marginBottom: 6 }}>
-                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: C.cyan, display: "inline-block", boxShadow: `0 0 8px ${C.cyan}` }} />
-                  <span style={{ fontSize: "0.68rem", color: C.cyan, fontWeight: 700, letterSpacing: "0.1em" }}>HOSPITAL BD REFERRAL TRACKING</span>
-                </div>
-                <p style={{ margin: 0, fontSize: "1rem", color: C.muted, fontStyle: "italic", letterSpacing: "0.02em" }}>Where Relationships Become Referrals.</p>
+            {/* Logo + badge */}
+            <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20 }}>
+              <Image src="/Aegislogo.png" alt="NyxAegis" width={88} height={88} style={{ objectFit: "contain", filter: "drop-shadow(0 0 24px rgba(201,168,76,0.5))", flexShrink: 0 }} />
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "var(--nyx-accent-dim)", border: "1px solid var(--nyx-accent-mid)", borderRadius: 999, padding: "7px 18px" }}>
+                <span style={{ width: 7, height: 7, borderRadius: "50%", background: C.cyan, display: "inline-block", boxShadow: `0 0 8px ${C.cyan}` }} />
+                <span style={{ fontSize: "0.7rem", color: C.cyan, fontWeight: 700, letterSpacing: "0.1em" }}>HOSPITAL BD REFERRAL TRACKING</span>
               </div>
             </div>
+            {/* Tagline — prominent */}
+            <p style={{ fontSize: "clamp(1.15rem, 2.5vw, 1.5rem)", fontWeight: 700, color: "var(--nyx-accent)", letterSpacing: "-0.01em", marginBottom: 20, fontStyle: "italic" }}>
+              &ldquo;Where Relationships Become Referrals.&rdquo;
+            </p>
             <h1 style={{ fontSize: "clamp(2.4rem, 5vw, 3.8rem)", fontWeight: 900, lineHeight: 1.08, letterSpacing: "-0.03em", marginBottom: 24 }}>
               Track every<br />
               <span style={{ color: "var(--nyx-accent)" }}>referral source.</span>
@@ -352,19 +354,47 @@ export default function LandingPage() {
       </section>
 
       {/* FOOTER */}
-      <footer style={{ position: "relative", zIndex: 1, borderTop: `1px solid ${C.border}`, padding: "32px 2rem" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 16 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <Image src="/Aegislogo.png" alt="NyxAegis" width={24} height={24} style={{ objectFit: "contain", opacity: 0.7 }} />
-            <div>
-              <span style={{ color: C.dim, fontSize: "0.78rem", display: "block" }}>© 2026 NyxCollective LLC</span>
-              <span style={{ color: C.dim, fontSize: "0.65rem", opacity: 0.6, fontStyle: "italic" }}>Where Relationships Become Referrals.</span>
+      <footer style={{ position: "relative", zIndex: 1, borderTop: `1px solid ${C.border}`, padding: "48px 2rem 32px" }}>
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          {/* Footer top */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 32, marginBottom: 40 }}>
+            {/* Brand block */}
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 16 }}>
+              <Image src="/Aegislogo.png" alt="NyxAegis" width={56} height={56} style={{ objectFit: "contain", filter: "drop-shadow(0 0 10px rgba(201,168,76,0.3))" }} />
+              <div>
+                <p style={{ margin: "0 0 4px", fontWeight: 900, fontSize: "1.1rem", color: C.text, letterSpacing: "-0.02em" }}>
+                  NyxAegis<sup style={{ fontSize: "0.55em", verticalAlign: "super", marginLeft: 2, color: "var(--nyx-accent)" }}>™</sup>
+                </p>
+                <p style={{ margin: "0 0 8px", fontSize: "0.85rem", color: "var(--nyx-accent)", fontStyle: "italic", fontWeight: 600 }}>Where Relationships Become Referrals.</p>
+                <p style={{ margin: 0, fontSize: "0.75rem", color: C.dim, maxWidth: 280, lineHeight: 1.6 }}>Purpose-built CRM for hospital business development teams tracking referral sources in the field.</p>
+              </div>
+            </div>
+            {/* Links */}
+            <div style={{ display: "flex", gap: 48, flexWrap: "wrap" }}>
+              <div>
+                <p style={{ margin: "0 0 12px", fontSize: "0.65rem", fontWeight: 700, color: C.muted, letterSpacing: "0.12em", textTransform: "uppercase" }}>Product</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  <Link href="#features" style={{ color: C.dim, textDecoration: "none", fontSize: "0.82rem" }}>Features</Link>
+                  <Link href="/pricing" style={{ color: C.dim, textDecoration: "none", fontSize: "0.82rem" }}>Pricing</Link>
+                  <Link href="/signup" style={{ color: C.dim, textDecoration: "none", fontSize: "0.82rem" }}>Get Started</Link>
+                </div>
+              </div>
+              <div>
+                <p style={{ margin: "0 0 12px", fontSize: "0.65rem", fontWeight: 700, color: C.muted, letterSpacing: "0.12em", textTransform: "uppercase" }}>Company</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  <Link href="/login" style={{ color: C.dim, textDecoration: "none", fontSize: "0.82rem" }}>Sign In</Link>
+                  <Link href="/terms" style={{ color: C.dim, textDecoration: "none", fontSize: "0.82rem" }}>Terms of Service</Link>
+                  <Link href="/privacy" style={{ color: C.dim, textDecoration: "none", fontSize: "0.82rem" }}>Privacy Policy</Link>
+                </div>
+              </div>
             </div>
           </div>
-          <div style={{ display: "flex", gap: 24 }}>
-            <Link href="/terms" style={{ color: C.dim, textDecoration: "none", fontSize: "0.78rem" }}>Terms</Link>
-            <Link href="/privacy" style={{ color: C.dim, textDecoration: "none", fontSize: "0.78rem" }}>Privacy</Link>
-            <Link href="/pricing" style={{ color: C.dim, textDecoration: "none", fontSize: "0.78rem" }}>Pricing</Link>
+          {/* Footer bottom */}
+          <div style={{ borderTop: `1px solid ${C.border}`, paddingTop: 20, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
+            <p style={{ margin: 0, fontSize: "0.75rem", color: C.dim }}>
+              &copy; 2026 NyxCollective LLC. All rights reserved. NyxAegis&#8482; is a trademark of NyxCollective LLC.
+            </p>
+            <p style={{ margin: 0, fontSize: "0.72rem", color: C.dim, fontStyle: "italic" }}>Where Relationships Become Referrals.&#8482;</p>
           </div>
         </div>
       </footer>
