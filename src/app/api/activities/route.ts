@@ -11,20 +11,22 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const from         = searchParams.get("from");
   const to           = searchParams.get("to");
-  const leadId       = searchParams.get("leadId");
-  const repId        = searchParams.get("repId");
-  const hospitalId   = searchParams.get("hospitalId");
-  const opportunityId = searchParams.get("opportunityId");
+  const leadId          = searchParams.get("leadId");
+  const repId           = searchParams.get("repId");
+  const hospitalId      = searchParams.get("hospitalId");
+  const opportunityId   = searchParams.get("opportunityId");
+  const referralSourceId = searchParams.get("referralSourceId");
 
   // When filtering by entity, return most-recent-first and skip the date filter
-  const entityFilter = leadId || repId || hospitalId || opportunityId;
+  const entityFilter = leadId || repId || hospitalId || opportunityId || referralSourceId;
 
   const activities = await prisma.activity.findMany({
     where: {
-      ...(leadId        ? { leadId }        : {}),
-      ...(repId         ? { repId }         : {}),
-      ...(hospitalId    ? { hospitalId }    : {}),
-      ...(opportunityId ? { opportunityId } : {}),
+      ...(leadId           ? { leadId }           : {}),
+      ...(repId            ? { repId }            : {}),
+      ...(hospitalId       ? { hospitalId }       : {}),
+      ...(opportunityId    ? { opportunityId }    : {}),
+      ...(referralSourceId ? { referralSourceId } : {}),
       ...(!entityFilter && (from || to) ? {
         scheduledAt: {
           ...(from ? { gte: new Date(from) } : {}),

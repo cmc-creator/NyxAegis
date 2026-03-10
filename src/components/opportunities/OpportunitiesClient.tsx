@@ -1,5 +1,6 @@
 ﻿"use client";
 import { useState, useEffect, useCallback } from "react";
+import { ActivityFeedPanel } from "@/components/activities/ActivityFeedPanel";
 
 type Stage = "DISCOVERY"|"QUALIFICATION"|"DEMO"|"PROPOSAL"|"NEGOTIATION"|"CLOSED_WON"|"CLOSED_LOST"|"ON_HOLD";
 type SvcLine = "CARDIOLOGY"|"ONCOLOGY"|"ORTHOPEDICS"|"NEUROLOGY"|"WOMENS_HEALTH"|"PEDIATRICS"|"BEHAVIORAL_HEALTH"|"PRIMARY_CARE"|"SURGICAL_SERVICES"|"EMERGENCY_MEDICINE"|"RADIOLOGY"|"LABORATORY"|"PHARMACY"|"REHABILITATION"|"HOME_HEALTH"|"TELEHEALTH"|"REVENUE_CYCLE"|"SUPPLY_CHAIN"|"IT_SOLUTIONS"|"STAFFING"|"OTHER";
@@ -150,6 +151,7 @@ export default function OpportunitiesClient({ hospitals, reps }: { hospitals: Ho
   const [loading, setLoading] = useState(true);
   const [view, setView] = useState<"kanban"|"list">("kanban");
   const [modal, setModal] = useState<"add" | Opp | null>(null);
+  const [activityOpp, setActivityOpp] = useState<Opp | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -231,6 +233,12 @@ export default function OpportunitiesClient({ hospitals, reps }: { hospitals: Ho
                         {opp.assignedRep && <div style={{ fontSize: "0.65rem", color: C.muted }}>👤 {opp.assignedRep.user.name}</div>}
                         <span style={{ fontSize: "0.6rem", fontWeight: 700, color: opp.priority === "URGENT" ? "#f87171" : opp.priority === "HIGH" ? "#fbbf24" : C.muted }}>{opp.priority}</span>
                       </div>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setActivityOpp(opp); }}
+                        style={{ marginTop: 8, width: "100%", background: "var(--nyx-accent-dim)", border: "1px solid var(--nyx-accent-str)", borderRadius: 5, padding: "4px", color: C.cyan, cursor: "pointer", fontSize: "0.65rem", fontWeight: 700 }}
+                      >
+                        📋 Activity
+                      </button>
                     </div>
                   ))}
                   {items.length === 0 && <div style={{ padding: 12, fontSize: "0.75rem", color: "rgba(216,232,244,0.15)", textAlign: "center", border: `1px dashed var(--nyx-accent-dim)`, borderRadius: 8 }}>Empty</div>}
@@ -248,7 +256,7 @@ export default function OpportunitiesClient({ hospitals, reps }: { hospitals: Ho
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr style={{ borderBottom: `1px solid ${C.border}` }}>
-                  {["Title","Hospital","Stage","Service Line","Value","Rep","Priority","Next Follow-up",""].map(h => (
+                  {["Title","Hospital","Stage","Service Line","Value","Rep","Priority","Next Follow-up","",""].map(h => (
                   <th key={h} style={{ padding: "12px 14px", textAlign: "left", fontSize: "0.65rem", fontWeight: 700, color: "var(--nyx-accent-label)", letterSpacing: "0.1em", textTransform: "uppercase" }}>{h}</th>
                 ))}
               </tr>
@@ -277,6 +285,14 @@ export default function OpportunitiesClient({ hospitals, reps }: { hospitals: Ho
                     {opp.nextFollowUp ? fmtDate(opp.nextFollowUp) : <span style={{ opacity: 0.4 }}>--</span>}
                   </td>
                   <td style={{ padding: "12px 14px", fontSize: "0.75rem", color: C.cyan }}>Edit →</td>
+                  <td style={{ padding: "12px 8px" }}>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setActivityOpp(opp); }}
+                      style={{ background: "var(--nyx-accent-dim)", border: "1px solid var(--nyx-accent-str)", borderRadius: 6, padding: "4px 10px", color: C.cyan, cursor: "pointer", fontSize: "0.7rem", fontWeight: 700, whiteSpace: "nowrap" }}
+                    >
+                      📋 Activity
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -284,6 +300,16 @@ export default function OpportunitiesClient({ hospitals, reps }: { hospitals: Ho
           </div>
           </div>
         </div>
+      )}
+
+      {activityOpp && (
+        <ActivityFeedPanel
+          entityId={activityOpp.id}
+          entityParam="opportunityId"
+          entityName={activityOpp.title}
+          entitySubtitle={activityOpp.hospital.hospitalName}
+          onClose={() => setActivityOpp(null)}
+        />
       )}
 
       {modal !== null && (

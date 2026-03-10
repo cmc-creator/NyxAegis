@@ -610,6 +610,9 @@ model Activity {
   contactId String?
   contact   Contact? @relation(fields: [contactId], references: [id])
 
+  referralSourceId String?
+  referralSource   ReferralSource? @relation(fields: [referralSourceId], references: [id])
+
   scheduledAt DateTime?
   completedAt DateTime?
 
@@ -862,6 +865,7 @@ model ReferralSource {
   updatedAt DateTime @updatedAt
 
   referrals Referral[]
+  activities Activity[]
 
   @@map("referral_sources")
 }

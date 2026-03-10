@@ -1,6 +1,7 @@
 ﻿"use client";
 
 import { useEffect, useState } from "react";
+import { ActivityFeedPanel } from "@/components/activities/ActivityFeedPanel";
 
 const C = {
   cyan: "var(--nyx-accent)",
@@ -41,6 +42,7 @@ export default function ReferralSourcesPage() {
   const [form, setForm]       = useState(empty);
   const [saving, setSaving]   = useState(false);
   const [error, setError]     = useState("");
+  const [activitySource, setActivitySource] = useState<Source | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -104,17 +106,17 @@ export default function ReferralSourcesPage() {
           <table style={{ width:"100%", borderCollapse:"collapse" }}>
             <thead>
               <tr style={{ borderBottom:`1px solid ${C.border}` }}>
-                {["Name","Type","Practice / Facility","NPI","Assigned Rep","Total Referrals","Monthly Goal","Attainment","Status"].map((h) => (
+                {["Name","Type","Practice / Facility","NPI","Assigned Rep","Total Referrals","Monthly Goal","Attainment","Status",""].map((h) => (
                   <th key={h} style={{ padding:"12px 14px", textAlign:"left", fontSize:"0.65rem", fontWeight:700, color:C.dim, letterSpacing:"0.1em", textTransform:"uppercase", whiteSpace:"nowrap" }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {loading && (
-                <tr><td colSpan={9} style={{ padding:"32px", textAlign:"center", color:C.muted, fontSize:"0.875rem" }}>Loading…</td></tr>
+                <tr><td colSpan={10} style={{ padding:"32px", textAlign:"center", color:C.muted, fontSize:"0.875rem" }}>Loading…</td></tr>
               )}
               {!loading && sources.length === 0 && (
-                <tr><td colSpan={9} style={{ padding:"48px", textAlign:"center", color:C.muted, fontSize:"0.875rem" }}>
+                <tr><td colSpan={10} style={{ padding:"48px", textAlign:"center", color:C.muted, fontSize:"0.875rem" }}>
                   No referral sources yet.{" "}
                   <button onClick={() => setShowAdd(true)} style={{ color:C.cyan, background:"none", border:"none", cursor:"pointer", fontWeight:600 }}>Add your first source</button>
                 </td></tr>
@@ -122,7 +124,9 @@ export default function ReferralSourcesPage() {
               {sources.map((s) => {
                 const pct = attainment(s.monthlyGoal, s._count.referrals);
                 return (
-                  <tr key={s.id} style={{ borderBottom:`1px solid var(--nyx-accent-dim)` }}>
+                  <tr key={s.id} style={{ borderBottom:`1px solid var(--nyx-accent-dim)`, cursor:"pointer" }}
+                    onMouseEnter={e => (e.currentTarget.style.background = "var(--nyx-accent-dim)")}
+                    onMouseLeave={e => (e.currentTarget.style.background = "transparent")}>
                     <td style={{ padding:"12px 14px" }}>
                       <div style={{ fontWeight:700, fontSize:"0.875rem", color:C.text }}>{s.name}</div>
                       {s.specialty && <div style={{ fontSize:"0.7rem", color:C.muted }}>{s.specialty}</div>}
@@ -152,6 +156,14 @@ export default function ReferralSourcesPage() {
                         {s.active ? "ACTIVE" : "INACTIVE"}
                       </span>
                     </td>
+                    <td style={{ padding:"12px 14px" }}>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setActivitySource(s); }}
+                        style={{ background:"var(--nyx-accent-dim)", border:"1px solid var(--nyx-accent-str)", borderRadius:6, padding:"4px 10px", color:C.cyan, cursor:"pointer", fontSize:"0.7rem", fontWeight:700, whiteSpace:"nowrap" }}
+                      >
+                        📋 Activity
+                      </button>
+                    </td>
                   </tr>
                 );
               })}
@@ -159,6 +171,16 @@ export default function ReferralSourcesPage() {
           </table>
         </div>
       </div>
+
+      {activitySource && (
+        <ActivityFeedPanel
+          entityId={activitySource.id}
+          entityParam="referralSourceId"
+          entityName={activitySource.name}
+          entitySubtitle={[activitySource.specialty, activitySource.practiceName].filter(Boolean).join(" · ") || activitySource.type}
+          onClose={() => setActivitySource(null)}
+        />
+      )}
 
       {/* Add Modal */}
       {showAdd && (

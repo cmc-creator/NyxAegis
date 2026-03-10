@@ -1,5 +1,6 @@
 "use client";
 import { useState, useCallback } from "react";
+import { ActivityFeedPanel } from "@/components/activities/ActivityFeedPanel";
 
 type HospitalType = "ACUTE_CARE"|"CRITICAL_ACCESS"|"SPECIALTY"|"HEALTH_SYSTEM"|"AMBULATORY"|"OUTPATIENT"|"LONG_TERM_CARE"|"BEHAVIORAL_HEALTH"|"REHABILITATION"|"CHILDRENS"|"CANCER_CENTER"|"URGENT_CARE"|"PCP"|"PRIVATE_PRACTICE"|"OTHER";
 type HospitalStatus = "ACTIVE"|"INACTIVE"|"PROSPECT"|"CHURNED";
@@ -209,6 +210,7 @@ function HospitalModal({ hospital, onClose, onSave }: {
 export default function HospitalsClient({ initialHospitals }: { initialHospitals: Hospital[] }) {
   const [hospitals, setHospitals] = useState<Hospital[]>(initialHospitals);
   const [modal, setModal] = useState<Hospital | "add" | null>(null);
+  const [activityHospital, setActivityHospital] = useState<Hospital | null>(null);
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState<string>("ALL");
   const [filterStatus, setFilterStatus] = useState<string>("ALL");
@@ -294,7 +296,7 @@ export default function HospitalsClient({ initialHospitals }: { initialHospitals
           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 700 }}>
             <thead>
               <tr style={{ borderBottom: `1px solid var(--nyx-border)` }}>
-                {["Account", "System", "Type", "Status", "Opportunities", "Contacts", "Added"].map(h => (
+                {["Account", "System", "Type", "Status", "Opportunities", "Contacts", "Added", ""].map(h => (
                   <th key={h} style={{ padding: "12px 16px", textAlign: "left", fontSize: "0.68rem", fontWeight: 700, color: "var(--nyx-accent-label)", letterSpacing: "0.12em", textTransform: "uppercase", whiteSpace: "nowrap" }}>{h}</th>
                 ))}
               </tr>
@@ -325,12 +327,30 @@ export default function HospitalsClient({ initialHospitals }: { initialHospitals
                   <td style={{ padding: "14px 16px", fontSize: "0.85rem", color: C.muted, textAlign: "center" }}>{h._count?.opportunities ?? 0}</td>
                   <td style={{ padding: "14px 16px", fontSize: "0.85rem", color: C.muted, textAlign: "center" }}>{h._count?.contacts ?? 0}</td>
                   <td style={{ padding: "14px 16px", fontSize: "0.8rem", color: C.muted, whiteSpace: "nowrap" }}>{fmtDate(h.createdAt)}</td>
+                  <td style={{ padding: "14px 8px" }}>
+                    <button
+                      onClick={(e) => { e.stopPropagation(); setActivityHospital(h); }}
+                      style={{ background: "var(--nyx-accent-dim)", border: "1px solid var(--nyx-accent-str)", borderRadius: 6, padding: "4px 10px", color: "var(--nyx-accent)", cursor: "pointer", fontSize: "0.7rem", fontWeight: 700, whiteSpace: "nowrap" }}
+                    >
+                      📋 Activity
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       </div>
+
+      {activityHospital && (
+        <ActivityFeedPanel
+          entityId={activityHospital.id}
+          entityParam="hospitalId"
+          entityName={activityHospital.hospitalName}
+          entitySubtitle={[activityHospital.city, activityHospital.state].filter(Boolean).join(", ")}
+          onClose={() => setActivityHospital(null)}
+        />
+      )}
 
       {modal !== null && (
         <HospitalModal
