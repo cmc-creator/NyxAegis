@@ -29,7 +29,7 @@ function useDebounce<T>(value: T, delay: number): T {
   return dv;
 }
 
-export default function GlobalSearch({ role }: { role: string }) {
+export default function GlobalSearch({ role: _role }: { role: string }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResults | null>(null);

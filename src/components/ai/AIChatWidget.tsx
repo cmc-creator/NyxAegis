@@ -259,7 +259,7 @@ export default function AIChatWidget() {
                     maxWidth: "82%", borderRadius: m.role === "user" ? "14px 4px 14px 14px" : "4px 14px 14px 14px",
                     padding: "9px 13px", fontSize: "0.82rem", color: TEXT, lineHeight: 1.65,
                   }}
-                  // eslint-disable-next-line react/no-danger
+                  
                   dangerouslySetInnerHTML={{ __html: renderMarkdown(m.content) }}
                 />
               </div>
