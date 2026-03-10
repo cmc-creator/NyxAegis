@@ -72,15 +72,15 @@ function LoginForm() {
           </div>
           <div className="login-fade-up">
             <h1 style={{ fontSize: "2.2rem", fontWeight: 900, color: "#d8e8f4", lineHeight: 1.15, marginBottom: 16, letterSpacing: "-0.02em" }}>
-              Hospital BD<br />
+              BD<br />
               <span className="login-text-glow" style={{ color: CYAN }}>Command Center</span>
             </h1>
             <p style={{ color: "rgba(216,232,244,0.55)", fontSize: "1rem", lineHeight: 1.7, maxWidth: 320, marginBottom: 40 }}>
-              Manage hospital accounts, track your opportunity pipeline, and grow your healthcare BD business - all from one platform.
+              Manage accounts, track your opportunity pipeline, and grow your BD business - all from one platform.
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               {[
-                { icon: "🏥", text: "360° hospital account management" },
+                { icon: "🏥", text: "360° account management" },
                 { icon: "📊", text: "Live opportunity pipeline tracking" },
                 { icon: "🗺️", text: "Geographic territory management" },
                 { icon: "📋", text: "HIPAA compliance document storage" },
@@ -94,7 +94,7 @@ function LoginForm() {
           </div>
         </div>
         <div style={{ display: "flex", gap: 24 }}>
-          {["HIPAA Ready", "SOC 2", "Healthcare BD"].map((badge) => (
+          {["HIPAA Ready", "SOC 2", "BD"].map((badge) => (
             <div key={badge} style={{ background: "var(--nyx-accent-dim)", border: "1px solid var(--nyx-accent-mid)", borderRadius: 6, padding: "6px 12px", fontSize: "0.7rem", color: CYAN, fontWeight: 600, letterSpacing: "0.08em" }}>{badge}</div>
           ))}
         </div>

@@ -54,7 +54,7 @@ export default function SignupPage() {
             <span style={{ fontWeight: 900, fontSize: "1.1rem", color: "#d8e8f4" }}>NyxAegis</span>
           </Link>
           <h1 style={{ fontSize: "1.8rem", fontWeight: 900, color: "#d8e8f4", marginBottom: 8, letterSpacing: "-0.02em" }}>Request Access</h1>
-          <p style={{ color: "rgba(216,232,244,0.5)", fontSize: "0.9rem" }}>Join the hospital BD platform</p>
+          <p style={{ color: "rgba(216,232,244,0.5)", fontSize: "0.9rem" }}>Join the BD platform</p>
         </div>
 
         <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid var(--nyx-accent-dim)", borderRadius: 16, padding: "32px" }}>

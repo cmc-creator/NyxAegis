@@ -12,7 +12,7 @@ const tiers = [
     period: "/mo",
     desc: "For independent BD reps managing their own book of business.",
     features: [
-      "Up to 50 hospital accounts",
+      "Up to 50 accounts",
       "Opportunity pipeline (up to 100 opps)",
       "Activity logging (calls, emails, notes)",
       "Document storage (1 GB)",
@@ -30,7 +30,7 @@ const tiers = [
     period: "/mo",
     desc: "For BD teams of 2–10 reps with shared pipeline and reporting.",
     features: [
-      "Unlimited hospital accounts",
+      "Unlimited accounts",
       "Unlimited opportunities",
       "Full team pipeline & analytics",
       "Territory management & maps",
@@ -75,7 +75,7 @@ const tiers = [
 const faqs = [
   { q: "Is NyxAegis HIPAA compliant?", a: "NyxAegis is designed with HIPAA requirements in mind. We provide BAA (Business Associate Agreement) templates, HIPAA training doc storage, and encrypt data at rest and in transit. Contact us for a BAA for your organization." },
   { q: "Can I try NyxAegis before paying?", a: "Yes - all plans include a 14-day free trial with no credit card required. You'll have full access to all features in your chosen plan." },
-  { q: "What counts as a 'hospital account'?", a: "Each distinct hospital or health system entity counts as one account. A 10-hospital IDN would count as 10 accounts on Solo Rep, or unlimited on BD Team and above." },
+  { q: "What counts as an 'account'?", a: "Each distinct facility or health system entity counts as one account. A 10-facility IDN would count as 10 accounts on Solo Rep, or unlimited on BD Team and above." },
   { q: "Can I add more BD reps to my team?", a: "Yes. BD Team supports up to 10 reps. Additional rep seats are $25/rep/mo. Health System plans include unlimited reps." },
   { q: "Do you offer nonprofit or academic medical center discounts?", a: "Yes - contact us at ops@nyxaegis.com for nonprofit, academic, or government healthcare pricing." },
   { q: "What integrations do you support?", a: "Health System plans include custom integration development. We currently support Stripe for payments, Resend for email, and have open APIs for CRM, EHR, and BI tool integrations." },
@@ -104,7 +104,7 @@ export default function PricingPage() {
       <section style={{ padding: "64px 2rem 48px", textAlign: "center" }}>
         <p style={{ color: CYAN, fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>PRICING</p>
         <h1 style={{ fontSize: "clamp(2rem, 5vw, 3rem)", fontWeight: 900, color: TEXT, letterSpacing: "-0.02em", marginBottom: 16 }}>Simple, transparent pricing</h1>
-        <p style={{ color: "rgba(216,232,244,0.55)", maxWidth: 480, margin: "0 auto", fontSize: "1rem", lineHeight: 1.7 }}>No hidden fees. No per-hospital charges. Just straightforward pricing for healthcare BD teams.</p>
+        <p style={{ color: "rgba(216,232,244,0.55)", maxWidth: 480, margin: "0 auto", fontSize: "1rem", lineHeight: 1.7 }}>No hidden fees. No per-account charges. Just straightforward pricing for BD teams.</p>
       </section>
 
       {/* TIERS */}
