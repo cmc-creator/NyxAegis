@@ -2,12 +2,18 @@
 import { useState } from "react";
 
 const ACTIVITY_TYPES = [
-  { value: "CALL",       label: "📞 Call",        color: "#60a5fa" },
-  { value: "MEETING",    label: "🤝 Meeting",     color: "#34d399" },
-  { value: "EMAIL",      label: "✉️ Email",       color: "#c084fc" },
-  { value: "SITE_VISIT", label: "🏥 Site Visit",  color: "#fbbf24" },
-  { value: "NOTE",       label: "📝 Note",        color: "var(--nyx-accent)" },
-  { value: "FOLLOW_UP",  label: "🔔 Follow-up",  color: "#f87171" },
+  { value: "CALL",           label: "📞 Call",            color: "#60a5fa" },
+  { value: "MEETING",        label: "🤝 Meeting",         color: "#34d399" },
+  { value: "LUNCH",          label: "🍽️ Lunch",          color: "#fb923c" },
+  { value: "SITE_VISIT",     label: "📍 Site Visit",      color: "#fbbf24" },
+  { value: "EMAIL",          label: "✉️ Email",           color: "#c084fc" },
+  { value: "FOLLOW_UP",      label: "🔔 Follow-up",       color: "#f87171" },
+  { value: "CONFERENCE",     label: "🎤 Conference",      color: "#a78bfa" },
+  { value: "DEMO_COMPLETED", label: "🖥️ Demo",           color: "#22d3ee" },
+  { value: "TASK",           label: "✅ Task",            color: "#86efac" },
+  { value: "NOTE",           label: "📝 Note",            color: "var(--nyx-accent)" },
+  { value: "PROPOSAL_SENT",  label: "📄 Proposal Sent",   color: "#fcd34d" },
+  { value: "CONTRACT_SENT",  label: "📋 Contract Sent",   color: "#6ee7b7" },
 ];
 
 export default function QuickLogWidget({ repId, role }: { repId?: string; role: string }) {

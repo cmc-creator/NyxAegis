@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 // ─── Types ──────────────────────────────────────────────────────────────────
 
 type AType =
-  | "CALL" | "EMAIL" | "NOTE" | "MEETING" | "TASK"
+  | "CALL" | "EMAIL" | "NOTE" | "MEETING" | "LUNCH" | "TASK"
   | "PROPOSAL_SENT" | "CONTRACT_SENT" | "DEMO_COMPLETED"
   | "SITE_VISIT" | "CONFERENCE" | "FOLLOW_UP";
 
@@ -38,20 +38,20 @@ const C = {
 };
 
 const A_TYPES: AType[] = [
-  "MEETING","CALL","DEMO_COMPLETED","SITE_VISIT","EMAIL",
+  "MEETING","CALL","LUNCH","DEMO_COMPLETED","SITE_VISIT","EMAIL",
   "NOTE","TASK","PROPOSAL_SENT","CONTRACT_SENT","CONFERENCE","FOLLOW_UP",
 ];
 
 const TYPE_LABEL: Record<string, string> = {
   MEETING:"Meeting", CALL:"Call", DEMO_COMPLETED:"Demo",
-  SITE_VISIT:"Site Visit", EMAIL:"Email", NOTE:"Note",
+  SITE_VISIT:"Site Visit", LUNCH:"Lunch", EMAIL:"Email", NOTE:"Note",
   TASK:"Task", PROPOSAL_SENT:"Proposal Sent", CONTRACT_SENT:"Contract Sent",
   CONFERENCE:"Conference", FOLLOW_UP:"Follow-up",
 };
 
 const TYPE_COLOR: Record<string, string> = {
   MEETING:"#60a5fa", CALL:"var(--nyx-accent)", DEMO_COMPLETED:"#fbbf24",
-  SITE_VISIT:"#34d399", EMAIL:"#94a3b8", NOTE:"#f97316",
+  SITE_VISIT:"#34d399", LUNCH:"#fb923c", EMAIL:"#94a3b8", NOTE:"#f97316",
   TASK:"#f59e0b", PROPOSAL_SENT:"#a78bfa", CONTRACT_SENT:"#c084fc",
   CONFERENCE:"#f472b6", FOLLOW_UP:"#38bdf8",
 };

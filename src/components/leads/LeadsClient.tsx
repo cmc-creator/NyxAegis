@@ -200,9 +200,9 @@ function LeadModal({ lead, reps, onClose, onSave, onDelete }: {
 interface Activity { id: string; type: string; title: string; notes?: string | null; createdAt: string; }
 const ACT_ICON: Record<string, string> = {
   CALL: "📞", EMAIL: "✉️", NOTE: "📝", MEETING: "🤝", TASK: "☑️",
-  PROPOSAL_SENT: "📄", CONTRACT_SENT: "📋", DEMO_COMPLETED: "🖥️", SITE_VISIT: "🏥", CONFERENCE: "🎤", FOLLOW_UP: "🔔",
+  PROPOSAL_SENT: "📄", CONTRACT_SENT: "📋", DEMO_COMPLETED: "🖥️", SITE_VISIT: "📍", CONFERENCE: "🎤", LUNCH: "🍽️", FOLLOW_UP: "🔔",
 };
-const ACT_TYPES = ["CALL","EMAIL","NOTE","MEETING","FOLLOW_UP","SITE_VISIT","DEMO_COMPLETED","PROPOSAL_SENT","CONTRACT_SENT","TASK"];
+const ACT_TYPES = ["CALL","EMAIL","NOTE","MEETING","LUNCH","FOLLOW_UP","SITE_VISIT","DEMO_COMPLETED","PROPOSAL_SENT","CONTRACT_SENT","TASK","CONFERENCE"];
 
 function ActivityFeedPanel({ lead, onClose }: { lead: Lead; onClose: () => void }) {
   const [activities, setActivities] = useState<Activity[]>([]);
