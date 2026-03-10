@@ -170,18 +170,18 @@ img[data-nimg] {
 :root[data-theme="light"] {
   --nyx-accent:       #6366f1;
   --nyx-accent-glow:  rgba(99,102,241,0.18);
-  --nyx-accent-dim:   rgba(99,102,241,0.10);
+  --nyx-accent-dim:   rgba(99,102,241,0.13);
   --nyx-accent-mid:   rgba(99,102,241,0.18);
   --nyx-accent-str:   rgba(99,102,241,0.35);
   --nyx-bg:           #f0f2f7;
-  --nyx-card:         rgba(255,255,255,0.94);
+  --nyx-card:         #ffffff;
   --nyx-bg-scrim:     rgba(240,242,247,0.82);
-  --nyx-border:       rgba(99,102,241,0.20);
-  --nyx-sidebar-bg:   #e8eaf2;
+  --nyx-border:       rgba(99,102,241,0.30);
+  --nyx-sidebar-bg:   #d8dce8;
   --nyx-text:         #1a1b2e;
-  --nyx-text-muted:   rgba(26,27,46,0.55);
-  --nyx-accent-label: rgba(99,102,241,0.70);
-  --nyx-input-bg:     rgba(0,0,0,0.05);
+  --nyx-text-muted:   rgba(26,27,46,0.72);
+  --nyx-accent-label: rgba(99,102,241,0.85);
+  --nyx-input-bg:     rgba(0,0,0,0.07);
   --nyx-scrollbar:    rgba(99,102,241,0.25);
   --nyx-texture:      none;
   --nyx-card-border:  linear-gradient(135deg, #6080a0 0%, #90a8c0 12%, #b8d0e8 22%, #d8eaf8 30%, #f8fbff 38%, #c0d8f0 48%, #a0c0d8 58%, #d8eaf8 68%, #f8fbff 77%, #90a8c0 90%, #6080a0 100%);
@@ -195,18 +195,18 @@ img[data-nimg] {
 :root[data-theme="blush"] {
   --nyx-accent:       #be185d;
   --nyx-accent-glow:  rgba(190,24,93,0.16);
-  --nyx-accent-dim:   rgba(190,24,93,0.08);
+  --nyx-accent-dim:   rgba(190,24,93,0.11);
   --nyx-accent-mid:   rgba(190,24,93,0.14);
   --nyx-accent-str:   rgba(190,24,93,0.28);
   --nyx-bg:           #fdf4f7;
-  --nyx-card:         rgba(255,255,255,0.94);
+  --nyx-card:         #ffffff;
   --nyx-bg-scrim:     rgba(253,244,247,0.82);
-  --nyx-border:       rgba(190,24,93,0.18);
-  --nyx-sidebar-bg:   #f7e8ee;
+  --nyx-border:       rgba(190,24,93,0.28);
+  --nyx-sidebar-bg:   #f0dde5;
   --nyx-text:         #1e0a12;
-  --nyx-text-muted:   rgba(30,10,18,0.55);
-  --nyx-accent-label: rgba(190,24,93,0.65);
-  --nyx-input-bg:     rgba(0,0,0,0.04);
+  --nyx-text-muted:   rgba(30,10,18,0.72);
+  --nyx-accent-label: rgba(190,24,93,0.85);
+  --nyx-input-bg:     rgba(0,0,0,0.07);
   --nyx-scrollbar:    rgba(190,24,93,0.22);
   --nyx-texture:      none;
   --nyx-card-border:  linear-gradient(135deg, #2a0018 0%, #8c1050 12%, #be185d 22%, #e060a8 30%, #ffd4e8 38%, #c82870 48%, #9e1248 58%, #e060a8 68%, #ffd4e8 77%, #8c1050 90%, #2a0018 100%);
@@ -420,18 +420,18 @@ img[data-nimg] {
 :root[data-theme="ivory"] {
   --nyx-accent:       #C47A5A;
   --nyx-accent-glow:  rgba(196,122,90,0.20);
-  --nyx-accent-dim:   rgba(196,122,90,0.10);
+  --nyx-accent-dim:   rgba(196,122,90,0.13);
   --nyx-accent-mid:   rgba(196,122,90,0.18);
   --nyx-accent-str:   rgba(196,122,90,0.32);
   --nyx-bg:           #F8F4EE;
-  --nyx-card:         rgba(255,255,255,0.94);
+  --nyx-card:         #ffffff;
   --nyx-bg-scrim:     rgba(248,244,238,0.82);
-  --nyx-border:       rgba(196,122,90,0.22);
-  --nyx-sidebar-bg:   #EDE8E0;
+  --nyx-border:       rgba(196,122,90,0.32);
+  --nyx-sidebar-bg:   #e4dfd6;
   --nyx-text:         #2D1E14;
-  --nyx-text-muted:   rgba(45,30,20,0.55);
-  --nyx-accent-label: rgba(196,122,90,0.70);
-  --nyx-input-bg:     rgba(0,0,0,0.05);
+  --nyx-text-muted:   rgba(45,30,20,0.72);
+  --nyx-accent-label: rgba(196,122,90,0.90);
+  --nyx-input-bg:     rgba(0,0,0,0.07);
   --nyx-scrollbar:    rgba(196,122,90,0.25);
   --nyx-texture:      none;
   --nyx-card-border:  linear-gradient(135deg, #6a2808 0%, #a85030 12%, #C47A5A 22%, #e0a888 30%, #fff0e8 38%, #b06040 48%, #904830 58%, #e0a888 68%, #fff0e8 77%, #a85030 90%, #6a2808 100%);
@@ -470,18 +470,18 @@ img[data-nimg] {
 :root[data-theme="alabaster"] {
   --nyx-accent:       #B8960C;
   --nyx-accent-glow:  rgba(184,150,12,0.18);
-  --nyx-accent-dim:   rgba(184,150,12,0.10);
+  --nyx-accent-dim:   rgba(184,150,12,0.13);
   --nyx-accent-mid:   rgba(184,150,12,0.18);
   --nyx-accent-str:   rgba(184,150,12,0.32);
   --nyx-bg:           #F5F0E8;
-  --nyx-card:         rgba(255,255,255,0.94);
+  --nyx-card:         #ffffff;
   --nyx-bg-scrim:     rgba(245,240,232,0.82);
-  --nyx-border:       rgba(184,150,12,0.22);
-  --nyx-sidebar-bg:   #EAE4D8;
+  --nyx-border:       rgba(184,150,12,0.32);
+  --nyx-sidebar-bg:   #e0d9cc;
   --nyx-text:         #2A2018;
-  --nyx-text-muted:   rgba(42,32,24,0.55);
-  --nyx-accent-label: rgba(184,150,12,0.72);
-  --nyx-input-bg:     rgba(0,0,0,0.05);
+  --nyx-text-muted:   rgba(42,32,24,0.72);
+  --nyx-accent-label: rgba(184,150,12,0.90);
+  --nyx-input-bg:     rgba(0,0,0,0.07);
   --nyx-scrollbar:    rgba(184,150,12,0.25);
   --nyx-texture:      none;
   --nyx-card-border:  linear-gradient(135deg, #2e1800 0%, #7a5210 8%, #B8960C 18%, #e0c040 26%, #fffce0 33%, #d0a820 41%, #a07808 50%, #d0a820 58%, #fffce0 66%, #e0c040 74%, #B8960C 82%, #7a5210 91%, #2e1800 100%);
@@ -670,18 +670,18 @@ img[data-nimg] {
 :root[data-theme="glacial"] {
   --nyx-accent:       #4A9ECC;
   --nyx-accent-glow:  rgba(74,158,204,0.18);
-  --nyx-accent-dim:   rgba(74,158,204,0.10);
+  --nyx-accent-dim:   rgba(74,158,204,0.13);
   --nyx-accent-mid:   rgba(74,158,204,0.18);
   --nyx-accent-str:   rgba(74,158,204,0.32);
   --nyx-bg:           #EFF3F8;
-  --nyx-card:         rgba(255,255,255,0.94);
+  --nyx-card:         #ffffff;
   --nyx-bg-scrim:     rgba(239,243,248,0.82);
-  --nyx-border:       rgba(74,158,204,0.22);
-  --nyx-sidebar-bg:   #E2EAF2;
+  --nyx-border:       rgba(74,158,204,0.32);
+  --nyx-sidebar-bg:   #d4e2ee;
   --nyx-text:         #1A2632;
-  --nyx-text-muted:   rgba(26,38,50,0.55);
-  --nyx-accent-label: rgba(74,158,204,0.72);
-  --nyx-input-bg:     rgba(0,0,0,0.04);
+  --nyx-text-muted:   rgba(26,38,50,0.72);
+  --nyx-accent-label: rgba(74,158,204,0.90);
+  --nyx-input-bg:     rgba(0,0,0,0.07);
   --nyx-scrollbar:    rgba(74,158,204,0.25);
   --nyx-texture:      none;
   --nyx-card-border:  linear-gradient(135deg, #083060 0%, #2068a0 12%, #4A9ECC 22%, #80c8e8 30%, #e8f8ff 38%, #3088c0 48%, #1870a8 58%, #80c8e8 68%, #e8f8ff 77%, #2068a0 90%, #083060 100%);
@@ -695,18 +695,18 @@ img[data-nimg] {
 :root[data-theme="peak"] {
   --nyx-accent:       #8899AA;
   --nyx-accent-glow:  rgba(136,153,170,0.18);
-  --nyx-accent-dim:   rgba(136,153,170,0.10);
+  --nyx-accent-dim:   rgba(136,153,170,0.14);
   --nyx-accent-mid:   rgba(136,153,170,0.18);
   --nyx-accent-str:   rgba(136,153,170,0.32);
   --nyx-bg:           #E4EAF0;
-  --nyx-card:         rgba(255,255,255,0.94);
+  --nyx-card:         #ffffff;
   --nyx-bg-scrim:     rgba(228,234,240,0.82);
-  --nyx-border:       rgba(136,153,170,0.24);
-  --nyx-sidebar-bg:   #D8E0E8;
+  --nyx-border:       rgba(136,153,170,0.38);
+  --nyx-sidebar-bg:   #c8d4de;
   --nyx-text:         #1C2430;
-  --nyx-text-muted:   rgba(28,36,48,0.55);
-  --nyx-accent-label: rgba(136,153,170,0.72);
-  --nyx-input-bg:     rgba(0,0,0,0.04);
+  --nyx-text-muted:   rgba(28,36,48,0.72);
+  --nyx-accent-label: rgba(80,100,120,0.90);
+  --nyx-input-bg:     rgba(0,0,0,0.07);
   --nyx-scrollbar:    rgba(136,153,170,0.28);
   --nyx-texture:      none;
   --nyx-card-border:  linear-gradient(135deg, #283848 0%, #506880 12%, #8899AA 22%, #b0c0d0 30%, #e8f0f8 38%, #7090a8 48%, #586880 58%, #b0c0d0 68%, #e8f0f8 77%, #506880 90%, #283848 100%);
@@ -1266,4 +1266,98 @@ img[data-nimg] {
   main {
     padding-top: 0;
   }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Light theme readability — fixes for all 6 light-bg themes:
+   light · blush · ivory · alabaster · glacial · peak
+   ══════════════════════════════════════════════════════════════ */
+
+/* Tell the browser these are light contexts so native controls render correctly */
+:root[data-theme="light"],
+:root[data-theme="blush"],
+:root[data-theme="ivory"],
+:root[data-theme="alabaster"],
+:root[data-theme="glacial"],
+:root[data-theme="peak"] {
+  color-scheme: light;
+}
+
+/* Badge text — pastel tones on white fail contrast; use darker hues */
+:root[data-theme="light"]     .badge-success,
+:root[data-theme="blush"]     .badge-success,
+:root[data-theme="ivory"]     .badge-success,
+:root[data-theme="alabaster"] .badge-success,
+:root[data-theme="glacial"]   .badge-success,
+:root[data-theme="peak"]      .badge-success {
+  color: #057a55;
+  background: rgba(16,185,129,0.14);
+  border-color: rgba(16,185,129,0.32);
+}
+
+:root[data-theme="light"]     .badge-warn,
+:root[data-theme="blush"]     .badge-warn,
+:root[data-theme="ivory"]     .badge-warn,
+:root[data-theme="alabaster"] .badge-warn,
+:root[data-theme="glacial"]   .badge-warn,
+:root[data-theme="peak"]      .badge-warn {
+  color: #b45309;
+  background: rgba(245,158,11,0.14);
+  border-color: rgba(245,158,11,0.32);
+}
+
+:root[data-theme="light"]     .badge-danger,
+:root[data-theme="blush"]     .badge-danger,
+:root[data-theme="ivory"]     .badge-danger,
+:root[data-theme="alabaster"] .badge-danger,
+:root[data-theme="glacial"]   .badge-danger,
+:root[data-theme="peak"]      .badge-danger {
+  color: #b91c1c;
+  background: rgba(239,68,68,0.12);
+  border-color: rgba(239,68,68,0.30);
+}
+
+:root[data-theme="light"]     .badge-muted,
+:root[data-theme="blush"]     .badge-muted,
+:root[data-theme="ivory"]     .badge-muted,
+:root[data-theme="alabaster"] .badge-muted,
+:root[data-theme="glacial"]   .badge-muted,
+:root[data-theme="peak"]      .badge-muted {
+  color: #475569;
+  background: rgba(100,116,139,0.10);
+  border-color: rgba(100,116,139,0.24);
+}
+
+/* stat-value glow haloes look harsh on white — strip text-shadow */
+:root[data-theme="light"]     .stat-value,
+:root[data-theme="blush"]     .stat-value,
+:root[data-theme="ivory"]     .stat-value,
+:root[data-theme="alabaster"] .stat-value,
+:root[data-theme="glacial"]   .stat-value,
+:root[data-theme="peak"]      .stat-value { text-shadow: none; }
+
+/* card-glow hover shadow — soften the dark drop-shadow on light bg */
+:root[data-theme="light"]     .card-glow:hover,
+:root[data-theme="blush"]     .card-glow:hover,
+:root[data-theme="ivory"]     .card-glow:hover,
+:root[data-theme="alabaster"] .card-glow:hover,
+:root[data-theme="glacial"]   .card-glow:hover,
+:root[data-theme="peak"]      .card-glow:hover {
+  box-shadow:
+    0 0 20px var(--nyx-accent-dim),
+    0 4px 16px rgba(0,0,0,0.10),
+    inset 0 1px 0 var(--nyx-accent-mid);
+}
+
+/* gold-card — on light backgrounds the dark drop shadow is too heavy */
+:root[data-theme="light"]     .gold-card,
+:root[data-theme="blush"]     .gold-card,
+:root[data-theme="ivory"]     .gold-card,
+:root[data-theme="alabaster"] .gold-card,
+:root[data-theme="glacial"]   .gold-card,
+:root[data-theme="peak"]      .gold-card {
+  box-shadow:
+    0 0 0 1px var(--nyx-border),
+    0 2px 14px rgba(0,0,0,0.10);
+  animation: none;
 }
