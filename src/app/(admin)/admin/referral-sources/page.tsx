@@ -31,7 +31,7 @@ const LABEL: Record<string, string> = {
   PRACTICE_GROUP:"Practice Group", OTHER:"Other",
 };
 
-const empty = { name:"", type:"PHYSICIAN", specialty:"", practiceName:"", npi:"", contactName:"", phone:"", city:"", state:"", monthlyGoal:"", notes:"" };
+const empty = { name:"", type:"PHYSICIAN", specialty:"", practiceName:"", npi:"", contactName:"", email:"", phone:"", city:"", state:"", monthlyGoal:"", notes:"" };
 
 export default function ReferralSourcesPage() {
   const [sources, setSources] = useState<Source[]>([]);
@@ -66,7 +66,7 @@ export default function ReferralSourcesPage() {
   };
 
   const attainment = (goal?: number, actual?: number) => {
-    if (!goal || !actual) return null;
+    if (!goal || actual == null) return null;
     return Math.round((actual / goal) * 100);
   };
 
@@ -78,7 +78,7 @@ export default function ReferralSourcesPage() {
           <p style={{ color:C.cyan, fontSize:"0.7rem", fontWeight:700, letterSpacing:"0.14em", textTransform:"uppercase", marginBottom:4 }}>Referral Tracking</p>
           <h1 style={{ fontSize:"1.8rem", fontWeight:900, color:C.text }}>Referral Sources</h1>
           <p style={{ color:C.muted, fontSize:"0.875rem", marginTop:4 }}>
-            Track physicians, SNFs, and care facilities that refer patients to your hospital.
+            Track physicians, SNFs, and care facilities that refer patients to your organization.
           </p>
         </div>
         <button
@@ -104,7 +104,7 @@ export default function ReferralSourcesPage() {
           <table style={{ width:"100%", borderCollapse:"collapse" }}>
             <thead>
               <tr style={{ borderBottom:`1px solid ${C.border}` }}>
-                {["Name","Type","Practice / Hospital","NPI","Assigned Rep","Referrals MTD","Goal","Attainment","Status"].map((h) => (
+                {["Name","Type","Practice / Facility","NPI","Assigned Rep","Total Referrals","Monthly Goal","Attainment","Status"].map((h) => (
                   <th key={h} style={{ padding:"12px 14px", textAlign:"left", fontSize:"0.65rem", fontWeight:700, color:C.dim, letterSpacing:"0.1em", textTransform:"uppercase", whiteSpace:"nowrap" }}>{h}</th>
                 ))}
               </tr>
@@ -174,6 +174,7 @@ export default function ReferralSourcesPage() {
               { label:"Specialty", key:"specialty", placeholder:"Cardiology" },
               { label:"NPI", key:"npi", placeholder:"1234567890" },
               { label:"Contact Name", key:"contactName", placeholder:"Office Manager" },
+              { label:"Email", key:"email", placeholder:"office@clinic.com" },
               { label:"Phone", key:"phone", placeholder:"555-000-0000" },
               { label:"City", key:"city", placeholder:"Denver" },
               { label:"State", key:"state", placeholder:"CO" },
