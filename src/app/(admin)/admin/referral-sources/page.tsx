@@ -186,10 +186,11 @@ export default function ReferralSourcesPage() {
       {showAdd && (
         <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.78)", zIndex:200, display:"flex", alignItems:"flex-start", justifyContent:"center", padding:"40px 16px 32px", overflowY:"auto" }}
           onClick={(e) => { if (e.target === e.currentTarget) setShowAdd(false); }}>
-          <div style={{ background:"var(--nyx-bg)", border:`1px solid var(--nyx-accent-str)`, borderRadius:14, padding:32, width:"100%", maxWidth:520, flexShrink:0 }}>
-            <h2 style={{ fontSize:"1.2rem", fontWeight:900, color:C.text, marginBottom:20 }}>Add Referral Source</h2>
-            {error && <div style={{ background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.2)", borderRadius:8, padding:"10px 14px", color:C.red, fontSize:"0.82rem", marginBottom:16 }}>{error}</div>}
+          <div style={{ background:"var(--nyx-bg)", border:`1px solid var(--nyx-accent-str)`, borderRadius:14, padding:32, width:"100%", maxWidth:520, flexShrink:0, display:"flex", flexDirection:"column", maxHeight:"calc(100vh - 80px)" }}>
+            <h2 style={{ fontSize:"1.2rem", fontWeight:900, color:C.text, marginBottom:20, flexShrink:0 }}>Add Referral Source</h2>
+            {error && <div style={{ background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.2)", borderRadius:8, padding:"10px 14px", color:C.red, fontSize:"0.82rem", marginBottom:16, flexShrink:0 }}>{error}</div>}
 
+            <div style={{ overflowY:"auto", flex:1, minHeight:0 }}>
             {[
               { label:"Name *", key:"name", placeholder:"Dr. Sarah Mitchell" },
               { label:"Practice / Facility Name", key:"practiceName", placeholder:"Riverside Family Practice" },
@@ -209,7 +210,7 @@ export default function ReferralSourcesPage() {
                   value={(form as Record<string, string>)[key]}
                   onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
                   placeholder={placeholder}
-                  style={{ width:"100%", background:"rgba(255,255,255,0.04)", border:`1px solid ${C.border}`, borderRadius:8, padding:"9px 12px", color:C.text, fontSize:"0.875rem", outline:"none", boxSizing:"border-box" }}
+                  style={{ width:"100%", background:"rgba(255,255,255,0.06)", border:`1px solid ${C.border}`, borderRadius:8, padding:"9px 12px", color:C.text, fontSize:"0.875rem", outline:"none", boxSizing:"border-box" }}
                 />
               </div>
             ))}
@@ -219,13 +220,14 @@ export default function ReferralSourcesPage() {
               <select
                 value={form.type}
                 onChange={(e) => setForm((f) => ({ ...f, type: e.target.value }))}
-                style={{ width:"100%", background:"rgba(255,255,255,0.04)", border:`1px solid ${C.border}`, borderRadius:8, padding:"9px 12px", color:C.text, fontSize:"0.875rem", outline:"none" }}
+                style={{ width:"100%", background:"var(--nyx-card)", border:`1px solid ${C.border}`, borderRadius:8, padding:"9px 12px", color:C.text, fontSize:"0.875rem", outline:"none", colorScheme:"dark" }}
               >
-                {SOURCE_TYPES.map((t) => <option key={t} value={t}>{LABEL[t]}</option>)}
+                {SOURCE_TYPES.map((t) => <option key={t} value={t} style={{ background:"var(--nyx-card)", color:C.text }}>{LABEL[t]}</option>)}
               </select>
             </div>
+            </div>{/* end scrollable body */}
 
-            <div style={{ display:"flex", gap:10, justifyContent:"flex-end" }}>
+            <div style={{ display:"flex", gap:10, justifyContent:"flex-end", flexShrink:0, paddingTop:4 }}>
               <button onClick={() => setShowAdd(false)} style={{ background:"rgba(255,255,255,0.05)", border:`1px solid ${C.border}`, borderRadius:8, padding:"10px 20px", color:C.muted, cursor:"pointer", fontWeight:600, fontSize:"0.85rem" }}>Cancel</button>
               <button onClick={handleAdd} disabled={saving} style={{ background:`var(--nyx-accent)`, color:"#000", border:"none", borderRadius:8, padding:"10px 20px", fontWeight:800, fontSize:"0.85rem", cursor:"pointer", opacity: saving ? 0.7 : 1 }}>{saving ? "Saving…" : "Add Source"}</button>
             </div>
