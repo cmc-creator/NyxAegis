@@ -1248,6 +1248,15 @@ main, .nyx-sidebar, .nyx-table-scroll {
   .nyx-land-nav-text-links {
     display: none !important;
   }
+  /* Hide nav tagline so brand + button fit on one line */
+  .nyx-land-nav-tagline {
+    display: none !important;
+  }
+  /* Shrink CTA button padding on mobile so it fits */
+  .nyx-land-nav-cta {
+    padding: 8px 14px !important;
+    font-size: 0.8rem !important;
+  }
   /* Snug padding on the nav on mobile */
   .nyx-land-nav {
     padding: 0 1rem !important;
