@@ -1248,9 +1248,25 @@ main, .nyx-sidebar, .nyx-table-scroll {
   .nyx-land-nav-text-links {
     display: none !important;
   }
-  /* Shrink nav padding on mobile */
+  /* Snug padding on the nav on mobile */
   .nyx-land-nav {
     padding: 0 1rem !important;
+  }
+
+  /* All landing sections + footer: pull in side padding on mobile */
+  .nyx-landing section {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  .nyx-landing footer {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Safe-area breathing room: top for notch, bottom for home bar */
+  .nyx-landing {
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   /* Hero: single column, hide the mock dashboard */
