@@ -172,7 +172,7 @@ export default function AIChatWidget() {
 
       {/* Floating action button */}
       <button
-        className="aegis-fab"
+        className="aegis-fab nyx-fab-ai"
         onClick={() => setOpen((v) => !v)}
         title="Ask Aegis AI"
         style={{
@@ -196,7 +196,7 @@ export default function AIChatWidget() {
       {/* Chat panel */}
       {open && (
         <div
-          className="aegis-panel"
+          className="aegis-panel nyx-ai-panel"
           style={{
             position: "fixed", bottom: 92, right: 24, zIndex: 9998,
             width: "min(420px, calc(100vw - 48px))",

@@ -98,6 +98,7 @@ export default function GlobalSearch({ role: _role }: { role: string }) {
   if (!open) {
     return (
       <button
+        className="nyx-search-desktop-btn"
         onClick={() => setOpen(true)}
         style={{ display: "flex", alignItems: "center", gap: 8, background: C.card, border: `1px solid ${C.border}`, borderRadius: 8, padding: "7px 14px", color: C.muted, cursor: "pointer", fontSize: "0.8rem", transition: "border-color 0.15s" }}
         title="Global search (Ctrl+K)"

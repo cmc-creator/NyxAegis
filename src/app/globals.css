@@ -1579,9 +1579,24 @@ main, .nyx-sidebar, .nyx-table-scroll {
     bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
   }
 
-  /* AI widget toggle */
+  /* AI widget FAB — lift above the bottom nav */
   .nyx-fab-ai {
-    bottom: calc(138px + env(safe-area-inset-bottom, 0px)) !important;
+    bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* AI chat panel — full-width bottom sheet above the FAB */
+  .nyx-ai-panel {
+    bottom: calc(144px + env(safe-area-inset-bottom, 0px)) !important;
+    right: 8px !important;
+    left: 8px !important;
+    width: auto !important;
+    max-height: calc(100vh - 200px) !important;
+    border-radius: 16px !important;
+  }
+
+  /* Hide the desktop search bar button — topbar search button handles this on mobile */
+  .nyx-search-desktop-btn {
+    display: none !important;
   }
 
   /* ── Mobile card & layout helpers ─────────────────────────────────────────── */
