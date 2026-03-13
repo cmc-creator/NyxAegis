@@ -128,20 +128,15 @@ export default function LandingPage() {
       </div>
 
       {/* NAV */}
-      <nav className="nyx-land-nav" style={{ position: "sticky", top: 0, zIndex: 50, borderBottom: `1px solid ${C.border}`, padding: "0 2rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64, background: "color-mix(in srgb, var(--nyx-bg) 85%, transparent)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div>
-            <span style={{ fontWeight: 900, fontSize: "1.15rem", letterSpacing: "-0.03em", display: "block", lineHeight: 1.1 }}>NyxAegis<sup style={{ fontSize: "0.6em", verticalAlign: "super", marginLeft: 1, color: "var(--nyx-accent)" }}>™</sup></span>
-            <span className="nyx-land-nav-tagline" style={{ fontSize: "0.62rem", color: C.muted, letterSpacing: "0.06em", fontStyle: "italic" }}>Where Relationships Become Referrals.</span>
-          </div>
-        </div>
-        <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-          <div className="nyx-land-nav-text-links" style={{ display: "flex", gap: "2rem", alignItems: "center" }}>
+      <nav style={{ position: "sticky", top: 0, zIndex: 50, borderBottom: `1px solid ${C.border}`, padding: "0 clamp(1rem, 4vw, 2rem)", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64, background: "color-mix(in srgb, var(--nyx-bg) 85%, transparent)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", gap: 8 }}>
+        <span style={{ fontWeight: 900, fontSize: "1.1rem", letterSpacing: "-0.03em", whiteSpace: "nowrap", flexShrink: 0 }}>NyxAegis<sup style={{ fontSize: "0.6em", verticalAlign: "super", marginLeft: 1, color: "var(--nyx-accent)" }}>™</sup></span>
+        <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
+          <div className="nyx-land-nav-text-links" style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
             <Link href="#features" style={{ color: C.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 500 }}>Features</Link>
             <Link href="/pricing" style={{ color: C.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 500 }}>Pricing</Link>
             <Link href="/login" style={{ color: C.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 500 }}>Sign In</Link>
           </div>
-          <Link href="/signup" className="nyx-land-nav-cta" style={{ background: "var(--nyx-accent)", color: "#000", padding: "8px 22px", borderRadius: 8, fontWeight: 800, textDecoration: "none", fontSize: "0.85rem", boxShadow: "0 0 20px var(--nyx-accent-str)", whiteSpace: "nowrap" }}>Get Started</Link>
+          <Link href="/signup" style={{ background: "var(--nyx-accent)", color: "#000", padding: "8px 18px", borderRadius: 8, fontWeight: 800, textDecoration: "none", fontSize: "0.85rem", boxShadow: "0 0 20px var(--nyx-accent-str)", whiteSpace: "nowrap", flexShrink: 0 }}>Get Started</Link>
         </div>
       </nav>
 
