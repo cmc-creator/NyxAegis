@@ -6,13 +6,14 @@ export const maxDuration = 30;
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const session = await auth();
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const source = await prisma.referralSource.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       assignedRep: { include: { user: { select: { name: true, email: true } } } },
       _count: { select: { referrals: true } },
@@ -24,8 +25,9 @@ export async function GET(
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const session = await auth();
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -38,7 +40,7 @@ export async function PATCH(
   } = body;
 
   const source = await prisma.referralSource.update({
-    where: { id: params.id },
+    where: { id },
     data: {
       ...(name              !== undefined ? { name }              : {}),
       ...(type              !== undefined ? { type }              : {}),
@@ -64,11 +66,12 @@ export async function PATCH(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   const session = await auth();
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  await prisma.referralSource.delete({ where: { id: params.id } });
+  await prisma.referralSource.delete({ where: { id } });
   return NextResponse.json({ ok: true });
 }

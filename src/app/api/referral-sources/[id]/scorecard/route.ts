@@ -44,12 +44,11 @@ function computeWarmthScore(params: {
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id: sourceId } = await params;
   const session = await auth();
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  const sourceId = params.id;
 
   const source = await prisma.referralSource.findUnique({
     where: { id: sourceId },
