@@ -238,13 +238,12 @@ export function Sidebar({ role, userName, userEmail }: SidebarProps) {
         <div
           className="nyx-mobile-overlay"
           onClick={() => setMobileOpen(false)}
-          style={{ display: "none" }}
         />
       )}
 
       <aside
         className={`nyx-sidebar${mobileOpen ? " is-open" : ""}`}
-        style={{ width: 248, minHeight: "100vh", borderRight: `1px solid ${BORDER}`, display: "flex", flexDirection: "column", flexShrink: 0, position: "sticky", top: 0, height: "100vh", overflowY: "auto" }}
+        style={{ width: 248, minHeight: "100vh", borderRight: `1px solid ${BORDER}`, display: "flex", flexDirection: "column", flexShrink: 0, height: "100vh", overflowY: "auto" }}
       >
       {/* Logo */}
       <div style={{ padding: "20px 18px 16px", borderBottom: `1px solid ${BORDER}` }}>
@@ -262,7 +261,7 @@ export function Sidebar({ role, userName, userEmail }: SidebarProps) {
           <button
             className="nyx-hamburger"
             onClick={() => setMobileOpen(false)}
-            style={{ display: "none", background: "transparent", border: "none", cursor: "pointer", padding: "10px 12px", minWidth: 44, minHeight: 44, color: TEXT_MUTED, fontSize: "1.2rem", lineHeight: 1, borderRadius: 6 }}
+            style={{ background: "transparent", border: "none", cursor: "pointer", padding: "10px 12px", minWidth: 44, minHeight: 44, color: TEXT_MUTED, fontSize: "1.2rem", lineHeight: 1, borderRadius: 6 }}
             aria-label="Close menu"
           >✕</button>
         </div>
