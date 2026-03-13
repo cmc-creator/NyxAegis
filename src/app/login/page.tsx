@@ -59,7 +59,7 @@ function LoginForm() {
   return (
     <div style={{ background: BG, minHeight: "100vh", display: "flex", fontFamily: "system-ui, -apple-system, sans-serif" }}>
       {/* LEFT PANEL */}
-      <div style={{ flex: "0 0 45%", background: "var(--nyx-accent-dim)", borderRight: "1px solid var(--nyx-accent-dim)", padding: "60px 48px", display: "flex", flexDirection: "column", justifyContent: "space-between", position: "relative", overflow: "hidden" }}>
+      <div className="nyx-login-left" style={{ flex: "0 0 45%", background: "var(--nyx-accent-dim)", borderRight: "1px solid var(--nyx-accent-dim)", padding: "60px 48px", display: "flex", flexDirection: "column", justifyContent: "space-between", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", top: "20%", left: "10%", width: 300, height: 300, borderRadius: "50%", background: "radial-gradient(circle, var(--nyx-accent-dim) 0%, transparent 70%)", pointerEvents: "none" }} />
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 64 }}>

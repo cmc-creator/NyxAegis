@@ -1216,8 +1216,11 @@ img[data-nimg] {
    ─────────────────────────────────────────────────────────────────────────── */
 
 /* Prevent rubber-band/overscroll bounce (iOS Safari, Android Chrome) */
+/* Prevent horizontal overflow on all pages */
 html, body {
   overscroll-behavior: none;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 /* Kills the 300 ms tap delay on interactive elements */
@@ -1237,6 +1240,65 @@ input[type="checkbox"], input[type="radio"], select, label {
 /* Momentum scrolling on all scrollable areas (iOS) */
 main, .nyx-sidebar, .nyx-table-scroll {
   -webkit-overflow-scrolling: touch;
+}
+
+/* ── Landing page & login mobile responsive ──────────────────────────────── */
+@media (max-width: 768px) {
+  /* Nav: hide text links, keep CTA button */
+  .nyx-land-nav-text-links {
+    display: none !important;
+  }
+  /* Shrink nav padding on mobile */
+  .nyx-land-nav {
+    padding: 0 1rem !important;
+  }
+
+  /* Hero: single column, hide the mock dashboard */
+  .nyx-land-hero-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+  }
+  .nyx-land-hero-mock {
+    display: none !important;
+  }
+  /* Tighter hero padding */
+  .nyx-land-hero-section {
+    padding: 48px 1.25rem 0 !important;
+  }
+  /* Hero CTA buttons full-width stack */
+  .nyx-land-hero-cta {
+    flex-direction: column !important;
+  }
+  .nyx-land-hero-cta a {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* Stats: 2×2 grid */
+  .nyx-land-stats-bar {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  /* Photo strip: single column */
+  .nyx-land-photo-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* AI showcase: single column */
+  .nyx-land-ai-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+
+  /* Portals subtitle: allow wrapping */
+  .nyx-land-portals-subtitle {
+    white-space: normal !important;
+  }
+
+  /* Login: hide the left decorative panel, show full-width form */
+  .nyx-login-left {
+    display: none !important;
+  }
 }
 
 /* ── Mobile Top Bar (hidden on desktop) ──────────────────────────────────── */

@@ -128,7 +128,7 @@ export default function LandingPage() {
       </div>
 
       {/* NAV */}
-      <nav style={{ position: "sticky", top: 0, zIndex: 50, borderBottom: `1px solid ${C.border}`, padding: "0 2rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64, background: "color-mix(in srgb, var(--nyx-bg) 85%, transparent)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)" }}>
+      <nav className="nyx-land-nav" style={{ position: "sticky", top: 0, zIndex: 50, borderBottom: `1px solid ${C.border}`, padding: "0 2rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64, background: "color-mix(in srgb, var(--nyx-bg) 85%, transparent)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <Image src="/Aegislogo.png" alt="NyxAegis" width={120} height={120} placeholder="empty" style={{ background: "transparent", filter: "drop-shadow(0 0 12px rgba(201,168,76,0.45))" }} />
           <div>
@@ -136,17 +136,19 @@ export default function LandingPage() {
             <span style={{ fontSize: "0.62rem", color: C.muted, letterSpacing: "0.06em", fontStyle: "italic" }}>Where Relationships Become Referrals.</span>
           </div>
         </div>
-        <div style={{ display: "flex", gap: "2rem", alignItems: "center" }}>
-          <Link href="#features" style={{ color: C.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 500 }}>Features</Link>
-          <Link href="/pricing" style={{ color: C.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 500 }}>Pricing</Link>
-          <Link href="/login" style={{ color: C.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 500 }}>Sign In</Link>
-          <Link href="/signup" style={{ background: "var(--nyx-accent)", color: "#000", padding: "8px 22px", borderRadius: 8, fontWeight: 800, textDecoration: "none", fontSize: "0.85rem", boxShadow: "0 0 20px var(--nyx-accent-str)" }}>Get Started</Link>
+        <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+          <div className="nyx-land-nav-text-links" style={{ display: "flex", gap: "2rem", alignItems: "center" }}>
+            <Link href="#features" style={{ color: C.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 500 }}>Features</Link>
+            <Link href="/pricing" style={{ color: C.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 500 }}>Pricing</Link>
+            <Link href="/login" style={{ color: C.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 500 }}>Sign In</Link>
+          </div>
+          <Link href="/signup" style={{ background: "var(--nyx-accent)", color: "#000", padding: "8px 22px", borderRadius: 8, fontWeight: 800, textDecoration: "none", fontSize: "0.85rem", boxShadow: "0 0 20px var(--nyx-accent-str)", whiteSpace: "nowrap" }}>Get Started</Link>
         </div>
       </nav>
 
       {/* HERO */}
-      <section style={{ position: "relative", zIndex: 1, padding: "100px 2rem 0", maxWidth: 1400, margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
+      <section className="nyx-land-hero-section" style={{ position: "relative", zIndex: 1, padding: "100px 2rem 0", maxWidth: 1400, margin: "0 auto" }}>
+        <div className="nyx-land-hero-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "center" }}>
           <div>
             {/* Logo */}
             <div style={{ marginBottom: 24 }}>
@@ -174,7 +176,7 @@ export default function LandingPage() {
             <p style={{ fontSize: "1.05rem", color: C.muted, maxWidth: 480, lineHeight: 1.75, marginBottom: 36 }}>
               Built for teams who build relationships - log visits, track referral sources, and prove your outreach is turning into actual results.
             </p>
-            <div style={{ display: "flex", gap: 14, flexWrap: "wrap", marginBottom: 24 }}>
+            <div style={{ display: "flex", gap: 14, flexWrap: "wrap", marginBottom: 24 }} className="nyx-land-hero-cta">
               <Link href="/signup" style={{ background: "var(--nyx-accent)", color: "#000", padding: "14px 32px", borderRadius: 10, fontWeight: 800, textDecoration: "none", fontSize: "0.95rem", display: "inline-flex", alignItems: "center", gap: 8, boxShadow: "0 0 40px var(--nyx-accent-str)" }}>
                 Start Free Trial <span>{icons.arrow}</span>
               </Link>
@@ -184,14 +186,14 @@ export default function LandingPage() {
             </div>
             <p style={{ fontSize: "0.75rem", color: C.dim }}>No credit card required · 14-day free trial · Cancel anytime</p>
           </div>
-          <div style={{ position: "relative" }}>
+          <div className="nyx-land-hero-mock" style={{ position: "relative" }}>
             <div style={{ position: "absolute", inset: -1, background: "linear-gradient(135deg, var(--nyx-accent-mid), var(--nyx-accent-dim), transparent)", borderRadius: 18, filter: "blur(1px)" }} />
             <DashboardMock />
           </div>
         </div>
 
         {/* STATS BAR */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 1, background: C.border, border: `1px solid ${C.border}`, borderRadius: 14, overflow: "hidden", marginTop: 72 }}>
+        <div className="nyx-land-stats-bar" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 1, background: C.border, border: `1px solid ${C.border}`, borderRadius: 14, overflow: "hidden", marginTop: 72 }}>
           {stats.map((s) => (
             <div key={s.label} style={{ background: "var(--nyx-bg)", padding: "24px 20px", textAlign: "center" }}>
               <div style={{ fontSize: "1.7rem", fontWeight: 900, color: C.cyan, letterSpacing: "-0.03em", textShadow: "0 0 24px var(--nyx-accent-glow)" }}>{s.value}</div>
@@ -204,7 +206,7 @@ export default function LandingPage() {
 
       {/* PHOTOGRAPHY STRIP */}
       <section style={{ position: "relative", zIndex: 1, padding: "0 2rem 80px", maxWidth: 1400, margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 14 }}>
+        <div className="nyx-land-photo-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 14 }}>
           {[
             { src: "/Landing/desk.png",    label: "Built for the field",       sub: "Log visits and referrals on the go" },
             { src: "/Landing/table.png",   label: "Strategy at the table",     sub: "Territory planning made visual" },
@@ -246,7 +248,7 @@ export default function LandingPage() {
 
       {/* AI SHOWCASE */}
       <section style={{ position: "relative", zIndex: 1, padding: "96px 2rem", borderTop: `1px solid ${C.border}` }}>
-        <div style={{ maxWidth: 1300, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }}>
+        <div style={{ maxWidth: 1300, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 80, alignItems: "center" }} className="nyx-land-ai-grid">
           {/* Left: copy */}
           <div>
             <div style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "rgba(167,139,250,0.08)", border: "1px solid rgba(167,139,250,0.25)", borderRadius: 999, padding: "8px 18px", marginBottom: 28 }}>
@@ -337,7 +339,7 @@ export default function LandingPage() {
           <div style={{ textAlign: "center", marginBottom: 56 }}>
             <p style={{ color: C.cyan, fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", marginBottom: 14 }}>Role-Based Access</p>
             <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 900, letterSpacing: "-0.025em", marginBottom: 12 }}>A portal for every stakeholder</h2>
-            <p style={{ color: C.muted, fontSize: "1rem", margin: "0 auto", lineHeight: 1.7, whiteSpace: "nowrap" }}>Each user sees exactly what they need - nothing more, nothing less.</p>
+            <p className="nyx-land-portals-subtitle" style={{ color: C.muted, fontSize: "1rem", margin: "0 auto", lineHeight: 1.7, whiteSpace: "nowrap" }}>Each user sees exactly what they need - nothing more, nothing less.</p>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 20 }}>
             {[
