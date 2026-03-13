@@ -221,9 +221,9 @@ export function Sidebar({ role, userName, userEmail }: SidebarProps) {
 
   return (
     <>
-      {/* Mobile hamburger button */}
+      {/* Mobile hamburger button — hidden; MobileTopBar owns this on mobile */}
       <button
-        className="nyx-hamburger"
+        className="nyx-hamburger-float"
         onClick={() => setMobileOpen(true)}
         style={{ display: "none", position: "fixed", top: 14, left: 14, zIndex: 400, background: "var(--nyx-card)", border: "1px solid var(--nyx-accent-dim)", borderRadius: 8, padding: "8px 10px", cursor: "pointer", flexDirection: "column", gap: 4 }}
         aria-label="Open menu"

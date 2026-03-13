@@ -1210,6 +1210,40 @@ img[data-nimg] {
   -webkit-overflow-scrolling: touch;
 }
 
+/* ── Native app feel: global baseline ────────────────────────────────────────
+   These apply to ALL viewports to eliminate web-browser quirks that make
+   the app feel like a website rather than a native app.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* Prevent rubber-band/overscroll bounce (iOS Safari, Android Chrome) */
+html, body {
+  overscroll-behavior: none;
+}
+
+/* Kills the 300 ms tap delay on interactive elements */
+button, a, [role="button"],
+input[type="checkbox"], input[type="radio"], select, label {
+  touch-action: manipulation;
+}
+
+/* Use dynamic viewport height — fixes the layout-jump when mobile browser
+   chrome (URL bar, gesture bar) appears or disappears */
+@supports (min-height: 100dvh) {
+  .min-h-screen {
+    min-height: 100dvh;
+  }
+}
+
+/* Momentum scrolling on all scrollable areas (iOS) */
+main, .nyx-sidebar, .nyx-table-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── Mobile Top Bar (hidden on desktop) ──────────────────────────────────── */
+.nyx-topbar {
+  display: none;
+}
+
 /* Mobile layout adjustments */
 @media (max-width: 768px) {
   /* Sidebar becomes a slide-in drawer */
@@ -1245,18 +1279,23 @@ img[data-nimg] {
     grid-template-columns: 1fr !important;
   }
 
-  /* Add breathing room at the top for the hamburger button */
+  /* Add breathing room at the top for the topbar (52px) + iPhone notch */
   main {
-    padding-top: 52px;
+    padding-top: calc(52px + env(safe-area-inset-top, 0px)) !important;
   }
 
   /* Hide desktop keyboard shortcut hint — irrelevant on mobile */
   .nyx-search-shortcut {
     display: none !important;
   }
+
+  /* Hide the sidebar floating hamburger — topbar owns this on mobile */
+  .nyx-hamburger-float {
+    display: none !important;
+  }
 }
 
-/* Desktop — keep sidebar always visible */
+/* Desktop — keep sidebar always visible, hide all mobile-only chrome */
 @media (min-width: 769px) {
   .nyx-sidebar {
     transform: none !important;
@@ -1266,6 +1305,9 @@ img[data-nimg] {
     display: none !important;
   }
   .nyx-hamburger {
+    display: none !important;
+  }
+  .nyx-topbar {
     display: none !important;
   }
   main {
@@ -1279,6 +1321,103 @@ img[data-nimg] {
 }
 
 @media (max-width: 768px) {
+  /* ── Mobile Top Bar ───────────────────────────────────────────────── */
+  .nyx-topbar {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 350;
+    /* 52px bar + iPhone notch/Dynamic Island safe area */
+    height: calc(52px + env(safe-area-inset-top, 0px));
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-left: 12px;
+    padding-right: 12px;
+    align-items: center;
+    gap: 6px;
+    background: var(--nyx-card);
+    border-bottom: 1px solid var(--nyx-border);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+  }
+
+  .nyx-topbar-title {
+    flex: 1;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--nyx-text);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 4px;
+  }
+
+  .nyx-topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+
+  .nyx-topbar-btn {
+    background: none;
+    border: none;
+    color: var(--nyx-text-muted);
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    flex-shrink: 0;
+  }
+
+  .nyx-topbar-btn:active {
+    background: var(--nyx-accent-dim);
+    color: var(--nyx-accent);
+  }
+
+  /* + quick log button — accent-coloured pill */
+  .nyx-topbar-log {
+    background: var(--nyx-accent-dim) !important;
+    border: 1px solid var(--nyx-accent-str) !important;
+    color: var(--nyx-accent) !important;
+    width: 36px !important;
+    min-width: 36px !important;
+    height: 36px !important;
+    border-radius: 9px !important;
+  }
+
+  /* User initials avatar */
+  .nyx-topbar-avatar {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    border-radius: 50%;
+    background: var(--nyx-accent-mid);
+    border: 1px solid var(--nyx-accent-str);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: var(--nyx-accent);
+    flex-shrink: 0;
+    user-select: none;
+  }
+
+  /* On mobile, hide the old floating FABs — topbar quick-log button replaces them */
+  .nyx-fab-quicklog {
+    display: none !important;
+  }
+
   /* Show the bottom nav */
   .nyx-bottom-nav {
     display: flex;

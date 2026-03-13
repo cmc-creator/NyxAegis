@@ -9,6 +9,8 @@ export const viewport: Viewport = {
   themeColor: "#C9A84C",
   width: "device-width",
   initialScale: 1,
+  // Allows env(safe-area-inset-*) to work — critical for iPhone notch / Dynamic Island
+  viewportFit: "cover",
 };
 
 export const metadata: Metadata = {

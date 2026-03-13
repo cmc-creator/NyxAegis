@@ -52,6 +52,13 @@ export default function GlobalSearch({ role: _role }: { role: string }) {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
+  // Mobile topbar search button
+  useEffect(() => {
+    const handler = () => setOpen(true);
+    window.addEventListener("aegis:open-search", handler);
+    return () => window.removeEventListener("aegis:open-search", handler);
+  }, []);
+
   useEffect(() => { if (open) setTimeout(() => inputRef.current?.focus(), 50); }, [open]);
 
   useEffect(() => {

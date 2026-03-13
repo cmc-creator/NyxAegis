@@ -2,7 +2,7 @@
   "name": "NyxAegis CRM",
   "short_name": "NyxAegis",
   "description": "Business Development CRM Platform for high-performance BD teams",
-  "start_url": "/admin/dashboard",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0f1a",
   "theme_color": "#C9A84C",
@@ -23,6 +23,22 @@
       "src": "/Aegislogo.png",
       "sizes": "512x512",
       "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Today's Planner",
+      "short_name": "Today",
+      "description": "Open daily planner (Rep)",
+      "url": "/rep/today",
+      "icons": [{ "src": "/Aegislogo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Go to your dashboard",
+      "url": "/",
+      "icons": [{ "src": "/Aegislogo.png", "sizes": "192x192" }]
     }
   ],
   "categories": ["business", "productivity"],

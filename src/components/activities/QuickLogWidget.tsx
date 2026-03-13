@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const ACTIVITY_TYPES = [
   { value: "CALL",           label: "📞 Call",            color: "#60a5fa" },
@@ -24,6 +24,15 @@ export default function QuickLogWidget({ repId, role }: { repId?: string; role: 
   const [notes, setNotes] = useState("");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+
+  // Allow MobileTopBar quick-log button to open this widget
+  // (must be before any early return to satisfy rules of hooks)
+  useEffect(() => {
+    if (role === "ACCOUNT") return;
+    const handler = () => setOpen(true);
+    window.addEventListener("aegis:open-quicklog", handler);
+    return () => window.removeEventListener("aegis:open-quicklog", handler);
+  }, [role]);
 
   if (role === "ACCOUNT") return null;
 
