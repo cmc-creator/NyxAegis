@@ -297,7 +297,7 @@ function ActivityCard({ title, type, subtitle, time }: {
   );
 }
 
-function SourceVisitCard({ id, name, type, specialty, phone, city, state, daysSince, warmth, freqDays }: {
+function SourceVisitCard({ id: _id, name, type, specialty, phone, city, state, daysSince, warmth, freqDays }: {
   id: string; name: string; type: string; specialty?: string; phone?: string;
   city?: string; state?: string; daysSince: number | null; warmth: number; freqDays: number;
 }) {
@@ -329,7 +329,7 @@ function SourceVisitCard({ id, name, type, specialty, phone, city, state, daysSi
   );
 }
 
-function FollowUpCard({ title, subtitle, badge, dueDate, href }: {
+function FollowUpCard({ title, subtitle, badge: _badge, dueDate, href }: {
   title: string; subtitle: string; badge: string; dueDate: Date | null; href: string;
 }) {
   const isOverdue = dueDate && dueDate < new Date();
