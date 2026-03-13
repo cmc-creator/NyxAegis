@@ -64,7 +64,7 @@ function OppModal({ opp, hospitals, reps, onClose, onSave, onDelete }: {
               <input style={inp} required value={form.title ?? ""} onChange={e => set("title", e.target.value)} placeholder="Revenue Cycle Optimization" />
             </div>
             <div>
-              <label style={{ fontSize: "0.72rem", color: C.muted, display: "block", marginBottom: 4 }}>HOSPITAL *</label>
+              <label style={{ fontSize: "0.72rem", color: C.muted, display: "block", marginBottom: 4 }}>ACCOUNT *</label>
               <select style={sel} required value={form.hospitalId ?? ""} onChange={e => set("hospitalId", e.target.value)}>
                 <option value="">Select Account</option>
                 {hospitals.map(h => <option key={h.id} value={h.id}>{h.hospitalName}</option>)}
@@ -256,7 +256,7 @@ export default function OpportunitiesClient({ hospitals, reps }: { hospitals: Ho
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr style={{ borderBottom: `1px solid ${C.border}` }}>
-                  {["Title","Hospital","Stage","Service Line","Value","Rep","Priority","Next Follow-up","",""].map(h => (
+                  {["Title","Account","Stage","Service Line","Value","Rep","Priority","Next Follow-up","",""].map(h => (
                   <th key={h} style={{ padding: "12px 14px", textAlign: "left", fontSize: "0.65rem", fontWeight: 700, color: "var(--nyx-accent-label)", letterSpacing: "0.1em", textTransform: "uppercase" }}>{h}</th>
                 ))}
               </tr>

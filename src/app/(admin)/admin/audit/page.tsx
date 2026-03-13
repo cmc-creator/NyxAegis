@@ -31,7 +31,7 @@ interface AuditEntry {
   createdAt: string;
 }
 
-const RESOURCES = ["", "Lead", "Opportunity", "Hospital", "Rep", "Invoice", "Contract", "User"];
+const RESOURCES = ["", "Lead", "Opportunity", "Account", "Rep", "Invoice", "Contract", "User"];
 
 const relTime = (d: string) => {
   const diff = Date.now() - new Date(d).getTime();

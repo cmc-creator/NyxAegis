@@ -81,7 +81,7 @@ function LeadModal({ lead, reps, onClose, onSave, onDelete }: {
         <form onSubmit={submit}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
             <div style={{ gridColumn: "1/-1" }}>
-              <label style={{ fontSize: "0.72rem", color: C.muted, display: "block", marginBottom: 4 }}>HOSPITAL NAME *</label>
+              <label style={{ fontSize: "0.72rem", color: C.muted, display: "block", marginBottom: 4 }}>ACCOUNT NAME *</label>
               <input style={inp} required value={form.hospitalName ?? ""} onChange={e => set("hospitalName", e.target.value)} placeholder="Saint Mary's Medical Center" />
             </div>
             <div>
@@ -89,7 +89,7 @@ function LeadModal({ lead, reps, onClose, onSave, onDelete }: {
               <input style={inp} value={form.systemName ?? ""} onChange={e => set("systemName", e.target.value)} placeholder="Health System Name" />
             </div>
             <div>
-              <label style={{ fontSize: "0.72rem", color: C.muted, display: "block", marginBottom: 4 }}>HOSPITAL TYPE</label>
+              <label style={{ fontSize: "0.72rem", color: C.muted, display: "block", marginBottom: 4 }}>ACCOUNT TYPE</label>
               <select style={sel} value={form.hospitalType ?? "ACUTE_CARE"} onChange={e => set("hospitalType", e.target.value)}>
                 {H_TYPES.map(t => <option key={t} value={t}>{lbl(t)}</option>)}
               </select>
@@ -304,7 +304,7 @@ function ActivityFeedPanel({ lead, onClose }: { lead: Lead; onClose: () => void 
 }
 
 function exportLeadsCSV(leads: Lead[], filename = "leads.csv") {
-  const headers = ["Hospital","System","State","City","Beds","Status","Priority","Source","Contact","Contact Title","Contact Email","Contact Phone","Service Interest","Est. Value","Rep","Created"];
+  const headers = ["Account","System","State","City","Beds","Status","Priority","Source","Contact","Contact Title","Contact Email","Contact Phone","Service Interest","Est. Value","Rep","Created"];
   const rows = leads.map(l => [
     l.hospitalName, l.systemName ?? "", l.state ?? "", l.city ?? "",
     l.bedCount != null ? String(l.bedCount) : "",
@@ -463,7 +463,7 @@ export default function LeadsClient({ reps }: { reps: Rep[] }) {
                   onChange={toggleAll}
                   style={{ accentColor: C.cyan, cursor: "pointer", width: 14, height: 14 }} />
               </th>
-              {["Hospital", "Contact", "Status", "Priority", "Source", "Est. Value", "Rep", "Next Follow-up", "Created", ""].map(h => (
+              {["Account", "Contact", "Status", "Priority", "Source", "Est. Value", "Rep", "Next Follow-up", "Created", ""].map(h => (
                 <th key={h} style={{ padding: "12px 14px", textAlign: "left", fontSize: "0.65rem", fontWeight: 700, color: "var(--nyx-accent-label)", letterSpacing: "0.1em", textTransform: "uppercase", whiteSpace: "nowrap" }}>{h}</th>
               ))}
             </tr>

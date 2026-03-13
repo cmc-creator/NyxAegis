@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/layout/sidebar";
+import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import AIChatWidget from "@/components/ai/AIChatWidget";
 import GlobalSearch from "@/components/search/GlobalSearch";
 import QuickLogWidget from "@/components/activities/QuickLogWidget";
@@ -21,6 +22,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <AIChatWidget />
       <GlobalSearch role="ADMIN" />
       <QuickLogWidget role="ADMIN" />
+      <MobileBottomNav role="ADMIN" />
     </div>
   );
 }

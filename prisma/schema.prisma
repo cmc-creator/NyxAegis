@@ -857,9 +857,10 @@ model ReferralSource {
   assignedRepId String?
   assignedRep   Rep?   @relation(fields: [assignedRepId], references: [id])
 
-  monthlyGoal  Int?
-  notes        String?
-  active       Boolean @default(true)
+  monthlyGoal          Int?
+  visitFrequencyDays   Int?     @default(14)  // how often (in days) a rep should visit this source
+  notes                String?
+  active               Boolean  @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

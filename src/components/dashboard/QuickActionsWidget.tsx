@@ -107,7 +107,7 @@ const ALL_ACTIONS: QuickAction[] = [
   { id: "lead",          label: "Add Lead",          href: "/admin/leads",         icon: "target" },
   { id: "opportunity",   label: "New Opportunity",   href: "/admin/opportunities", icon: "chart" },
   { id: "rep",           label: "Add Rep",           href: "/admin/reps",          icon: "user" },
-  { id: "hospital",      label: "Add Hospital",      href: "/admin/hospitals",     icon: "hospital" },
+  { id: "hospital",      label: "Add Account",       href: "/admin/hospitals",     icon: "hospital" },
   { id: "contract",      label: "New Contract",      href: "/admin/contracts",     icon: "contract" },
   { id: "invoice",       label: "New Invoice",       href: "/admin/invoices",      icon: "invoice" },
   { id: "calendar",      label: "Calendar",          href: "/admin/calendar",      icon: "calendar" },

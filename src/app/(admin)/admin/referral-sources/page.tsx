@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { ActivityFeedPanel } from "@/components/activities/ActivityFeedPanel";
 import { ReferralFeedPanel } from "@/components/referrals/ReferralFeedPanel";
+import { SourceScorecardPanel } from "@/components/referrals/SourceScorecardPanel";
 
 const C = {
   cyan: "var(--nyx-accent)",
@@ -21,9 +22,11 @@ const SOURCE_TYPES = ["PHYSICIAN","SPECIALIST","SNF","REHAB_FACILITY","CARE_FACI
 type Source = {
   id: string; name: string; type: string; specialty?: string; practiceName?: string;
   npi?: string; contactName?: string; phone?: string; city?: string; state?: string;
-  monthlyGoal?: number; active: boolean;
+  monthlyGoal?: number; visitFrequencyDays?: number; active: boolean;
   assignedRep?: { user: { name?: string } };
   _count: { referrals: number };
+  // warmth (present when fetched with ?warmth=1)
+  warmthScore?: number; warmthLabel?: string; daysSinceLastActivity?: number | null;
 };
 
 const LABEL: Record<string, string> = {
@@ -71,8 +74,9 @@ export default function ReferralSourcesPage() {
   const [form, setForm]       = useState(empty);
   const [saving, setSaving]   = useState(false);
   const [error, setError]     = useState("");
-  const [activitySource, setActivitySource] = useState<Source | null>(null);
-  const [referralSource, setReferralSource] = useState<Source | null>(null);
+  const [activitySource, setActivitySource]     = useState<Source | null>(null);
+  const [referralSource, setReferralSource]     = useState<Source | null>(null);
+  const [scorecardSource, setScorecardSource]   = useState<Source | null>(null);
 
   // Import CSV state
   const [showImport, setShowImport]       = useState(false);
@@ -88,8 +92,9 @@ export default function ReferralSourcesPage() {
 
   const load = async () => {
     setLoading(true);
-    const q = search ? `?q=${encodeURIComponent(search)}` : "";
-    const res = await fetch(`/api/referral-sources${q}`);
+    const params = new URLSearchParams({ warmth: "1" });
+    if (search) params.set("q", search);
+    const res = await fetch(`/api/referral-sources?${params}`);
     if (res.ok) setSources(await res.json());
     setLoading(false);
   };
@@ -240,17 +245,17 @@ export default function ReferralSourcesPage() {
           <table style={{ width:"100%", borderCollapse:"collapse" }}>
             <thead>
               <tr style={{ borderBottom:`1px solid ${C.border}` }}>
-                {["Name","Type","Practice / Facility","NPI","Assigned Rep","Total Referrals","Monthly Goal","Attainment","Status","",""].map((h) => (
+                {["Name","Type","Practice / Facility","NPI","Assigned Rep","Total Referrals","Monthly Goal","Attainment","Status","","",""].map((h) => (
                   <th key={h} style={{ padding:"12px 14px", textAlign:"left", fontSize:"0.65rem", fontWeight:700, color:C.dim, letterSpacing:"0.1em", textTransform:"uppercase", whiteSpace:"nowrap" }}>{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {loading && (
-                <tr><td colSpan={11} style={{ padding:"32px", textAlign:"center", color:C.muted, fontSize:"0.875rem" }}>Loading…</td></tr>
+                <tr><td colSpan={12} style={{ padding:"32px", textAlign:"center", color:C.muted, fontSize:"0.875rem" }}>Loading…</td></tr>
               )}
               {!loading && sources.length === 0 && (
-                <tr><td colSpan={11} style={{ padding:"48px", textAlign:"center", color:C.muted, fontSize:"0.875rem" }}>
+                <tr><td colSpan={12} style={{ padding:"48px", textAlign:"center", color:C.muted, fontSize:"0.875rem" }}>
                   No referral sources yet.{" "}
                   <button onClick={() => setShowAdd(true)} style={{ color:C.cyan, background:"none", border:"none", cursor:"pointer", fontWeight:600 }}>Add your first source</button>
                 </td></tr>
@@ -262,8 +267,15 @@ export default function ReferralSourcesPage() {
                     onMouseEnter={e => (e.currentTarget.style.background = "var(--nyx-accent-dim)")}
                     onMouseLeave={e => (e.currentTarget.style.background = "transparent")}>
                     <td style={{ padding:"12px 14px" }}>
-                      <div style={{ fontWeight:700, fontSize:"0.875rem", color:C.text }}>{s.name}</div>
-                      {s.specialty && <div style={{ fontSize:"0.7rem", color:C.muted }}>{s.specialty}</div>}
+                      <div style={{ display:"flex", alignItems:"center", gap:7 }}>
+                        {s.warmthScore !== undefined && (
+                          <span title={`${s.warmthLabel} (${s.warmthScore})`} style={{ width:9, height:9, borderRadius:"50%", flexShrink:0, display:"inline-block",
+                            background: s.warmthScore >= 70 ? "#34d399" : s.warmthScore >= 40 ? "#fbbf24" : "#f87171",
+                            boxShadow: `0 0 6px ${s.warmthScore >= 70 ? "#34d399" : s.warmthScore >= 40 ? "#fbbf24" : "#f87171"}` }} />
+                        )}
+                        <div style={{ fontWeight:700, fontSize:"0.875rem", color:C.text }}>{s.name}</div>
+                      </div>
+                      {s.specialty && <div style={{ fontSize:"0.7rem", color:C.muted, paddingLeft:16 }}>{s.specialty}</div>}
                     </td>
                     <td style={{ padding:"12px 14px" }}>
                       <span style={{ background:"var(--nyx-accent-dim)", border:`1px solid var(--nyx-accent-mid)`, borderRadius:999, padding:"2px 8px", fontSize:"0.65rem", fontWeight:700, color:C.cyan, whiteSpace:"nowrap" }}>
@@ -306,6 +318,14 @@ export default function ReferralSourcesPage() {
                         📥 Referrals
                       </button>
                     </td>
+                    <td style={{ padding:"12px 8px" }}>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setScorecardSource(s); }}
+                        style={{ background:"rgba(201,168,76,0.1)", border:"1px solid rgba(201,168,76,0.3)", borderRadius:6, padding:"4px 10px", color:"var(--nyx-accent)", cursor:"pointer", fontSize:"0.7rem", fontWeight:700, whiteSpace:"nowrap" }}
+                      >
+                        📊 Scorecard
+                      </button>
+                    </td>
                   </tr>
                 );
               })}
@@ -330,6 +350,13 @@ export default function ReferralSourcesPage() {
           entityName={activitySource.name}
           entitySubtitle={[activitySource.specialty, activitySource.practiceName].filter(Boolean).join(" · ") || activitySource.type}
           onClose={() => setActivitySource(null)}
+        />
+      )}
+
+      {scorecardSource && (
+        <SourceScorecardPanel
+          sourceId={scorecardSource.id}
+          onClose={() => setScorecardSource(null)}
         />
       )}
 

@@ -304,7 +304,7 @@ function ActivityModal({ activity, defaultDate, hospitals, reps, onSave, onDelet
 
           {/* Hospital */}
           <div>
-            <label style={lbl}>Hospital (optional)</label>
+            <label style={lbl}>Account (optional)</label>
             <select value={hospitalId} onChange={e => setHospId(e.target.value)}
               style={{ ...inp, cursor:"pointer" }}>
               <option value="">None</option>

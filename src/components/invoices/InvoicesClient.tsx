@@ -78,7 +78,7 @@ function InvoiceModal({ invoice, hospitals, onClose, onSave, onDelete }: {
               </select>
             </div>
             <div>
-              <label style={{ fontSize: "0.72rem", color: C.muted, display: "block", marginBottom: 4 }}>HOSPITAL *</label>
+              <label style={{ fontSize: "0.72rem", color: C.muted, display: "block", marginBottom: 4 }}>ACCOUNT *</label>
               <select style={sel} required value={form.hospitalId ?? ""} onChange={e => set("hospitalId", e.target.value)}>
                 <option value="">Select Account</option>
                 {hospitals.map(h => <option key={h.id} value={h.id}>{h.hospitalName}</option>)}
@@ -213,7 +213,7 @@ export default function InvoicesClient({ hospitals }: { hospitals: Hospital[] })
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <thead>
             <tr style={{ borderBottom: `1px solid ${C.border}` }}>
-              {["Invoice #","Hospital","Status","Total","Due Date","Paid","Created",""].map(h => (
+              {["Invoice #","Account","Status","Total","Due Date","Paid","Created",""].map(h => (
                 <th key={h} style={{ padding: "12px 14px", textAlign: "left", fontSize: "0.65rem", fontWeight: 700, color: "var(--nyx-accent-label)", letterSpacing: "0.1em", textTransform: "uppercase" }}>{h}</th>
               ))}
             </tr>

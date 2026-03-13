@@ -59,6 +59,7 @@ export default function QuickLogWidget({ repId, role }: { repId?: string; role: 
       <button
         onClick={() => setOpen(true)}
         title="Quick log activity"
+        className="nyx-fab-quicklog"
         style={{
           position: "fixed", bottom: 92, right: 24, zIndex: 500,
           width: 52, height: 52, borderRadius: "50%",
@@ -75,7 +76,7 @@ export default function QuickLogWidget({ repId, role }: { repId?: string; role: 
         ⚡
       </button>
 
-      {/* Panel */}
+      {/* Panel — slides up from bottom on mobile, anchored bottom-right on desktop */}
       {open && (
         <div
           style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 600, display: "flex", alignItems: "flex-end", justifyContent: "flex-end" }}
@@ -83,6 +84,7 @@ export default function QuickLogWidget({ repId, role }: { repId?: string; role: 
         >
           <div
             onClick={e => e.stopPropagation()}
+            className="nyx-quicklog-panel"
             style={{ margin: "0 24px 24px 0", width: "min(360px, calc(100vw - 32px))", background: "var(--nyx-card)", border: "1px solid var(--nyx-accent-str)", borderRadius: 16, overflow: "hidden", boxShadow: "0 20px 80px rgba(0,0,0,0.6)" }}
           >
             {/* Header */}

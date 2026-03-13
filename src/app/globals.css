@@ -1273,6 +1273,173 @@ img[data-nimg] {
   }
 }
 
+/* ── Mobile Bottom Navigation Bar ─────────────────────────────────────────── */
+.nyx-bottom-nav {
+  display: none; /* hidden on desktop */
+}
+
+@media (max-width: 768px) {
+  /* Show the bottom nav */
+  .nyx-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 350;
+    background: var(--nyx-card);
+    border-top: 1px solid var(--nyx-border);
+    /* Safe area inset for iPhone home bar */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  .nyx-bottom-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 8px 4px 10px;
+    min-height: 56px;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s;
+  }
+
+  .nyx-bottom-nav-item:active {
+    background: var(--nyx-accent-dim);
+  }
+
+  .nyx-bottom-nav-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+  }
+
+  .nyx-bottom-nav-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .nyx-bottom-nav-dot {
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--nyx-accent);
+    box-shadow: 0 0 6px var(--nyx-accent-glow);
+  }
+
+  /* Push main content up so it doesn't hide behind the bottom nav */
+  main {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* Move the floating action buttons above the bottom nav */
+  /* Quick log FAB */
+  .nyx-fab-quicklog {
+    bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* AI widget toggle */
+  .nyx-fab-ai {
+    bottom: calc(138px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  /* ── Mobile card & layout helpers ─────────────────────────────────────────── */
+
+  /* Single-column table-as-cards pattern */
+  .nyx-mobile-cards table,
+  .nyx-mobile-cards thead,
+  .nyx-mobile-cards tbody,
+  .nyx-mobile-cards th,
+  .nyx-mobile-cards td,
+  .nyx-mobile-cards tr {
+    display: block;
+  }
+  .nyx-mobile-cards thead tr {
+    display: none; /* hide header row */
+  }
+  .nyx-mobile-cards tr {
+    border: 1px solid var(--nyx-border);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    padding: 10px 12px;
+    background: var(--nyx-card);
+  }
+  .nyx-mobile-cards td::before {
+    content: attr(data-label);
+    font-size: 0.62rem;
+    font-weight: 700;
+    color: var(--nyx-accent-label);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  /* Responsive stat grid — 2 cols on mobile */
+  .nyx-stat-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  /* Full-width buttons on mobile */
+  .nyx-btn-mobile-full {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* Compact page header on mobile */
+  .nyx-page-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+  }
+
+  /* Hide non-essential columns on mobile */
+  .nyx-col-hide-mobile {
+    display: none !important;
+  }
+
+  /* Touch-friendly inputs */
+  input, select, textarea {
+    font-size: 16px !important; /* prevents iOS zoom on focus */
+  }
+
+  /* Quick-log panel: full-width bottom sheet on mobile */
+  .nyx-quicklog-panel {
+    margin: 0 !important;
+    width: 100% !important;
+    border-radius: 20px 20px 0 0 !important;
+    border-bottom: none !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Scorecard panel: full-width bottom sheet on mobile */
+  .nyx-scorecard-panel {
+    width: 100% !important;
+    height: 88vh !important;
+    border-radius: 20px 20px 0 0 !important;
+    border-left: none !important;
+    align-self: flex-end !important;
+  }
+}
+
 /* ══════════════════════════════════════════════════════════════
    Light theme readability — fixes for all 6 light-bg themes:
    light · blush · ivory · alabaster · glacial · peak

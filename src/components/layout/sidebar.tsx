@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { signOut } from "next-auth/react";
 
 const CYAN       = "var(--nyx-accent)";
@@ -148,6 +148,7 @@ const REP_NAV: NavGroup[] = [
   {
     group: "Overview", tint: "accent",
     items: [
+      { href: "/rep/today",         label: "Today" },
       { href: "/rep/dashboard",     label: "Dashboard" },
       { href: "/rep/opportunities", label: "My Opportunities" },
       { href: "/rep/territory",     label: "My Territory" },
@@ -210,6 +211,13 @@ export function Sidebar({ role, userName, userEmail }: SidebarProps) {
   const pathname = usePathname();
   const nav = getNav(role);
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Listen for the bottom-nav "More" button event
+  useEffect(() => {
+    const handler = () => setMobileOpen(true);
+    window.addEventListener("aegis:open-sidebar", handler);
+    return () => window.removeEventListener("aegis:open-sidebar", handler);
+  }, []);
 
   return (
     <>
