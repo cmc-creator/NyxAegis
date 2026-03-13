@@ -1332,8 +1332,10 @@ main, .nyx-sidebar, .nyx-table-scroll {
     transform: translateX(-100%) !important;
     top: 0 !important;
     left: 0 !important;
+    width: 280px !important;
     height: 100vh !important;
     min-height: 100vh !important;
+    background: var(--nyx-card) !important;
   }
   .nyx-sidebar.is-open {
     transform: translateX(0) !important;
@@ -1361,6 +1363,9 @@ main, .nyx-sidebar, .nyx-table-scroll {
   /* Add breathing room at the top for the topbar (52px) + iPhone notch */
   main {
     padding-top: calc(52px + env(safe-area-inset-top, 0px)) !important;
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+    width: 100% !important;
   }
 
   /* Hide desktop keyboard shortcut hint — irrelevant on mobile */
