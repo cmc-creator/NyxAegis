@@ -131,8 +131,8 @@ export default function LandingPage() {
       <nav style={{ position: "sticky", top: 0, zIndex: 50, borderBottom: `1px solid ${C.border}`, padding: "0 clamp(1rem, 4vw, 2rem)", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64, background: "color-mix(in srgb, var(--nyx-bg) 85%, transparent)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", gap: 8 }}>
         <span style={{ fontWeight: 900, fontSize: "1.1rem", letterSpacing: "-0.03em", whiteSpace: "nowrap", flexShrink: 0 }}>NyxAegis<sup style={{ fontSize: "0.6em", verticalAlign: "super", marginLeft: 1, color: "var(--nyx-accent)" }}>™</sup></span>
         <div style={{ display: "flex", gap: "1rem", alignItems: "center", flexShrink: 0 }}>
-          {/* Features + Pricing — hidden on mobile */}
-          <div className="nyx-land-nav-text-links" style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
+          {/* Features + Pricing — hidden on mobile via CSS */}
+          <div className="nyx-land-nav-text-links" style={{ gap: "1.5rem", alignItems: "center" }}>
             <Link href="#features" style={{ color: C.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 500 }}>Features</Link>
             <Link href="/pricing" style={{ color: C.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 500 }}>Pricing</Link>
           </div>

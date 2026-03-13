@@ -1242,11 +1242,16 @@ main, .nyx-sidebar, .nyx-table-scroll {
   -webkit-overflow-scrolling: touch;
 }
 
+/* Landing nav text links: flex on desktop, hidden on mobile */
+.nyx-land-nav-text-links {
+  display: flex;
+}
+
 /* ── Landing page & login mobile responsive ──────────────────────────────── */
 @media (max-width: 768px) {
-  /* Nav: hide text links, keep CTA button */
+  /* Nav: hide text links, keep Sign In + CTA button */
   .nyx-land-nav-text-links {
-    display: none !important;
+    display: none;
   }
 
   /* All landing sections + footer: pull in side padding on mobile */
