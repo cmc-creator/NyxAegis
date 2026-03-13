@@ -1383,7 +1383,8 @@ main, .nyx-sidebar, .nyx-table-scroll {
 @media (min-width: 769px) {
   .nyx-sidebar {
     transform: none !important;
-    position: sticky !important;
+    position: relative !important;
+    flex-shrink: 0 !important;
   }
   .nyx-mobile-overlay {
     display: none !important;

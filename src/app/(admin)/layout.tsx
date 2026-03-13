@@ -15,7 +15,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (!session || session.user.role !== "ADMIN") redirect("/login");
 
   return (
-    <div className="flex min-h-screen" style={{ color: "var(--nyx-text)", overflowX: "hidden" }}>
+    <div className="flex h-screen overflow-hidden" style={{ color: "var(--nyx-text)" }}>
       <MobileTopBar role="ADMIN" userName={session.user.name ?? ""} />
       <Sidebar role="ADMIN" userName={session.user.name} userEmail={session.user.email} />
       <main className="flex-1 min-w-0 overflow-x-hidden overflow-y-auto" style={{ background: "var(--nyx-bg-scrim, var(--nyx-bg))" }}>
