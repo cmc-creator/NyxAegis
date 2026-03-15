@@ -204,11 +204,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No messages provided" }, { status: 400 });
   }
 
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return NextResponse.json({
       role: "assistant",
-      content: "⚠️ The AI assistant isn't configured yet. Please add your **OPENAI_API_KEY** to your Vercel environment variables and redeploy.",
+      content: "⚠️ The AI assistant isn't configured yet. Please add your **GEMINI_API_KEY** to your Vercel environment variables and redeploy.",
     });
   }
 
@@ -216,37 +216,37 @@ export async function POST(req: NextRequest) {
   const liveContext = await buildLiveContext(session.user.id, session.user.role);
   const systemPrompt = BASE_SYSTEM_PROMPT + (liveContext ? `\n${liveContext}` : "");
 
+  // Gemini uses "model" role instead of "assistant", and requires strictly alternating user/model turns.
+  const geminiMessages = messages
+    .map((m) => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content }] }));
+
   const body = {
-    model: "gpt-4o-mini",
-    messages: [
-      { role: "system", content: systemPrompt },
-      ...messages.map((m) => ({ role: m.role, content: m.content })),
-    ],
-    max_tokens: 1024,
-    temperature: 0.7,
+    system_instruction: { parts: [{ text: systemPrompt }] },
+    contents: geminiMessages,
+    generationConfig: { maxOutputTokens: 1024, temperature: 0.7 },
   };
 
-  const res = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify(body),
-  });
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    }
+  );
 
   if (!res.ok) {
     const err = await res.text();
-    console.error("OpenAI error:", err);
+    console.error("Gemini error:", err);
     return NextResponse.json({ error: "AI service error — please try again." }, { status: 502 });
   }
 
   const data = await res.json() as {
-    choices: { message: { role: string; content: string } }[];
+    candidates: { content: { parts: { text: string }[] } }[];
   };
 
-  const reply = data.choices?.[0]?.message;
-  if (!reply) return NextResponse.json({ error: "No response from AI" }, { status: 502 });
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) return NextResponse.json({ error: "No response from AI" }, { status: 502 });
 
-  return NextResponse.json(reply);
+  return NextResponse.json({ role: "assistant", content: text });
 }
