@@ -947,3 +947,18 @@ model AuditLog {
 
   @@map("audit_logs")
 }
+
+// ─────────────────────────────────────────
+// AEGIS AI CHAT MEMORY
+// ─────────────────────────────────────────
+
+model AiChatMessage {
+  id        String   @id @default(cuid())
+  userId    String
+  role      String   // "user" | "assistant"
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@map("ai_chat_messages")
+}
