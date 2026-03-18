@@ -123,7 +123,7 @@ export default function ICANotesIntegrationPage() {
             <p style={{ fontSize: "0.77rem", color: C.muted, marginBottom: 16 }}>
               Enter the exact column headers from your ICANotes CSV. Leave blank to skip a field.
             </p>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div className="nyx-page-grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               {[
                 { key: "referringProvider",  label: "Referring Provider *" },
                 { key: "referringNpi",       label: "Referring NPI" },
@@ -246,7 +246,7 @@ export default function ICANotesIntegrationPage() {
 
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 20 }}>
             <h3 style={{ fontSize: "0.85rem", fontWeight: 800, color: C.text, marginBottom: 14 }}>What NyxAegis extracts from each webhook event</h3>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            <div className="nyx-page-grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
               {[
                 { field: "Referring Provider", desc: "Name/NPI of referring clinician → matched to referral source" },
                 { field: "Service Requested",  desc: "Program or service type → mapped to service line" },

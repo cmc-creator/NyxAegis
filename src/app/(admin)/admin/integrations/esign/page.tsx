@@ -94,7 +94,7 @@ export default function ESignIntegrationPage() {
       {/* Supported document types */}
       <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 14, padding: 24 }}>
         <h2 style={{ fontSize: "1rem", fontWeight: 800, color: TEXT, marginBottom: 16 }}>Supported Document Types</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+        <div className="nyx-page-grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           {["Service Agreements", "Business Associate Agreements (BAA)", "Non-Disclosure Agreements (NDA)", "Master Service Agreements (MSA)", "Rep Commission Contracts", "Compliance Documents"].map(doc => (
             <div key={doc} style={{ display: "flex", gap: 10, alignItems: "center", padding: "8px 12px", background: "rgba(0,0,0,0.2)", borderRadius: 8 }}>
               <span style={{ color: "#60a5fa", fontSize: "0.75rem" }}>✓</span>

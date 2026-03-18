@@ -224,7 +224,7 @@ export default function MondayIntegrationPage() {
           )}
 
           {/* Board + entity picker */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
+          <div className="nyx-page-grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
             <div>
               <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, color: C.muted, marginBottom: 8, letterSpacing: "0.08em" }}>SELECT BOARD</label>
               <select value={selectedBoard} onChange={(e) => handleBoardChange(e.target.value)}
@@ -253,7 +253,7 @@ export default function MondayIntegrationPage() {
                 {loadingCols ? "Loading board columns…" : `Map Monday.com columns to NyxAegis fields.`}
               </p>
               {!loadingCols && (
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                <div className="nyx-page-grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   {ENTITY_FIELDS[entityType].map(({ key, label }) => (
                     <div key={key}>
                       <label style={{ display: "block", fontSize: "0.65rem", fontWeight: 700, color: C.muted, marginBottom: 4, letterSpacing: "0.08em" }}>{label}</label>

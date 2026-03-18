@@ -94,7 +94,7 @@ export default function GCalIntegrationPage() {
       {/* What syncs */}
       <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 14, padding: 24 }}>
         <h2 style={{ fontSize: "1rem", fontWeight: 800, color: TEXT, marginBottom: 16 }}>What Gets Synced</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+        <div className="nyx-page-grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           {[
             { icon: "📞", label: "Calls", desc: "Logged calls create calendar reminders" },
             { icon: "🤝", label: "Meetings", desc: "Meetings sync as calendar events" },

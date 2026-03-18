@@ -250,7 +250,7 @@ export default function MigratePage() {
           <p style={{ fontSize: "0.77rem", color: C.muted, marginBottom: 16 }}>
             Enter the exact column header from your exported CSV for each field. Leave blank to skip.
           </p>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div className="nyx-page-grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             {currentFields.map(({ key, label }) => (
               <div key={key}>
                 <label style={{ display: "block", fontSize: "0.65rem", fontWeight: 700, color: C.muted, marginBottom: 4, letterSpacing: "0.08em" }}>{label}</label>

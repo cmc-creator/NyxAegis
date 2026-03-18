@@ -134,7 +134,7 @@ export default function PaycomIntegrationPage() {
             <p style={{ fontSize: "0.77rem", color: C.muted, marginBottom: 16 }}>
               Enter the exact column headers from your Paycom export. Leave blank to skip a field.
             </p>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div className="nyx-page-grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               {(importMode === "reps" ? [
                 { key: "employeeName",  label: "Employee Name *" },
                 { key: "employeeId",    label: "Employee ID" },
@@ -276,7 +276,7 @@ export default function PaycomIntegrationPage() {
           </div>
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 24 }}>
             <h3 style={{ fontSize: "1rem", fontWeight: 800, color: C.text, marginBottom: 12 }}>What gets synced</h3>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div className="nyx-page-grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               {[
                 { icon: "👤", label: "Rep Profiles", desc: "Name, title, email, phone, department" },
                 { icon: "💰", label: "Commission Payments", desc: "Gross pay, net pay, commission amounts" },

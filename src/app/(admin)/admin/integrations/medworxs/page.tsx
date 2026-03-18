@@ -123,7 +123,7 @@ export default function MedworxsIntegrationPage() {
             <p style={{ fontSize:"0.77rem", color:C.muted, marginBottom:16 }}>
               Enter the exact column headers from your MedWorxs CSV. Leave blank to skip that field.
             </p>
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+            <div className="nyx-page-grid-2col" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
               {[
                 { key:"referringProvider", label:"Referring Provider *" },
                 { key:"referringNpi",      label:"Referring NPI" },
@@ -257,7 +257,7 @@ export default function MedworxsIntegrationPage() {
           {/* What we parse */}
           <div style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:12, padding:20 }}>
             <h3 style={{ fontSize:"0.85rem", fontWeight:800, color:C.text, marginBottom:14 }}>What NyxAegis extracts from each ADT^A01</h3>
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+            <div className="nyx-page-grid-2col" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
               {[
                 { seg:"PV1-8",  label:"Referring Provider",  desc:"Name and NPI of referring physician" },
                 { seg:"PV1-10", label:"Hospital Service",    desc:"Service/department (service line)" },
