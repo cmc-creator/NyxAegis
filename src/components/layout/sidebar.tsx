@@ -4,6 +4,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { signOut } from "next-auth/react";
+import { NotificationBell } from "./NotificationBell";
 
 const CYAN       = "var(--nyx-accent)";
 const BORDER     = "var(--nyx-border)";
@@ -257,13 +258,17 @@ export function Sidebar({ role, userName, userEmail }: SidebarProps) {
             <div style={{ fontSize: "0.62rem", color: TEXT_MUTED, letterSpacing: "0.08em", marginTop: 2 }}>{role === "ADMIN" ? "ADMIN" : role === "REP" ? "BD REP" : "ACCOUNT"}</div>
           </div>
           </div>
-          {/* Close button — mobile only */}
-          <button
-            className="nyx-hamburger"
-            onClick={() => setMobileOpen(false)}
-            style={{ background: "transparent", border: "none", cursor: "pointer", padding: "10px 12px", minWidth: 44, minHeight: 44, color: TEXT_MUTED, fontSize: "1.2rem", lineHeight: 1, borderRadius: 6 }}
-            aria-label="Close menu"
-          >✕</button>
+          {/* Right actions: bell + mobile close */}
+          <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <NotificationBell role={role} />
+            {/* Close button — mobile only */}
+            <button
+              className="nyx-hamburger"
+              onClick={() => setMobileOpen(false)}
+              style={{ background: "transparent", border: "none", cursor: "pointer", padding: "10px 12px", minWidth: 44, minHeight: 44, color: TEXT_MUTED, fontSize: "1.2rem", lineHeight: 1, borderRadius: 6 }}
+              aria-label="Close menu"
+            >✕</button>
+          </div>
         </div>
       </div>
 

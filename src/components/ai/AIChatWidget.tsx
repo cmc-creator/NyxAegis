@@ -7,7 +7,12 @@ type Message = {
   id: string;
   role: "user" | "assistant";
   content: string;
+  ts: Date;
 };
+
+function formatTime(d: Date) {
+  return d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+}
 
 const GOLD = "#C9A84C";
 const GOLD_DIM = "rgba(201,168,76,0.12)";
@@ -22,6 +27,7 @@ const WELCOME_MESSAGE: Message = {
   id: "welcome",
   role: "assistant",
   content: "Hi! I'm **Aegis**, your intelligent NyxAegis assistant. I can help you manage your pipeline, find new referral sources by location, draft outreach, surface relationships at risk, navigate the platform, and proactively suggest your next best action. What can I help you with?",
+  ts: new Date(),
 };
 
 function renderMarkdown(text: string): string {
@@ -85,7 +91,7 @@ export default function AIChatWidget() {
     if (!text || loading) return;
     setInput("");
 
-    const userMsg: Message = { id: crypto.randomUUID(), role: "user", content: text };
+    const userMsg: Message = { id: crypto.randomUUID(), role: "user", content: text, ts: new Date() };
     setMessages((prev) => [...prev, userMsg]);
     setLoading(true);
 
@@ -105,10 +111,11 @@ export default function AIChatWidget() {
         id: crypto.randomUUID(),
         role: "assistant",
         content: data.content ?? data.error ?? "Sorry, something went wrong.",
+        ts: new Date(),
       };
       setMessages((prev) => [...prev, reply]);
     } catch {
-      setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "assistant", content: "Network error. Please try again." }]);
+      setMessages((prev) => [...prev, { id: crypto.randomUUID(), role: "assistant", content: "Network error. Please try again.", ts: new Date() }]);
     } finally {
       setLoading(false);
     }
@@ -253,15 +260,17 @@ export default function AIChatWidget() {
                     <Image src="/Aegislogo.png" alt="Aegis" width={28} height={28} style={{ objectFit: "cover", width: "100%", height: "100%" }} />
                   </div>
                 )}
-                <div
-                  className={m.role === "user" ? "aegis-msg-user" : "aegis-msg-ai"}
-                  style={{
-                    maxWidth: "82%", borderRadius: m.role === "user" ? "14px 4px 14px 14px" : "4px 14px 14px 14px",
-                    padding: "9px 13px", fontSize: "0.82rem", color: TEXT, lineHeight: 1.65,
-                  }}
-                  
-                  dangerouslySetInnerHTML={{ __html: renderMarkdown(m.content) }}
-                />
+                <div style={{ display: "flex", flexDirection: "column", alignItems: m.role === "user" ? "flex-end" : "flex-start", maxWidth: "82%" }}>
+                  <div
+                    className={m.role === "user" ? "aegis-msg-user" : "aegis-msg-ai"}
+                    style={{
+                      borderRadius: m.role === "user" ? "14px 4px 14px 14px" : "4px 14px 14px 14px",
+                      padding: "9px 13px", fontSize: "0.82rem", color: TEXT, lineHeight: 1.65,
+                    }}
+                    dangerouslySetInnerHTML={{ __html: renderMarkdown(m.content) }}
+                  />
+                  {m.ts && <span style={{ fontSize: "0.62rem", color: MUTED, marginTop: 3, opacity: 0.6, paddingLeft: 2 }}>{formatTime(m.ts)}</span>}
+                </div>
               </div>
             ))}
             {loading && (
@@ -269,8 +278,9 @@ export default function AIChatWidget() {
                 <div style={{ width: 28, height: 28, borderRadius: "50%", overflow: "hidden", flexShrink: 0, marginTop: 2, background: "rgba(201,168,76,0.15)" }}>
                   <Image src="/Aegislogo.png" alt="Aegis" width={28} height={28} style={{ objectFit: "cover", width: "100%", height: "100%" }} />
                 </div>
-                <div className="aegis-msg-ai" style={{ borderRadius: "4px 14px 14px 14px", padding: "10px 14px" }}>
+                <div className="aegis-msg-ai" style={{ borderRadius: "4px 14px 14px 14px", padding: "10px 14px", display: "flex", alignItems: "center", gap: 8 }}>
                   <TypingDots />
+                  <span style={{ fontSize: "0.75rem", color: MUTED, fontStyle: "italic" }}>Aegis is thinking…</span>
                 </div>
               </div>
             )}
