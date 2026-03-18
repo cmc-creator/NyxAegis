@@ -63,7 +63,7 @@ function LoginForm() {
         <div style={{ position: "absolute", top: "20%", left: "10%", width: 300, height: 300, borderRadius: "50%", background: "radial-gradient(circle, var(--nyx-accent-dim) 0%, transparent 70%)", pointerEvents: "none" }} />
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 64 }}>
-            <Image src="/Aegislogo.png" alt="Destiny Springs" width={34} height={34} style={{ objectFit: "contain" }} />
+            <Image src="/dshlogo.png" alt="Destiny Springs" width={34} height={34} style={{ objectFit: "contain" }} />
             <span style={{ fontWeight: 900, fontSize: "1.2rem", color: "#d8e8f4" }}>Destiny Springs</span>
           </div>
           <div className="login-fade-up">
