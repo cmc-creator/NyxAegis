@@ -106,7 +106,7 @@ function HospitalModal({ hospital, onClose, onSave }: {
             {/* Hospital Info */}
             <div style={{ gridColumn: "1/-1" }}>
               <label style={{ fontSize: "0.72rem", color: C.muted, display: "block", marginBottom: 4 }}>ACCOUNT NAME *</label>
-              <input style={inp} required value={form.hospitalName ?? ""} onChange={e => set("hospitalName", e.target.value)} placeholder="Saint Mary's Medical Center" />
+              <input style={inp} required value={form.hospitalName ?? ""} onChange={e => set("hospitalName", e.target.value)} placeholder="Destiny Springs Healthcare" />
             </div>
             <div>
               <label style={{ fontSize: "0.72rem", color: C.muted, display: "block", marginBottom: 4 }}>SYSTEM NAME</label>

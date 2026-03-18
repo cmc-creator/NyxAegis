@@ -73,9 +73,9 @@ export default async function AccountDashboard() {
   if (!hospital) {
     return (
       <div style={{ textAlign: "center", padding: "80px 20px", color: TEXT_MUTED }}>
-        <div style={{ fontSize: "3rem", marginBottom: 16 }}>🏥</div>
-        <h2 style={{ color: TEXT, fontSize: "1.3rem", fontWeight: 700, marginBottom: 8 }}>No hospital profile found</h2>
-        <p>Contact your NyxAegis representative to set up your hospital account.</p>
+        <div style={{ fontSize: "3rem", marginBottom: 16 }}>📋</div>
+        <h2 style={{ color: TEXT, fontSize: "1.3rem", fontWeight: 700, marginBottom: 8 }}>No account profile found</h2>
+        <p>Contact your administrator to set up your account.</p>
       </div>
     );
   }

@@ -141,7 +141,7 @@ export default function AuditLogPage() {
                     {expanded === entry.id && entry.diff && (
                       <tr>
                         <td colSpan={7} style={{ padding: "0 14px 14px", background: "rgba(0,0,0,0.25)" }}>
-                          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, padding: "12px 0" }}>
+                          <div className="nyx-page-grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, padding: "12px 0" }}>
                             {entry.diff.before !== undefined && (
                               <div>
                                 <div style={{ fontSize: "0.6rem", fontWeight: 700, color: "#f87171", letterSpacing: "0.1em", marginBottom: 6 }}>BEFORE</div>
