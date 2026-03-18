@@ -68,7 +68,8 @@ export default async function CompliancePage() {
       {/* Docs table */}
       <div className="gold-card" style={{ borderRadius: 12 }}>
         <div style={{ background: CARD, borderRadius: 12, overflow: "hidden" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <div className="nyx-table-scroll">
+        <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 640 }}>
           <thead>
             <tr style={{ borderBottom: `1px solid ${BORDER}` }}>
               {["Rep", "Document Type", "Title", "Status", "Expires", "Added"].map((h) => (
@@ -96,6 +97,7 @@ export default async function CompliancePage() {
             ))}
           </tbody>
         </table>
+        </div>
         </div>
       </div>
     </div>

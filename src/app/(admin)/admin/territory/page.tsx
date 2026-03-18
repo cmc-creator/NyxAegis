@@ -147,7 +147,7 @@ export default async function TerritoryPage() {
           <div style={{ padding: "16px 20px", borderBottom: `1px solid ${BORDER}` }}>
             <p style={{ fontSize: "0.65rem", fontWeight: 700, color: "var(--nyx-accent-label)", letterSpacing: "0.12em", textTransform: "uppercase" }}>TERRITORY ASSIGNMENTS</p>
           </div>
-          <div style={{ overflowX: "auto" }}>
+          <div className="nyx-table-scroll">
             <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 580 }}>
               <thead>
                 <tr style={{ borderBottom: `1px solid ${BORDER}` }}>

@@ -241,8 +241,8 @@ export default function ReferralSourcesPage() {
 
       {/* Table */}
       <div style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:12, overflow:"hidden" }}>
-        <div style={{ overflowX:"auto" }}>
-          <table style={{ width:"100%", borderCollapse:"collapse" }}>
+        <div className="nyx-table-scroll">
+          <table style={{ width:"100%", borderCollapse:"collapse", minWidth: 700 }}>
             <thead>
               <tr style={{ borderBottom:`1px solid ${C.border}` }}>
                 {["Name","Type","Practice / Facility","NPI","Assigned Rep","Total Referrals","Monthly Goal","Attainment","Status","","",""].map((h) => (
