@@ -43,6 +43,11 @@ export const authConfig: NextAuthConfig = {
 
       if (isProtected && !isLoggedIn) return false; // → redirect to /login
 
+      // Redirect logged-in users away from login page
+      if (isLoggedIn && pathname === "/login") {
+        return NextResponse.redirect(new URL(getRoleHome(role), nextUrl));
+      }
+
       // Role-based access control
       if (isLoggedIn) {
         if (pathname.startsWith("/admin") && role !== "ADMIN") {
@@ -59,6 +64,6 @@ export const authConfig: NextAuthConfig = {
       return true;
     },
   },
-  session: { strategy: "jwt" },
+  session: { strategy: "jwt", maxAge: 28800, updateAge: 3600 },
   providers: [],
 };

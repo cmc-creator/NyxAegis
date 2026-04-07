@@ -103,7 +103,7 @@ export default async function AdminDashboard() {
 
   const [
     repCount, hospitalCount, leadCount, openOpps, closedWon,
-    pendingInvoices, recentActivities, recentOpps, mapReps, mapHospitalsRaw, pipelineByStage
+    pendingInvoices, recentActivities, recentOpps, mapReps, mapHospitalsRaw
   ] = await Promise.all([
     prisma.rep.count({ where: { status: "ACTIVE" } }),
     prisma.hospital.count({ where: { status: { not: "CHURNED" } } }),
@@ -115,7 +115,6 @@ export default async function AdminDashboard() {
     prisma.opportunity.findMany({ take: 6, orderBy: { createdAt: "desc" }, include: { hospital: { select: { hospitalName: true } }, assignedRep: { include: { user: { select: { name: true } } } } } }),
     prisma.rep.findMany({ where: { status: "ACTIVE" }, include: { user: { select: { name: true, email: true } }, territories: true } }),
     prisma.hospital.findMany({ select: { id: true, hospitalName: true, city: true, state: true, status: true, assignedRepId: true }, orderBy: { hospitalName: "asc" } }),
-    prisma.opportunity.groupBy({ by: ["stage"], _count: { id: true }, _sum: { value: true }, where: { stage: { notIn: ["CLOSED_WON", "CLOSED_LOST"] } }, orderBy: { stage: "asc" } }),
   ]);
 
   const repTerritories = mapReps.map((rep, i) => ({
@@ -172,42 +171,6 @@ export default async function AdminDashboard() {
           </Link>
         ))}
       </div>
-
-      {/* Pipeline Health Bar Chart */}
-      {pipelineByStage.length > 0 && (() => {
-        const STAGE_ORDER = ["DISCOVERY","QUALIFICATION","DEMO","PROPOSAL","NEGOTIATION","ON_HOLD"];
-        const ordered = STAGE_ORDER.map(st => pipelineByStage.find(s => s.stage === st)).filter(Boolean) as typeof pipelineByStage;
-        const totalValue = ordered.reduce((sum, s) => sum + Number(s._sum.value ?? 0), 0);
-        const totalCount = ordered.reduce((sum, s) => sum + s._count.id, 0);
-        const maxCount = Math.max(...ordered.map(s => s._count.id), 1);
-        return (
-          <div style={{ marginBottom: 32 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-              <p style={{ fontSize: "0.7rem", fontWeight: 700, color: "var(--nyx-accent-label)", letterSpacing: "0.12em", textTransform: "uppercase" }}>PIPELINE HEALTH</p>
-              <span style={{ fontSize: "0.78rem", color: CYAN, fontWeight: 700 }}>{totalCount} deals &middot; {formatCurrency(totalValue)}</span>
-            </div>
-            <div className="gold-card" style={{ borderRadius: 12, padding: "18px 20px" }}>
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                {ordered.map(s => {
-                  const pct = Math.round((s._count.id / maxCount) * 100);
-                  const color = stageColor[s.stage] ?? CYAN;
-                  return (
-                    <div key={s.stage}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
-                        <span style={{ fontSize: "0.73rem", fontWeight: 600, color }}>{s.stage.replace("_", " ")}</span>
-                        <span style={{ fontSize: "0.7rem", color: TEXT_MUTED }}>{s._count.id} deal{s._count.id !== 1 ? "s" : ""}&nbsp;&middot;&nbsp;{formatCurrency(Number(s._sum.value ?? 0))}</span>
-                      </div>
-                      <div style={{ height: 7, background: "rgba(255,255,255,0.06)", borderRadius: 4, overflow: "hidden" }}>
-                        <div style={{ height: "100%", width: `${pct}%`, background: color, borderRadius: 4, opacity: 0.75 }} />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        );
-      })()}
 
       {/* Quick Actions */}
       <QuickActionsWidget />

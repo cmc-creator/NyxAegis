@@ -56,13 +56,17 @@ function LeadModal({ lead, reps, onClose, onSave, onDelete }: {
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [confirmDel, setConfirmDel] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const set = (k: keyof Lead, v: unknown) => setForm(f => ({ ...f, [k]: v }));
 
-  async function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSaving(true);
-    try { await onSave(form); } finally { setSaving(false); }
+    setError(null);
+    try { await onSave(form); }
+    catch (err) { setError(err instanceof Error ? err.message : "Failed to save lead."); }
+    finally { setSaving(false); }
   }
 
   async function doDelete() {
@@ -78,6 +82,11 @@ function LeadModal({ lead, reps, onClose, onSave, onDelete }: {
           <h2 style={{ fontSize: "1.2rem", fontWeight: 800, color: C.text }}>{isEdit ? "Edit Lead" : "New Lead"}</h2>
           <button onClick={onClose} style={{ background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: "1.4rem", lineHeight: 1 }}>×</button>
         </div>
+        {error && (
+          <div style={{ background: "rgba(248,113,113,0.12)", border: "1px solid rgba(248,113,113,0.3)", borderRadius: 8, padding: "10px 14px", marginBottom: 16, color: "#f87171", fontSize: "0.82rem" }}>
+            {error}
+          </div>
+        )}
         <form onSubmit={submit}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
             <div style={{ gridColumn: "1/-1" }}>
@@ -364,19 +373,12 @@ export default function LeadsClient({ reps }: { reps: Rep[] }) {
   async function handleSave(data: Partial<Lead>) {
     const ex = modal !== "add" && modal !== null ? modal : null;
     const { assignedRep: _ar, id: _id, createdAt: _ca, ...payload } = data as Partial<Lead> & { assignedRep?: unknown; id?: unknown; createdAt?: unknown };
-    try {
-      const res = ex
-        ? await fetch(`/api/leads/${ex.id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) })
-        : await fetch("/api/leads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        alert(`Failed to save lead: ${err?.error ?? res.statusText}`);
-        return;
-      }
-    } catch (e) {
-      console.error("Lead save error:", e);
-      alert("Network error. Could not save lead.");
-      return;
+    const res = ex
+      ? await fetch(`/api/leads/${ex.id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) })
+      : await fetch("/api/leads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.error ?? "Failed to save lead.");
     }
     setModal(null);
     await load();
@@ -470,7 +472,7 @@ export default function LeadsClient({ reps }: { reps: Rep[] }) {
           </thead>
           <tbody>
             {loading && <tr><td colSpan={10} style={{ padding: 32, textAlign: "center", color: C.muted }}>Loading…</td></tr>}
-            {!loading && filtered.length === 0 && <tr><td colSpan={10} style={{ padding: 32, textAlign: "center", color: C.muted }}>No leads match your filters.</td></tr>}
+            {!loading && filtered.length === 0 && <tr><td colSpan={10} style={{ padding: 32, textAlign: "center", color: C.muted }}>{search || filterStatus !== "ALL" ? "No leads match your filters." : "No leads yet. Click + New Lead to add the first one."}</td></tr>}
             {filtered.map(lead => (
               <tr key={lead.id} onClick={() => setModal(lead)}
                 style={{ borderBottom: `1px solid var(--nyx-accent-dim)`, cursor: "pointer", background: selected.has(lead.id) ? "var(--nyx-accent-dim)" : "transparent", transition: "background 0.15s" }}

@@ -496,11 +496,11 @@ export default function CommunicationsHub({ role: _role }: Props) {
 
       {/* ── COMPOSE TAB ───────────────────────────────────────────────────────── */}
       {activeTab === "compose" && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: 20, alignItems: "start" }}>
+        <div className="nyx-comm-compose-grid" style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: 20, alignItems: "start" }}>
 
           {/* Compose form */}
           <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 14, padding: 24 }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
+            <div className="nyx-comm-form-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
               <div>
                 <label style={labelStyle}>To (Email)</label>
                 <input value={to} onChange={(e) => setTo(e.target.value)}

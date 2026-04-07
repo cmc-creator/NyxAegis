@@ -166,7 +166,7 @@ async function executeTool(name: string, args: Record<string, unknown>, userId: 
       const stageMap = rep.opportunities.reduce((acc, o) => { acc[o.stage] = (acc[o.stage] ?? 0) + 1; return acc; }, {} as Record<string, number>);
       const totalVal = rep.opportunities.reduce((s, o) => s + Number(o.value ?? 0), 0);
       const cold = rep.opportunities.filter(o => !["CLOSED_WON","CLOSED_LOST"].includes(o.stage) && new Date(o.updatedAt) < new Date(Date.now() - 30*86400000));
-      return `**${rep.user.name ?? rep.user.email}** â€” ${rep.title ?? "BD Rep"}\nTerritory: ${rep.territory ?? rep.territories.map(t => t.state).join(", ") || "not set"} | Status: ${rep.status}\n\nPipeline: ${rep.opportunities.length} deals, $${totalVal.toLocaleString()} total\n${Object.entries(stageMap).map(([s,c]) => `  â€¢ ${s}: ${c}`).join("\n")}\n${cold.length ? `\nâš ï¸ Cold (30+ days): ${cold.map(o => o.title).join(", ")}\n` : ""}Leads: ${rep.leads.length} | Referral Sources: ${rep.referralSources.length} (${rep.referralSources.reduce((s,r) => s + r._count.referrals, 0)} referrals)\nRecent: ${rep.activities.slice(0,5).map(a => `[${a.type}] ${a.title}`).join("; ")}`;
+      return `**${rep.user.name ?? rep.user.email}** â€” ${rep.title ?? "BD Rep"}\nTerritory: ${(rep.territory ?? rep.territories.map(t => t.state).join(", ")) || "not set"} | Status: ${rep.status}\n\nPipeline: ${rep.opportunities.length} deals, $${totalVal.toLocaleString()} total\n${Object.entries(stageMap).map(([s,c]) => `  â€¢ ${s}: ${c}`).join("\n")}\n${cold.length ? `\nâš ï¸ Cold (30+ days): ${cold.map(o => o.title).join(", ")}\n` : ""}Leads: ${rep.leads.length} | Referral Sources: ${rep.referralSources.length} (${rep.referralSources.reduce((s,r) => s + r._count.referrals, 0)} referrals)\nRecent: ${rep.activities.slice(0,5).map(a => `[${a.type}] ${a.title}`).join("; ")}`;
     }
 
     if (name === "get_overdue_items") {
@@ -180,7 +180,7 @@ async function executeTool(name: string, args: Record<string, unknown>, userId: 
           orderBy: { updatedAt: "asc" }, take: 20,
         }),
         prisma.lead.findMany({
-          where: { nextFollowUp: { lt: new Date() }, status: { notIn: ["CONVERTED","DISQUALIFIED"] }, ...(repId ? { assignedRepId: repId } : {}) },
+          where: { nextFollowUp: { lt: new Date() }, status: { notIn: ["WON","LOST","UNQUALIFIED"] }, ...(repId ? { assignedRepId: repId } : {}) },
           orderBy: { nextFollowUp: "asc" }, take: 20,
         }),
       ]);
@@ -257,10 +257,10 @@ async function buildSnapshotContext(userId: string, role: string): Promise<strin
       if (!rep) return "";
       const [opps, leads] = await Promise.all([
         prisma.opportunity.groupBy({ by: ["stage"], where: { assignedRepId: rep.id }, _count: { id: true }, _sum: { value: true } }),
-        prisma.lead.count({ where: { assignedRepId: rep.id, status: { notIn: ["CONVERTED","DISQUALIFIED"] } } }),
+        prisma.lead.count({ where: { assignedRepId: rep.id, status: { notIn: ["WON","LOST","UNQUALIFIED"] } } }),
       ]);
       const total = opps.reduce((s, o) => s + Number(o._sum.value ?? 0), 0);
-      return `\n## Your Snapshot â€” ${rep.user.name} (${new Date().toLocaleDateString()})\nTerritory: ${rep.territory ?? rep.territories.map(t => t.state).join(", ") || "not set"}\nPipeline: ${opps.map(o => `${o.stage}: ${o._count.id}`).join(" | ")} | Total: $${total.toLocaleString()}\nOpen Leads: ${leads}\n`;
+      return `\n## Your Snapshot â€” ${rep.user.name} (${new Date().toLocaleDateString()})\nTerritory: ${(rep.territory ?? rep.territories.map(t => t.state).join(", ")) || "not set"}\nPipeline: ${opps.map(o => `${o.stage}: ${o._count.id}`).join(" | ")} | Total: $${total.toLocaleString()}\nOpen Leads: ${leads}\n`;
     }
   } catch (err) {
     console.error("Snapshot error:", err);

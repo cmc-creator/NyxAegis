@@ -8,7 +8,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const session = await auth();
   if (!session || session.user.role !== "ADMIN") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { id } = await params;
-  const data = await req.json();
+  let data: Record<string, unknown>;
+  try { data = await req.json(); }
+  catch { return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 }); }
   Object.keys(data).forEach((k) => data[k] === undefined && delete data[k]);
   const hospital = await prisma.hospital.update({ where: { id }, data });
   return NextResponse.json(hospital);

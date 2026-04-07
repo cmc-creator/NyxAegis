@@ -42,12 +42,22 @@ function OppModal({ opp, hospitals, reps, onClose, onSave, onDelete }: {
 }) {
   const [form, setForm] = useState<Partial<Opp>>(opp ?? { stage: "DISCOVERY", serviceLine: "OTHER", priority: "MEDIUM" });
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [confirmDel, setConfirmDel] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const set = (k: keyof Opp, v: unknown) => setForm(f => ({ ...f, [k]: v }));
 
   async function submit(e: React.FormEvent) {
-    e.preventDefault(); setSaving(true);
-    try { await onSave(form); } finally { setSaving(false); }
+    e.preventDefault(); setSaving(true); setError(null);
+    try { await onSave(form); }
+    catch (err) { setError(err instanceof Error ? err.message : "Failed to save opportunity."); }
+    finally { setSaving(false); }
+  }
+
+  async function doDelete() {
+    if (!onDelete) return;
+    setDeleting(true);
+    try { await onDelete(); } finally { setDeleting(false); }
   }
 
   return (
@@ -57,6 +67,11 @@ function OppModal({ opp, hospitals, reps, onClose, onSave, onDelete }: {
           <h2 style={{ fontSize: "1.2rem", fontWeight: 800, color: C.text }}>{opp ? "Edit Opportunity" : "New Opportunity"}</h2>
           <button onClick={onClose} style={{ background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: "1.4rem" }}>×</button>
         </div>
+        {error && (
+          <div style={{ background: "rgba(248,113,113,0.12)", border: "1px solid rgba(248,113,113,0.3)", borderRadius: 8, padding: "10px 14px", marginBottom: 16, color: "#f87171", fontSize: "0.82rem" }}>
+            {error}
+          </div>
+        )}
         <form onSubmit={submit}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
             <div style={{ gridColumn: "1/-1" }}>
@@ -128,8 +143,8 @@ function OppModal({ opp, hospitals, reps, onClose, onSave, onDelete }: {
               {opp && onDelete && (
                 confirmDel
                   ? <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                      <span style={{ fontSize: "0.8rem", color: "#f87171" }}>Delete?</span>
-                      <button type="button" onClick={onDelete} style={{ background: "#f87171", border: "none", borderRadius: 6, padding: "6px 14px", color: "#fff", cursor: "pointer", fontSize: "0.8rem", fontWeight: 700 }}>Confirm</button>
+                      <span style={{ fontSize: "0.8rem", color: "#f87171" }}>Delete this opportunity?</span>
+                      <button type="button" onClick={doDelete} disabled={deleting} style={{ background: "#f87171", border: "none", borderRadius: 6, padding: "6px 14px", color: "#fff", cursor: deleting ? "not-allowed" : "pointer", fontSize: "0.8rem", fontWeight: 700 }}>{deleting ? "…" : "Confirm"}</button>
                       <button type="button" onClick={() => setConfirmDel(false)} style={{ background: "none", border: `1px solid ${C.border}`, borderRadius: 6, padding: "6px 12px", color: C.muted, cursor: "pointer", fontSize: "0.8rem" }}>Cancel</button>
                     </div>
                   : <button type="button" onClick={() => setConfirmDel(true)} style={{ background: "rgba(248,113,113,0.08)", border: "1px solid rgba(248,113,113,0.2)", borderRadius: 6, padding: "7px 16px", color: "#f87171", cursor: "pointer", fontSize: "0.8rem" }}>Delete</button>
@@ -137,7 +152,7 @@ function OppModal({ opp, hospitals, reps, onClose, onSave, onDelete }: {
             </div>
             <div style={{ display: "flex", gap: 10 }}>
               <button type="button" onClick={onClose} style={{ background: "none", border: `1px solid ${C.border}`, borderRadius: 7, padding: "8px 20px", color: C.muted, cursor: "pointer" }}>Cancel</button>
-              <button type="submit" disabled={saving} style={{ background: "var(--nyx-accent-mid)", border: `1px solid var(--nyx-accent-str)`, borderRadius: 7, padding: "8px 24px", color: C.cyan, cursor: "pointer", fontWeight: 700 }}>{saving ? "Saving…" : opp ? "Save Changes" : "Create"}</button>
+              <button type="submit" disabled={saving} style={{ background: "var(--nyx-accent-mid)", border: `1px solid var(--nyx-accent-str)`, borderRadius: 7, padding: "8px 24px", color: C.cyan, cursor: "pointer", fontWeight: 700 }}>{saving ? "Saving…" : opp ? "Save Changes" : "Create Opportunity"}</button>
             </div>
           </div>
         </form>
@@ -162,8 +177,13 @@ export default function OpportunitiesClient({ hospitals, reps }: { hospitals: Ho
 
   async function handleSave(data: Partial<Opp>) {
     const ex = modal !== "add" && modal !== null ? modal : null;
-    if (ex) await fetch(`/api/opportunities/${ex.id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
-    else await fetch("/api/opportunities", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+    const res = ex
+      ? await fetch(`/api/opportunities/${ex.id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) })
+      : await fetch("/api/opportunities", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.error ?? "Failed to save opportunity.");
+    }
     setModal(null); await load();
   }
 
@@ -200,7 +220,7 @@ export default function OpportunitiesClient({ hospitals, reps }: { hospitals: Ho
               <button key={v} onClick={() => setView(v)} style={{ padding: "8px 14px", background: view === v ? "var(--nyx-accent-dim)" : "none", border: "none", color: view === v ? C.cyan : C.muted, cursor: "pointer", fontSize: "0.78rem", fontWeight: view === v ? 700 : 400 }}>{v === "kanban" ? "Kanban" : "List"}</button>
             ))}
           </div>
-          <button onClick={() => setModal("add")} style={{ background: "var(--nyx-accent-dim)", border: "1px solid var(--nyx-accent-str)", borderRadius: 8, padding: "9px 18px", color: C.cyan, cursor: "pointer", fontWeight: 700, fontSize: "0.875rem" }}>+ New</button>
+          <button onClick={() => setModal("add")} style={{ background: "var(--nyx-accent-dim)", border: "1px solid var(--nyx-accent-str)", borderRadius: 8, padding: "9px 18px", color: C.cyan, cursor: "pointer", fontWeight: 700, fontSize: "0.875rem" }}>+ New Opportunity</button>
         </div>
       </div>
 
@@ -241,7 +261,7 @@ export default function OpportunitiesClient({ hospitals, reps }: { hospitals: Ho
                       </button>
                     </div>
                   ))}
-                  {items.length === 0 && <div style={{ padding: 12, fontSize: "0.75rem", color: "rgba(216,232,244,0.15)", textAlign: "center", border: `1px dashed var(--nyx-accent-dim)`, borderRadius: 8 }}>Empty</div>}
+                  {items.length === 0 && <div style={{ padding: 12, fontSize: "0.75rem", color: "rgba(216,232,244,0.2)", textAlign: "center", border: `1px dashed var(--nyx-accent-dim)`, borderRadius: 8 }}>None here</div>}
                 </div>
               </div>
             );
@@ -262,7 +282,7 @@ export default function OpportunitiesClient({ hospitals, reps }: { hospitals: Ho
               </tr>
             </thead>
             <tbody>
-              {opps.length === 0 && <tr><td colSpan={8} style={{ padding: 32, textAlign: "center", color: C.muted }}>No opportunities yet.</td></tr>}
+              {opps.length === 0 && <tr><td colSpan={8} style={{ padding: 32, textAlign: "center", color: C.muted }}>No opportunities yet. Click + New Opportunity to add the first one.</td></tr>}
               {opps.map(opp => (
                 <tr key={opp.id} onClick={() => setModal(opp)} style={{ borderBottom: `1px solid var(--nyx-accent-dim)`, cursor: "pointer" }}
                   onMouseEnter={e => (e.currentTarget.style.background = "var(--nyx-accent-dim)")}

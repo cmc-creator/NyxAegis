@@ -30,12 +30,22 @@ function ContractModal({ contract, hospitals, reps, onClose, onSave, onDelete }:
   const isEdit = !!contract;
   const [form, setForm] = useState<Partial<Contract>>(contract ?? { status: "DRAFT" });
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [confirmDel, setConfirmDel] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const set = (k: keyof Contract, v: unknown) => setForm(f => ({ ...f, [k]: v }));
 
   async function submit(e: React.FormEvent) {
-    e.preventDefault(); setSaving(true);
-    try { await onSave(form); } finally { setSaving(false); }
+    e.preventDefault(); setSaving(true); setError(null);
+    try { await onSave(form); }
+    catch (err) { setError(err instanceof Error ? err.message : "Failed to save contract."); }
+    finally { setSaving(false); }
+  }
+
+  async function doDelete() {
+    if (!onDelete) return;
+    setDeleting(true);
+    try { await onDelete(); } finally { setDeleting(false); }
   }
 
   return (
@@ -45,6 +55,11 @@ function ContractModal({ contract, hospitals, reps, onClose, onSave, onDelete }:
           <h2 style={{ fontSize: "1.2rem", fontWeight: 800, color: C.text }}>{isEdit ? "Edit Contract" : "New Contract"}</h2>
           <button onClick={onClose} style={{ background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: "1.4rem" }}>×</button>
         </div>
+        {error && (
+          <div style={{ background: "rgba(248,113,113,0.12)", border: "1px solid rgba(248,113,113,0.3)", borderRadius: 8, padding: "10px 14px", marginBottom: 16, color: "#f87171", fontSize: "0.82rem" }}>
+            {error}
+          </div>
+        )}
         <form onSubmit={submit}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
             <div style={{ gridColumn: "1/-1" }}>
@@ -98,8 +113,8 @@ function ContractModal({ contract, hospitals, reps, onClose, onSave, onDelete }:
               {isEdit && onDelete && (
                 confirmDel
                   ? <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                      <span style={{ fontSize: "0.8rem", color: "#f87171" }}>Delete contract?</span>
-                      <button type="button" onClick={onDelete} style={{ background: "#f87171", border: "none", borderRadius: 6, padding: "6px 14px", color: "#fff", cursor: "pointer", fontSize: "0.8rem", fontWeight: 700 }}>Confirm</button>
+                      <span style={{ fontSize: "0.8rem", color: "#f87171" }}>Delete this contract?</span>
+                      <button type="button" onClick={doDelete} disabled={deleting} style={{ background: "#f87171", border: "none", borderRadius: 6, padding: "6px 14px", color: "#fff", cursor: deleting ? "not-allowed" : "pointer", fontSize: "0.8rem", fontWeight: 700 }}>{deleting ? "…" : "Confirm"}</button>
                       <button type="button" onClick={() => setConfirmDel(false)} style={{ background: "none", border: `1px solid ${C.border}`, borderRadius: 6, padding: "6px 12px", color: C.muted, cursor: "pointer", fontSize: "0.8rem" }}>Cancel</button>
                     </div>
                   : <button type="button" onClick={() => setConfirmDel(true)} style={{ background: "rgba(248,113,113,0.08)", border: "1px solid rgba(248,113,113,0.2)", borderRadius: 6, padding: "7px 16px", color: "#f87171", cursor: "pointer", fontSize: "0.8rem" }}>Delete</button>
@@ -134,8 +149,13 @@ export default function ContractsClient({ hospitals, reps }: { hospitals: Hospit
 
   async function handleSave(data: Partial<Contract>) {
     const ex = modal !== "add" && modal !== null ? modal : null;
-    if (ex) await fetch(`/api/contracts/${ex.id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
-    else await fetch("/api/contracts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+    const res = ex
+      ? await fetch(`/api/contracts/${ex.id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) })
+      : await fetch("/api/contracts", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.error ?? "Failed to save contract.");
+    }
     setModal(null); await load();
   }
 
@@ -176,7 +196,7 @@ export default function ContractsClient({ hospitals, reps }: { hospitals: Hospit
           </thead>
           <tbody>
             {loading && <tr><td colSpan={8} style={{ padding: 32, textAlign: "center", color: C.muted }}>Loading…</td></tr>}
-            {!loading && filtered.length === 0 && <tr><td colSpan={8} style={{ padding: 32, textAlign: "center", color: C.muted }}>No contracts. Create one to get started.</td></tr>}
+            {!loading && filtered.length === 0 && <tr><td colSpan={8} style={{ padding: 32, textAlign: "center", color: C.muted }}>{filterStatus !== "ALL" ? "No contracts match this status filter." : "No contracts yet. Click + New Contract to add the first one."}</td></tr>}
             {filtered.map(c => (
               <tr key={c.id} onClick={() => setModal(c)} style={{ borderBottom: `1px solid var(--nyx-accent-dim)`, cursor: "pointer" }}
                 onMouseEnter={e => (e.currentTarget.style.background = "var(--nyx-accent-dim)")}

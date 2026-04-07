@@ -292,7 +292,7 @@ export default function HospitalsClient({ initialHospitals }: { initialHospitals
 
       {/* Table */}
       <div className="gold-card" style={{ borderRadius: 12, overflow: "hidden" }}>
-        <div style={{ background: C.card, borderRadius: 12, overflow: "auto" }}>
+        <div className="nyx-table-scroll" style={{ background: C.card, borderRadius: 12 }}>
           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 700 }}>
             <thead>
               <tr style={{ borderBottom: `1px solid var(--nyx-border)` }}>
