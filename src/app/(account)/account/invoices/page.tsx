@@ -21,7 +21,7 @@ export default async function AccountInvoicesPage() {
     where: { userId: session.user.id },
     include: { invoices: { orderBy: { createdAt: "desc" } } },
   });
-  if (!hospital) redirect("/login");
+  if (!hospital) redirect("/account/dashboard");
 
   const totalPaid = hospital.invoices.filter(i => i.status === "PAID").reduce((s, i) => s + Number(i.totalAmount), 0);
   const totalOwed = hospital.invoices.filter(i => ["SENT", "OVERDUE"].includes(i.status)).reduce((s, i) => s + Number(i.totalAmount), 0);

@@ -27,7 +27,7 @@ export default async function AccountEngagementsPage() {
       },
     },
   });
-  if (!hospital) redirect("/login");
+  if (!hospital) redirect("/account/dashboard");
 
   const activeCount = hospital.opportunities.filter(o => !["CLOSED_WON", "CLOSED_LOST"].includes(o.stage)).length;
   const wonCount = hospital.opportunities.filter(o => o.stage === "CLOSED_WON").length;

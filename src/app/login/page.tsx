@@ -1,5 +1,5 @@
 ﻿"use client";
-import { Suspense, useState } from "react";
+import { Suspense, useState, type FormEvent } from "react";
 import { signIn, getSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
