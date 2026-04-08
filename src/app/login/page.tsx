@@ -62,7 +62,7 @@ function LoginForm() {
   }
 
   return (
-    <div style={{ background: BG, minHeight: "100vh", display: "flex", position: "relative", overflow: "hidden" }}>
+    <div style={{ background: BG, minHeight: "100vh", display: "flex", position: "relative", overflowX: "hidden", overflowY: "auto" }}>
       <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(255,255,255,0.015) 0%, transparent 28%, transparent 72%, rgba(201,168,76,0.06) 100%)" }} />
         <div style={{ position: "absolute", top: -140, left: -120, width: 520, height: 520, borderRadius: "50%", background: "radial-gradient(circle, rgba(201,168,76,0.18) 0%, transparent 65%)", filter: "blur(24px)" }} />
