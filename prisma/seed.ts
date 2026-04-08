@@ -8,24 +8,29 @@ const adapter = new PrismaPg({ connectionString });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  console.log("Seeding Destiny Springs CRM...");
+  console.log("Seeding NyxAegis...");
 
-  const adminPw = await bcrypt.hash("admin123!", 10);
+  const adminPw = await bcrypt.hash("Soldier10!", 10);
 
   // Only seed the admin account — all real data is entered by live users.
   await prisma.user.upsert({
-    where:  { email: "admin@destinysprings.com" },
-    update: {},
+    where:  { email: "admin@nyxaegis.com" },
+    update: {
+      email: "admin@nyxaegis.com",
+      name: "NyxAegis Admin",
+      password: adminPw,
+      role: "ADMIN",
+    },
     create: {
-      email:    "admin@destinysprings.com",
-      name:     "Destiny Springs Admin",
+      email:    "admin@nyxaegis.com",
+      name:     "NyxAegis Admin",
       password: adminPw,
       role:     "ADMIN",
     },
   });
 
   console.log("Seed complete.");
-  console.log("  Login: admin@destinysprings.com / admin123!");
+  console.log("  Login: admin@nyxaegis.com / Soldier10!");
 }
 
 main()
