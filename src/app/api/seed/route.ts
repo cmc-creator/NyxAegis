@@ -11,10 +11,10 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const adminEmail = process.env.ADMIN_EMAIL ?? "admin@destinysprings.com";
+    const adminEmail = process.env.ADMIN_EMAIL ?? "admin@nyxaegis.com";
     const adminPw = await bcrypt.hash("admin123!", 10);
 
-    await prisma.user.upsert({ where: { email: adminEmail }, update: {}, create: { email: adminEmail, name: "Destiny Springs Admin", password: adminPw, role: "ADMIN" } });
+    await prisma.user.upsert({ where: { email: adminEmail }, update: {}, create: { email: adminEmail, name: "NyxAegis Admin", password: adminPw, role: "ADMIN" } });
 
     return NextResponse.json({ ok: true, message: "Admin account seeded." });
   } catch (e) {

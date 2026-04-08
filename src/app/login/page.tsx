@@ -63,8 +63,8 @@ function LoginForm() {
         <div style={{ position: "absolute", top: "20%", left: "10%", width: 300, height: 300, borderRadius: "50%", background: "radial-gradient(circle, var(--nyx-accent-dim) 0%, transparent 70%)", pointerEvents: "none" }} />
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 64 }}>
-            <Image src="/dshlogo.png" alt="Destiny Springs" width={34} height={34} style={{ objectFit: "contain" }} />
-            <span style={{ fontWeight: 900, fontSize: "1.2rem", color: "#d8e8f4" }}>Destiny Springs</span>
+            <Image src="/Aegislogo.png" alt="NyxAegis" width={34} height={34} style={{ objectFit: "contain" }} />
+            <span style={{ fontWeight: 900, fontSize: "1.2rem", color: "#d8e8f4" }}>NyxAegis</span>
           </div>
           <div className="login-fade-up">
             <h1 style={{ fontSize: "2.2rem", fontWeight: 900, color: "#d8e8f4", lineHeight: 1.15, marginBottom: 16, letterSpacing: "-0.02em" }}>
@@ -76,7 +76,7 @@ function LoginForm() {
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               {[
-                { icon: "�", text: "360° account management" },
+                { icon: "✅", text: "360° account management" },
                 { icon: "📈", text: "Live opportunity pipeline tracking" },
                 { icon: "📍", text: "Geographic territory management" },
                 { icon: "🔒", text: "HIPAA compliance document storage" },
@@ -100,7 +100,7 @@ function LoginForm() {
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 32px" }}>
         <div className="login-slide-in" style={{ width: "100%", maxWidth: 400 }}>
           <h2 style={{ fontSize: "1.8rem", fontWeight: 800, color: "#d8e8f4", marginBottom: 8, letterSpacing: "-0.02em" }}>Welcome back</h2>
-          <p style={{ color: "rgba(216,232,244,0.5)", marginBottom: 32, fontSize: "0.9rem" }}>Sign in to your Destiny Springs account</p>
+          <p style={{ color: "rgba(216,232,244,0.5)", marginBottom: 32, fontSize: "0.9rem" }}>Sign in to your NyxAegis account</p>
 
           {error && (
             <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 8, padding: "12px 16px", marginBottom: 20, fontSize: "0.875rem", color: "#f87171" }}>
@@ -150,7 +150,7 @@ function LoginForm() {
           </div>
 
           <p style={{ marginTop: 24, textAlign: "center", fontSize: "0.75rem", color: "rgba(216,232,244,0.25)" }}>
-            <Link href="/terms" style={{ color: "inherit" }}>Terms</Link> · <Link href="/privacy" style={{ color: "inherit" }}>Privacy</Link> · © 2026 Destiny Springs
+            <Link href="/terms" style={{ color: "inherit" }}>Terms</Link> · <Link href="/privacy" style={{ color: "inherit" }}>Privacy</Link> · © 2026 NyxAegis
           </p>
         </div>
       </div>

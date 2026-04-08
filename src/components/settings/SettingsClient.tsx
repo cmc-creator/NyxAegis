@@ -737,8 +737,8 @@ export default function SettingsClient() {
   const { data: session } = useSession();
   const isAdmin = session?.user?.role === "ADMIN";
   const [activeTheme, setActiveTheme]     = useState("luxury");
-  const [orgName, setOrgName]             = useState("Destiny Springs");
-  const [supportEmail, setSupportEmail]   = useState("support@destinysprings.com");
+  const [orgName, setOrgName]             = useState("NyxAegis");
+  const [supportEmail, setSupportEmail]   = useState("support@nyxaegis.com");
   const [notifs, setNotifs]               = useState({ email: true, push: false, digest: true, leads: true, contracts: false });
   const [devMsg, setDevMsg]               = useState("");
   const [devLoading, setDevLoading]       = useState<string | null>(null);

@@ -21,7 +21,7 @@ const BG = "var(--nyx-bg)";
 const WELCOME_MESSAGE: Message = {
   id: "welcome",
   role: "assistant",
-  content: "Hi! I'm **Aegis**, your intelligent Destiny Springs assistant. I can help you manage your pipeline, find new referral sources by location, draft outreach, surface relationships at risk, navigate the platform, and proactively suggest your next best action. What can I help you with?",
+  content: "Hi! I'm **Aegis**, your intelligent NyxAegis assistant. I can help you manage your pipeline, find new referral sources by location, draft outreach, surface relationships at risk, navigate the platform, and proactively suggest your next best action. What can I help you with?",
 };
 
 function renderMarkdown(text: string): string {
@@ -221,7 +221,7 @@ export default function AIChatWidget() {
             </div>
             <div style={{ flex: 1 }}>
               <p style={{ margin: 0, fontWeight: 800, fontSize: "0.9rem", color: GOLD, letterSpacing: "0.03em" }}>Aegis AI</p>
-              <p style={{ margin: 0, fontSize: "0.68rem", color: MUTED }}>Destiny Springs Assistant</p>
+              <p style={{ margin: 0, fontSize: "0.68rem", color: MUTED }}>NyxAegis Assistant</p>
             </div>
             <div style={{ display: "flex", gap: 6 }}>
               <button

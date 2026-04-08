@@ -80,7 +80,7 @@ export function MobileTopBar({ role, userName }: Props) {
 
       {/* Logo */}
       <div style={{ width: 28, height: 28, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <Image src="/dshlogo.png" alt="Destiny Springs" width={28} height={28} style={{ objectFit: "contain", width: "100%", height: "100%" }} />
+        <Image src="/Aegislogo.png" alt="NyxAegis" width={28} height={28} style={{ objectFit: "contain", width: "100%", height: "100%" }} />
       </div>
 
       {/* Page title */}
