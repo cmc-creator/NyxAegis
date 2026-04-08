@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
 
     await prisma.user.upsert({ where: { email: adminEmail }, update: {}, create: { email: adminEmail, name: "Destiny Springs Admin", password: adminPw, role: "ADMIN" } });
 
-    const repUser = await prisma.user.upsert({
+    const _repUser = await prisma.user.upsert({
       where: { email: "rep@nyxaegis.com" }, update: {},
       create: {
         email: "rep@nyxaegis.com", name: "Jordan Rivera", password: repPw, role: "REP",
@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    const rep2User = await prisma.user.upsert({
+    const _rep2User = await prisma.user.upsert({
       where: { email: "marcus@nyxaegis.com" }, update: {},
       create: {
         email: "marcus@nyxaegis.com", name: "Marcus Williams", password: repPw, role: "REP",
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    const rep3User = await prisma.user.upsert({
+    const _rep3User = await prisma.user.upsert({
       where: { email: "priya@nyxaegis.com" }, update: {},
       create: {
         email: "priya@nyxaegis.com", name: "Priya Patel", password: repPw, role: "REP",
