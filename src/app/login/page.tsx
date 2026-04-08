@@ -83,7 +83,7 @@ function LoginForm() {
           <div className="login-fade-up">
             <div style={{ display: "inline-flex", alignItems: "center", gap: 10, padding: "8px 18px", marginBottom: 26, borderRadius: 999, border: "1px solid rgba(201,168,76,0.22)", background: "rgba(201,168,76,0.06)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.06)" }}>
               <span style={{ width: 8, height: 8, borderRadius: "50%", background: CYAN, boxShadow: "0 0 12px var(--nyx-accent-glow)" }} />
-              <span style={{ fontSize: "0.7rem", color: CYAN, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase" }}>Luxury Workflow Platform</span>
+              <span style={{ fontSize: "0.7rem", color: CYAN, fontWeight: 800, letterSpacing: "0.18em", textTransform: "uppercase" }}>Luxury Workflow Platform v2</span>
             </div>
             <h1 style={{ fontFamily: "var(--font-display), serif", fontSize: "3.5rem", fontWeight: 700, color: TEXT, lineHeight: 0.96, marginBottom: 18, letterSpacing: "0.01em" }}>
               Elegant control
@@ -121,7 +121,7 @@ function LoginForm() {
           <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, marginBottom: 28 }}>
             <div>
               <div style={{ fontSize: "0.7rem", fontWeight: 800, color: CYAN, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: 10 }}>Secure Sign In</div>
-              <h2 style={{ fontFamily: "var(--font-display), serif", fontSize: "2.2rem", fontWeight: 700, color: TEXT, marginBottom: 8, letterSpacing: "0.01em", lineHeight: 0.98 }}>Welcome back</h2>
+              <h2 style={{ fontFamily: "var(--font-display), serif", fontSize: "2.2rem", fontWeight: 700, color: TEXT, marginBottom: 8, letterSpacing: "0.01em", lineHeight: 0.98 }}>Welcome back v2</h2>
               <p style={{ color: MUTED, marginBottom: 0, fontSize: "0.95rem", lineHeight: 1.65 }}>Enter your credentials to access the NyxAegis command environment.</p>
             </div>
             <div style={{ width: 64, height: 64, borderRadius: 18, background: "linear-gradient(180deg, rgba(255,255,255,0.16), rgba(201,168,76,0.08))", border: "1px solid rgba(201,168,76,0.22)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 12px 24px rgba(0,0,0,0.2)" }}>
@@ -167,7 +167,7 @@ function LoginForm() {
               disabled={loading}
               style={{ background: loading ? "#8a7130" : "linear-gradient(180deg, #f0d060 0%, #c9a84c 100%)", color: "#120a00", padding: "15px", borderRadius: 16, fontWeight: 900, fontSize: "0.96rem", border: "1px solid rgba(201,168,76,0.32)", cursor: loading ? "not-allowed" : "pointer", marginTop: 6, boxShadow: loading ? "none" : "0 16px 34px rgba(201,168,76,0.18), inset 0 1px 0 rgba(255,255,255,0.28)", textShadow: "0 1px 0 rgba(255,255,255,0.18)" }}
             >
-              {loading ? "Signing in..." : "Sign In →"}
+              {loading ? "Signing in..." : "Secure Sign In →"}
             </button>
           </form>
 
