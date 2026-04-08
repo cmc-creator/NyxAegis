@@ -75,9 +75,7 @@ function LoginForm() {
         <div style={{ position: "absolute", inset: 24, border: "1px solid rgba(201,168,76,0.1)", borderRadius: 30, pointerEvents: "none" }} />
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 72 }}>
-            <div style={{ width: 108, height: 108, borderRadius: 24, background: "linear-gradient(180deg, rgba(255,255,255,0.16), rgba(201,168,76,0.09))", border: "1px solid rgba(201,168,76,0.24)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 14px 36px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2)" }}>
-              <Image src="/Aegislogo.png" alt="NyxAegis" width={88} height={88} style={{ objectFit: "contain" }} />
-            </div>
+            <Image src="/Aegislogo.png" alt="NyxAegis" width={110} height={110} style={{ objectFit: "contain", display: "block" }} />
             <div>
               <div style={{ fontSize: "0.68rem", letterSpacing: "0.24em", color: "rgba(237,228,207,0.55)", textTransform: "uppercase", marginBottom: 4 }}>Private Access</div>
               <span style={{ fontWeight: 800, fontSize: "1.3rem", color: TEXT }}>NyxAegis</span>
@@ -127,9 +125,7 @@ function LoginForm() {
               <h2 style={{ fontFamily: "var(--font-display), serif", fontSize: "2.2rem", fontWeight: 700, color: FORM_TEXT, marginBottom: 8, letterSpacing: "0.01em", lineHeight: 0.98 }}>Welcome back</h2>
               <p style={{ color: FORM_MUTED, marginBottom: 0, fontSize: "0.95rem", lineHeight: 1.65 }}>Enter your credentials to access the NyxAegis command environment.</p>
             </div>
-            <div style={{ width: 88, height: 88, borderRadius: 20, background: "linear-gradient(180deg, rgba(255,255,255,0.16), rgba(201,168,76,0.08))", border: "1px solid rgba(201,168,76,0.22)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 12px 24px rgba(0,0,0,0.2)" }}>
-              <Image src="/Aegislogo.png" alt="NyxAegis" width={72} height={72} style={{ objectFit: "contain" }} />
-            </div>
+            <Image src="/Aegislogo.png" alt="NyxAegis" width={90} height={90} style={{ objectFit: "contain", display: "block", flexShrink: 0 }} />
           </div>
 
           {error && (
@@ -189,8 +185,8 @@ function LoginForm() {
         </div>
       </div>
 
-      <div style={{ position: "absolute", left: 0, right: 0, bottom: 12, zIndex: 5, textAlign: "center", color: "rgba(237,228,207,0.72)", fontSize: "0.78rem", letterSpacing: "0.08em", textTransform: "uppercase", pointerEvents: "none" }}>
-        NyxAegis Enterprise Platform • Terms • Privacy
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: 14, zIndex: 5, textAlign: "center", color: "rgba(237,228,207,0.6)", fontSize: "0.76rem", letterSpacing: "0.1em", pointerEvents: "none" }}>
+        A product of NyxCollective LLC
       </div>
     </div>
   );
