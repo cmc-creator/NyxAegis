@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import Image from "next/image";
+import { NyxLogo } from "@/components/brand/NyxLogo";
 
 type Message = {
   id: string;
@@ -189,7 +189,7 @@ export default function AIChatWidget() {
             <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
           </svg>
         ) : (
-          <Image src="/Aegislogo.png" alt="Aegis AI" width={56} height={56} style={{ objectFit: "cover", width: "100%", height: "100%" }} />
+          <NyxLogo size={56} alt="Aegis AI" style={{ width: "100%", height: "100%" }} />
         )}
       </button>
 
@@ -217,7 +217,7 @@ export default function AIChatWidget() {
             flexShrink: 0,
           }}>
             <div style={{ width: 36, height: 36, borderRadius: "50%", overflow: "hidden", flexShrink: 0, background: "rgba(201,168,76,0.15)" }}>
-              <Image src="/Aegislogo.png" alt="Aegis" width={36} height={36} style={{ objectFit: "cover", width: "100%", height: "100%" }} />
+              <NyxLogo size={36} alt="Aegis" style={{ width: "100%", height: "100%" }} />
             </div>
             <div style={{ flex: 1 }}>
               <p style={{ margin: 0, fontWeight: 800, fontSize: "0.9rem", color: GOLD, letterSpacing: "0.03em" }}>Aegis AI</p>
@@ -250,7 +250,7 @@ export default function AIChatWidget() {
               <div key={m.id} style={{ display: "flex", gap: 9, alignItems: "flex-start", flexDirection: m.role === "user" ? "row-reverse" : "row" }}>
                 {m.role === "assistant" && (
                   <div style={{ width: 28, height: 28, borderRadius: "50%", overflow: "hidden", flexShrink: 0, marginTop: 2, background: "rgba(201,168,76,0.15)" }}>
-                    <Image src="/Aegislogo.png" alt="Aegis" width={28} height={28} style={{ objectFit: "cover", width: "100%", height: "100%" }} />
+                    <NyxLogo size={28} alt="Aegis" style={{ width: "100%", height: "100%" }} />
                   </div>
                 )}
                 <div
@@ -267,7 +267,7 @@ export default function AIChatWidget() {
             {loading && (
               <div style={{ display: "flex", gap: 9, alignItems: "flex-start" }}>
                 <div style={{ width: 28, height: 28, borderRadius: "50%", overflow: "hidden", flexShrink: 0, marginTop: 2, background: "rgba(201,168,76,0.15)" }}>
-                  <Image src="/Aegislogo.png" alt="Aegis" width={28} height={28} style={{ objectFit: "cover", width: "100%", height: "100%" }} />
+                  <NyxLogo size={28} alt="Aegis" style={{ width: "100%", height: "100%" }} />
                 </div>
                 <div className="aegis-msg-ai" style={{ borderRadius: "4px 14px 14px 14px", padding: "10px 14px" }}>
                   <TypingDots />

@@ -1,9 +1,9 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { signOut } from "next-auth/react";
+import { NyxLogo } from "@/components/brand/NyxLogo";
 
 const CYAN       = "var(--nyx-accent)";
 const BORDER     = "var(--nyx-border)";
@@ -250,7 +250,7 @@ export function Sidebar({ role, userName, userEmail }: SidebarProps) {
         <div style={{ display: "flex", alignItems: "center", gap: 9, justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
           <div style={{ width: 40, height: 40, borderRadius: 8, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Image src="/Aegislogo.png" alt="NyxAegis" width={40} height={40} style={{ objectFit: "contain", width: "100%", height: "100%" }} />
+            <NyxLogo size={40} />
           </div>
           <div>
             <div style={{ fontWeight: 900, fontSize: "0.95rem", color: TEXT, letterSpacing: "-0.01em", lineHeight: 1 }}>NyxAegis</div>

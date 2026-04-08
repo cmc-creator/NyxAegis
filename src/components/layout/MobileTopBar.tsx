@@ -1,6 +1,6 @@
 "use client";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { NyxLogo } from "@/components/brand/NyxLogo";
 
 // ─── Route → Page title map ────────────────────────────────────────────────────
 const ROUTE_LABELS: Record<string, string> = {
@@ -80,7 +80,7 @@ export function MobileTopBar({ role, userName }: Props) {
 
       {/* Logo */}
       <div style={{ width: 28, height: 28, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <Image src="/Aegislogo.png" alt="NyxAegis" width={28} height={28} style={{ objectFit: "contain", width: "100%", height: "100%" }} />
+        <NyxLogo size={28} />
       </div>
 
       {/* Page title */}

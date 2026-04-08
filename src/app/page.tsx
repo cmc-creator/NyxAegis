@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import { NyxLogo } from "@/components/brand/NyxLogo";
 
 const C = {
   bg:      "var(--nyx-bg)",
@@ -166,7 +166,7 @@ export default function LandingPage() {
           <div>
             {/* Logo */}
             <div style={{ marginBottom: 24 }}>
-              <Image src="/Aegislogo.png" alt="NyxAegis" width={280} height={280} placeholder="empty" style={{ background: "transparent", filter: "drop-shadow(0 0 48px rgba(201,168,76,0.65))" }} />
+              <NyxLogo size={280} style={{ background: "transparent", filter: "drop-shadow(0 0 48px rgba(201,168,76,0.65))" }} />
             </div>
             {/* Badge pill */}
             <div style={{ marginBottom: 20 }}>

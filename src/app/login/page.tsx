@@ -3,7 +3,7 @@ import { Suspense, useState, type FormEvent } from "react";
 import { signIn, getSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
+import { NyxLogo } from "@/components/brand/NyxLogo";
 
 function getRoleHome(role?: string) {
   switch (role) {
@@ -75,7 +75,7 @@ function LoginForm() {
         <div style={{ position: "absolute", inset: 24, border: "1px solid rgba(201,168,76,0.1)", borderRadius: 30, pointerEvents: "none" }} />
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 72 }}>
-            <Image src="/Aegislogo.png" alt="NyxAegis" width={110} height={110} style={{ objectFit: "contain", display: "block" }} />
+            <NyxLogo size={110} />
             <div>
               <div style={{ fontSize: "0.68rem", letterSpacing: "0.24em", color: "rgba(237,228,207,0.55)", textTransform: "uppercase", marginBottom: 4 }}>Private Access</div>
               <span style={{ fontWeight: 800, fontSize: "1.3rem", color: TEXT }}>NyxAegis</span>
@@ -125,7 +125,7 @@ function LoginForm() {
               <h2 style={{ fontFamily: "var(--font-display), serif", fontSize: "2.2rem", fontWeight: 700, color: FORM_TEXT, marginBottom: 8, letterSpacing: "0.01em", lineHeight: 0.98 }}>Welcome back</h2>
               <p style={{ color: FORM_MUTED, marginBottom: 0, fontSize: "0.95rem", lineHeight: 1.65 }}>Enter your credentials to access the NyxAegis command environment.</p>
             </div>
-            <Image src="/Aegislogo.png" alt="NyxAegis" width={90} height={90} style={{ objectFit: "contain", display: "block", flexShrink: 0 }} />
+            <NyxLogo size={90} style={{ flexShrink: 0 }} />
           </div>
 
           {error && (
