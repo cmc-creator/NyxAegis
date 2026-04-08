@@ -148,11 +148,11 @@ function LoginForm() {
           <div style={{ marginTop: 40, padding: "16px", background: "var(--nyx-accent-dim)", borderRadius: 8, border: "1px solid var(--nyx-accent-dim)" }}>
             <p style={{ fontSize: "0.7rem", color: "rgba(216,232,244,0.35)", textAlign: "center" }}>Contact your administrator if you need access.</p>
           </div>
-          </div>
 
           <p style={{ marginTop: 24, textAlign: "center", fontSize: "0.75rem", color: "rgba(216,232,244,0.25)" }}>
             <Link href="/terms" style={{ color: "inherit" }}>Terms</Link> · <Link href="/privacy" style={{ color: "inherit" }}>Privacy</Link> · © 2026 Destiny Springs
           </p>
+          </div>
         </div>
       </div>
     </div>

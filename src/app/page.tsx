@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import Image from "next/image";
 
 const C = {
@@ -148,7 +148,7 @@ export default function LandingPage() {
 
       {/* NAV */}
       <nav style={{ position: "sticky", top: 0, zIndex: 50, borderBottom: `1px solid ${C.border}`, padding: "0 clamp(1rem, 4vw, 2rem)", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64, background: "color-mix(in srgb, var(--nyx-bg) 85%, transparent)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", gap: 8 }}>
-        <span style={{ fontWeight: 900, fontSize: "1.1rem", letterSpacing: "-0.03em", whiteSpace: "nowrap", flexShrink: 0 }}>NyxAegis<sup style={{ fontSize: "0.6em", verticalAlign: "super", marginLeft: 1, color: "var(--nyx-accent)" }}>�</sup></span>
+        <span style={{ fontWeight: 900, fontSize: "1.1rem", letterSpacing: "-0.03em", whiteSpace: "nowrap", flexShrink: 0 }}>NyxAegis<sup style={{ fontSize: "0.6em", verticalAlign: "super", marginLeft: 1, color: "var(--nyx-accent)" }}>&reg;</sup></span>
         <div style={{ display: "flex", gap: "1rem", alignItems: "center", flexShrink: 0 }}>
           {/* Features + Pricing � hidden on mobile via CSS */}
           <div className="lp-nav-hide" style={{ gap: "1.5rem", alignItems: "center" }}>
@@ -186,7 +186,7 @@ export default function LandingPage() {
             </h1>
             {/* Value prop line */}
             <p style={{ fontSize: "clamp(0.95rem, 1.8vw, 1.1rem)", fontWeight: 700, color: C.muted, letterSpacing: "0.04em", textTransform: "uppercase", marginBottom: 20 }}>
-              High-Tech Precision&nbsp;&nbsp;�&nbsp;&nbsp;High-End Design&nbsp;&nbsp;�&nbsp;&nbsp;Highly Affordable
+              High-Tech Precision&nbsp;&nbsp;&middot;&nbsp;&nbsp;High-End Design&nbsp;&nbsp;&middot;&nbsp;&nbsp;Highly Affordable
             </p>
             <p style={{ fontSize: "1.05rem", color: C.muted, maxWidth: 480, lineHeight: 1.75, marginBottom: 36 }}>
               Built for teams who build relationships - log visits, track referral sources, and prove your outreach is turning into actual results.
@@ -199,7 +199,7 @@ export default function LandingPage() {
                 Sign In
               </Link>
             </div>
-            <p style={{ fontSize: "0.75rem", color: C.dim }}>No credit card required � 14-day free trial � Cancel anytime</p>
+            <p style={{ fontSize: "0.75rem", color: C.dim }}>No credit card required &middot; 14-day free trial &middot; Cancel anytime</p>
           </div>
           <div className="lp-hero-mock" style={{ position: "relative" }}>
             <div style={{ position: "absolute", inset: -1, background: "linear-gradient(135deg, var(--nyx-accent-mid), var(--nyx-accent-dim), transparent)", borderRadius: 18, filter: "blur(1px)" }} />
@@ -452,7 +452,7 @@ export default function LandingPage() {
             <div style={{ display: "flex", alignItems: "flex-start", gap: 16 }}>
               <div>
                 <p style={{ margin: "0 0 4px", fontWeight: 900, fontSize: "1.1rem", color: C.text, letterSpacing: "-0.02em" }}>
-                  NyxAegis<sup style={{ fontSize: "0.55em", verticalAlign: "super", marginLeft: 2, color: "var(--nyx-accent)" }}>�</sup>
+                  NyxAegis<sup style={{ fontSize: "0.55em", verticalAlign: "super", marginLeft: 2, color: "var(--nyx-accent)" }}>&reg;</sup>
                 </p>
                 <p style={{ margin: "0 0 8px", fontSize: "0.85rem", color: "var(--nyx-accent)", fontStyle: "italic", fontWeight: 600 }}>Where Relationships Become Referrals.</p>
                 <p style={{ margin: 0, fontSize: "0.75rem", color: C.dim, maxWidth: 280, lineHeight: 1.6 }}>Purpose-built CRM for BD teams tracking referral sources and proving outreach ROI in the field.</p>
