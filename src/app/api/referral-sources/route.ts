@@ -77,9 +77,17 @@ export async function GET(req: NextRequest) {
     }
   }
   const acts30Map: Record<string, number> = {};
-  for (const a of acts30) { if (a.referralSourceId) acts30Map[a.referralSourceId] = a._count; }
+  for (const a of acts30) {
+    if (!a.referralSourceId) continue;
+    const count = typeof a._count === "number" ? a._count : (a._count as { _all?: number })?._all ?? 0;
+    acts30Map[a.referralSourceId] = count;
+  }
   const refs30Map: Record<string, number> = {};
-  for (const r of refs30) { if (r.referralSourceId) refs30Map[r.referralSourceId] = r._count; }
+  for (const r of refs30) {
+    if (!r.referralSourceId) continue;
+    const count = typeof r._count === "number" ? r._count : (r._count as { _all?: number })?._all ?? 0;
+    refs30Map[r.referralSourceId] = count;
+  }
 
   const withWarmth = sources.map(s => {
     const lastDate  = lastMap[s.id] ?? null;

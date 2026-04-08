@@ -67,7 +67,7 @@ const FUNCTION_DECLARATIONS = [
     parameters: {
       type: "object",
       properties: {
-        type: { type: "string", description: "CALL, VISIT, EMAIL, NOTE, MEETING, TEXT, VOICEMAIL, PRESENTATION, PROPOSAL_SENT, FOLLOW_UP" },
+        type: { type: "string", description: "CALL, EMAIL, NOTE, MEETING, LUNCH, TASK, PROPOSAL_SENT, CONTRACT_SENT, DEMO_COMPLETED, SITE_VISIT, CONFERENCE, FOLLOW_UP" },
         title: { type: "string", description: "Short title/summary of the activity" },
         account_name: { type: "string", description: "Hospital/account name to associate with (optional)" },
         opportunity_title: { type: "string", description: "Opportunity title to associate with (optional)" },
@@ -202,7 +202,7 @@ async function executeTool(name: string, args: Record<string, unknown>, userId: 
     }
 
     if (name === "log_activity") {
-      const validTypes = ["CALL","VISIT","EMAIL","NOTE","MEETING","TEXT","VOICEMAIL","PRESENTATION","PROPOSAL_SENT","FOLLOW_UP"];
+      const validTypes = ["CALL","EMAIL","NOTE","MEETING","LUNCH","TASK","PROPOSAL_SENT","CONTRACT_SENT","DEMO_COMPLETED","SITE_VISIT","CONFERENCE","FOLLOW_UP"];
       const type = String(args.type ?? "NOTE").toUpperCase();
       const activityType = validTypes.includes(type) ? type : "NOTE";
       let repId: string | undefined;
