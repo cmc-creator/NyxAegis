@@ -185,8 +185,14 @@ function LoginForm() {
         </div>
       </div>
 
-      <div style={{ position: "absolute", left: 0, right: 0, bottom: 14, zIndex: 5, textAlign: "center", color: "rgba(237,228,207,0.6)", fontSize: "0.76rem", letterSpacing: "0.1em", pointerEvents: "none" }}>
-        A product of NyxCollective LLC
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 5, textAlign: "center", color: "rgba(237,228,207,0.55)", fontSize: "0.74rem", letterSpacing: "0.06em", pointerEvents: "none", padding: "14px 24px", borderTop: "1px solid rgba(201,168,76,0.1)", background: "rgba(8,5,2,0.55)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", gap: 24 }}>
+        <span>A product of NyxCollective LLC</span>
+        <span style={{ opacity: 0.4 }}>·</span>
+        <Link href="/terms" style={{ color: "inherit", textDecoration: "none", pointerEvents: "auto" }}>Terms</Link>
+        <span style={{ opacity: 0.4 }}>·</span>
+        <Link href="/privacy" style={{ color: "inherit", textDecoration: "none", pointerEvents: "auto" }}>Privacy</Link>
+        <span style={{ opacity: 0.4 }}>·</span>
+        <span>© 2026 NyxAegis</span>
       </div>
     </div>
   );
