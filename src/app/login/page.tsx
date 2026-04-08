@@ -71,9 +71,9 @@ function LoginForm() {
       <div className="nyx-login-left" style={{ flex: "0 0 49%", padding: "72px 60px", display: "flex", flexDirection: "column", justifyContent: "space-between", position: "relative", overflow: "hidden", borderRight: "1px solid rgba(201,168,76,0.14)", background: "linear-gradient(160deg, rgba(255,255,255,0.03) 0%, rgba(201,168,76,0.08) 20%, rgba(10,8,6,0.3) 48%, rgba(8,5,2,0.88) 100%)", boxShadow: "inset -1px 0 0 rgba(255,255,255,0.04)" }}>
         <div style={{ position: "absolute", inset: 24, border: "1px solid rgba(201,168,76,0.1)", borderRadius: 30, pointerEvents: "none" }} />
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 72 }}>
-            <div style={{ width: 54, height: 54, borderRadius: 16, background: "linear-gradient(180deg, rgba(255,255,255,0.14), rgba(201,168,76,0.08))", border: "1px solid rgba(201,168,76,0.22)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 10px 30px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.18)" }}>
-              <Image src="/Aegislogo.png" alt="NyxAegis" width={34} height={34} style={{ objectFit: "contain" }} />
+          <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 72 }}>
+            <div style={{ width: 76, height: 76, borderRadius: 20, background: "linear-gradient(180deg, rgba(255,255,255,0.16), rgba(201,168,76,0.09))", border: "1px solid rgba(201,168,76,0.24)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 14px 36px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2)" }}>
+              <Image src="/Aegislogo.png" alt="NyxAegis" width={52} height={52} style={{ objectFit: "contain" }} />
             </div>
             <div>
               <div style={{ fontSize: "0.68rem", letterSpacing: "0.24em", color: "rgba(237,228,207,0.55)", textTransform: "uppercase", marginBottom: 4 }}>Private Access</div>
@@ -124,8 +124,8 @@ function LoginForm() {
               <h2 style={{ fontFamily: "var(--font-display), serif", fontSize: "2.2rem", fontWeight: 700, color: TEXT, marginBottom: 8, letterSpacing: "0.01em", lineHeight: 0.98 }}>Welcome back</h2>
               <p style={{ color: MUTED, marginBottom: 0, fontSize: "0.95rem", lineHeight: 1.65 }}>Enter your credentials to access the NyxAegis command environment.</p>
             </div>
-            <div style={{ width: 54, height: 54, borderRadius: 16, background: "linear-gradient(180deg, rgba(255,255,255,0.16), rgba(201,168,76,0.08))", border: "1px solid rgba(201,168,76,0.22)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 12px 24px rgba(0,0,0,0.2)" }}>
-              <Image src="/Aegislogo.png" alt="NyxAegis" width={34} height={34} style={{ objectFit: "contain" }} />
+            <div style={{ width: 64, height: 64, borderRadius: 18, background: "linear-gradient(180deg, rgba(255,255,255,0.16), rgba(201,168,76,0.08))", border: "1px solid rgba(201,168,76,0.22)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 12px 24px rgba(0,0,0,0.2)" }}>
+              <Image src="/Aegislogo.png" alt="NyxAegis" width={42} height={42} style={{ objectFit: "contain" }} />
             </div>
           </div>
 
@@ -165,7 +165,7 @@ function LoginForm() {
             <button
               type="submit"
               disabled={loading}
-              style={{ background: loading ? "var(--nyx-accent-label)" : "linear-gradient(180deg, #f0d060 0%, var(--nyx-accent) 100%)", color: "#1a0e00", padding: "15px", borderRadius: 16, fontWeight: 900, fontSize: "0.96rem", border: "1px solid rgba(201,168,76,0.25)", cursor: loading ? "not-allowed" : "pointer", marginTop: 6, boxShadow: loading ? "none" : "0 16px 34px rgba(201,168,76,0.18), inset 0 1px 0 rgba(255,255,255,0.28)" }}
+              style={{ background: loading ? "#8a7130" : "linear-gradient(180deg, #f0d060 0%, #c9a84c 100%)", color: "#120a00", padding: "15px", borderRadius: 16, fontWeight: 900, fontSize: "0.96rem", border: "1px solid rgba(201,168,76,0.32)", cursor: loading ? "not-allowed" : "pointer", marginTop: 6, boxShadow: loading ? "none" : "0 16px 34px rgba(201,168,76,0.18), inset 0 1px 0 rgba(255,255,255,0.28)", textShadow: "0 1px 0 rgba(255,255,255,0.18)" }}
             >
               {loading ? "Signing in..." : "Sign In →"}
             </button>
@@ -176,8 +176,8 @@ function LoginForm() {
             <Link href="/signup" style={{ color: CYAN, textDecoration: "none", fontWeight: 600 }}>Request Access</Link>
           </div>
 
-          <div style={{ marginTop: 28, padding: "16px 18px", background: "linear-gradient(180deg, rgba(201,168,76,0.08), rgba(201,168,76,0.03))", borderRadius: 16, border: "1px solid rgba(201,168,76,0.14)" }}>
-            <p style={{ fontSize: "0.74rem", color: "rgba(237,228,207,0.52)", textAlign: "center", lineHeight: 1.6, margin: 0 }}>Access is provisioned by your workspace administrator. If you need help, contact support through your onboarding channel.</p>
+          <div style={{ marginTop: 28, padding: "16px 18px", background: "linear-gradient(180deg, rgba(201,168,76,0.13), rgba(201,168,76,0.05))", borderRadius: 16, border: "1px solid rgba(201,168,76,0.24)" }}>
+            <p style={{ fontSize: "0.74rem", color: "rgba(34,20,0,0.92)", textAlign: "center", lineHeight: 1.6, margin: 0, fontWeight: 600 }}>Access is provisioned by your workspace administrator. If you need help, contact support through your onboarding channel.</p>
           </div>
 
           <p style={{ marginTop: 22, textAlign: "center", fontSize: "0.75rem", color: "rgba(237,228,207,0.32)" }}>
