@@ -471,7 +471,6 @@ export default function LandingPage() {
               <div>
                 <p style={{ margin: "0 0 12px", fontSize: "0.65rem", fontWeight: 700, color: C.muted, letterSpacing: "0.12em", textTransform: "uppercase" }}>Company</p>
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                  <Link href="/login" style={{ color: C.dim, textDecoration: "none", fontSize: "0.82rem" }}>Sign In</Link>
                   <Link href="/terms" style={{ color: C.dim, textDecoration: "none", fontSize: "0.82rem" }}>Terms of Service</Link>
                   <Link href="/privacy" style={{ color: C.dim, textDecoration: "none", fontSize: "0.82rem" }}>Privacy Policy</Link>
                 </div>
