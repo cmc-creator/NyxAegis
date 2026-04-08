@@ -17,7 +17,6 @@ function getRoleHome(role?: string) {
 const CYAN = "var(--nyx-accent)";
 const BG = "var(--nyx-bg)";
 const TEXT = "var(--nyx-text)";
-const MUTED = "var(--nyx-text-muted)";
 const FORM_TEXT = "#2a1a02";
 const FORM_MUTED = "rgba(52, 34, 4, 0.78)";
 const FORM_LABEL = "rgba(74, 50, 7, 0.78)";
