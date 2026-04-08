@@ -1,9 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Manrope, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 
-const inter = Inter({ subsets: ["latin"] });
+const manrope = Manrope({ subsets: ["latin"], variable: "--font-ui", display: "swap" });
+const cormorant = Cormorant_Garamond({ subsets: ["latin"], variable: "--font-display", weight: ["500", "600", "700"], display: "swap" });
 
 export const viewport: Viewport = {
   themeColor: "#C9A84C",
@@ -34,7 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Apply saved theme immediately — prevents flash of wrong theme */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){try{var t=localStorage.getItem('nyxaegis-theme')||'luxury';var h=document.documentElement;h.setAttribute('data-theme',t);var m={backgrounds:'--nyx-page-bg',sidebar:'--nyx-sidebar-tex',cards:'--nyx-card-texture'};Object.keys(m).forEach(function(k){var v=localStorage.getItem('nyxaegis-bg-'+t+'-'+k);if(v)h.style.setProperty(m[k],"url('"+v+"')");});if(localStorage.getItem('nyxaegis-bg-tile-'+t)==='1'){h.style.setProperty('--nyx-page-bg-size','400px 400px');h.style.setProperty('--nyx-page-bg-repeat','repeat');}var ct=localStorage.getItem('nyxaegis-bg-'+t+'-cards');if(ct){var st=document.createElement('style');st.id='nyx-card-tex-style';st.textContent='[style*="var(--nyx-card)"]{position:relative!important;overflow:hidden}[style*="var(--nyx-card)"]::after{content:"";position:absolute;inset:0;border-radius:inherit;background-image:url(\''+ct+'\');background-size:cover;background-position:center;opacity:0.14;pointer-events:none;z-index:1}[style*="var(--nyx-card)"]>*{position:relative;z-index:2}';document.head.appendChild(st);}}catch(e){}})();` }} />
       </head>
-      <body className={inter.className}>
+      <body className={`${manrope.variable} ${cormorant.variable}`}>
         <Providers>{children}</Providers>
       </body>
     </html>

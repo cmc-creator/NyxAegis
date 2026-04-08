@@ -847,6 +847,9 @@ img[data-nimg] {
 
 @layer base {
   * { @apply border-border; }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     background-color: var(--nyx-bg);
     background-image: var(--nyx-page-bg, none), var(--nyx-texture, none);
@@ -856,7 +859,32 @@ img[data-nimg] {
     background-attachment: fixed, scroll;
     background-blend-mode: normal, overlay;
     color: var(--nyx-text);
+    font-family: var(--font-ui), "Segoe UI", sans-serif;
+    letter-spacing: 0.005em;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     transition: background-color 0.3s ease, color 0.3s ease;
+    position: relative;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+      radial-gradient(1200px 700px at 8% -10%, var(--nyx-accent-dim), transparent 60%),
+      radial-gradient(900px 600px at 95% 110%, rgba(255,255,255,0.035), transparent 60%);
+    mix-blend-mode: screen;
+  }
+  h1, h2, h3 {
+    font-family: var(--font-display), "Times New Roman", serif;
+    letter-spacing: 0.015em;
+  }
+  h4, h5, h6 {
+    font-family: var(--font-ui), "Segoe UI", sans-serif;
+    letter-spacing: 0.01em;
   }
   p, h1, h2, h3, h4, h5, h6, li, td, th, div { text-wrap: pretty; }
 }
@@ -909,6 +937,9 @@ img[data-nimg] {
   background-color: var(--nyx-sidebar-bg);
   position: relative;
   isolation: isolate;
+  box-shadow:
+    inset -1px 0 0 rgba(255,255,255,0.05),
+    24px 0 44px rgba(0,0,0,0.38);
 }
 .nyx-sidebar::before {
   content: '';
@@ -926,6 +957,25 @@ img[data-nimg] {
   z-index: 1;
 }
 
+.nyx-sidebar nav a {
+  position: relative;
+  overflow: hidden;
+}
+
+.nyx-sidebar nav a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 15%, rgba(255,255,255,0.08) 45%, transparent 75%);
+  transform: translateX(-120%);
+  transition: transform 0.55s ease;
+  pointer-events: none;
+}
+
+.nyx-sidebar nav a:hover::after {
+  transform: translateX(120%);
+}
+
 /* Gradient border — looks like polished metal at any radius */
 .gold-card {
   position: relative;
@@ -936,8 +986,9 @@ img[data-nimg] {
   box-shadow:
     0 0 0 1px var(--nyx-accent-dim),
     inset 0 1px 0 rgba(255,255,255,0.03),
-    0 4px 24px rgba(0,0,0,0.4);
+    0 12px 34px rgba(0,0,0,0.45);
   animation: gold-card-shine 7s ease-in-out infinite;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
 }
 .gold-card::before {
   content: "";
@@ -963,6 +1014,14 @@ img[data-nimg] {
   opacity: 0.14;
   pointer-events: none;
   z-index: 0;
+}
+
+.gold-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 0 1px var(--nyx-accent-mid),
+    0 0 34px var(--nyx-accent-dim),
+    0 16px 42px rgba(0,0,0,0.5);
 }
 
 @keyframes gold-shimmer-sweep {
@@ -1065,6 +1124,18 @@ img[data-nimg] {
   to   { opacity: 1; transform: translateY(0); }
 }
 .page-enter { animation: page-fade-in 0.4s ease-out forwards; }
+
+button, a {
+  transition: transform 0.16s ease, box-shadow 0.16s ease, filter 0.16s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+button:hover, a:hover {
+  filter: brightness(1.04);
+}
+
+button:active, a:active {
+  transform: translateY(1px) scale(0.995);
+}
 
 @keyframes glow-pulse {
   0%, 100% { box-shadow: 0 0 20px var(--nyx-accent-mid), 0 0 60px var(--nyx-accent-dim); }
@@ -1423,8 +1494,11 @@ main, .nyx-sidebar, .nyx-table-scroll {
     padding-right: 12px;
     align-items: center;
     gap: 6px;
-    background: var(--nyx-card);
-    border-bottom: 1px solid var(--nyx-border);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.04), transparent 60%),
+      var(--nyx-card);
+    border-bottom: 1px solid var(--nyx-accent-mid);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
   }
@@ -1513,8 +1587,11 @@ main, .nyx-sidebar, .nyx-table-scroll {
     left: 0;
     right: 0;
     z-index: 350;
-    background: var(--nyx-card);
-    border-top: 1px solid var(--nyx-border);
+    background:
+      linear-gradient(0deg, rgba(255,255,255,0.03), transparent 62%),
+      var(--nyx-card);
+    border-top: 1px solid var(--nyx-accent-mid);
+    box-shadow: 0 -10px 26px rgba(0,0,0,0.35);
     /* Safe area inset for iPhone home bar */
     padding-bottom: env(safe-area-inset-bottom, 0px);
     backdrop-filter: blur(20px);
