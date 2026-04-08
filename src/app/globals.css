@@ -1360,9 +1360,11 @@ main, .nyx-sidebar, .nyx-table-scroll {
     grid-template-columns: 1fr !important;
   }
 
-  /* Add breathing room at the top for the topbar (52px) + iPhone notch */
+  /* Add breathing room at the top for the topbar (52px) + iPhone notch,
+     and at the bottom for the fixed bottom nav (56px) + home-indicator */
   main {
     padding-top: calc(52px + env(safe-area-inset-top, 0px)) !important;
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
     min-width: 0 !important;
     overflow-x: hidden !important;
     width: 100% !important;

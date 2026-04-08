@@ -243,14 +243,14 @@ export function Sidebar({ role, userName, userEmail }: SidebarProps) {
 
       <aside
         className={`nyx-sidebar${mobileOpen ? " is-open" : ""}`}
-        style={{ width: 248, minHeight: "100vh", borderRight: `1px solid ${BORDER}`, display: "flex", flexDirection: "column", flexShrink: 0, height: "100vh", overflowY: "auto" }}
+        style={{ width: 248, height: "100vh", borderRight: `1px solid ${BORDER}`, display: "flex", flexDirection: "column", flexShrink: 0, position: "sticky", top: 0, alignSelf: "flex-start", overflowY: "auto" }}
       >
       {/* Logo */}
       <div style={{ padding: "20px 18px 16px", borderBottom: `1px solid ${BORDER}` }}>
         <div style={{ display: "flex", alignItems: "center", gap: 9, justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-          <div style={{ width: 34, height: 34, borderRadius: 8, overflow: "hidden", flexShrink: 0 }}>
-            <Image src="/dshlogo.png" alt="Destiny Springs" width={34} height={34} style={{ objectFit: "cover", width: "100%", height: "100%" }} />
+          <div style={{ width: 40, height: 40, borderRadius: 8, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Image src="/dshlogo.png" alt="Destiny Springs" width={40} height={40} style={{ objectFit: "contain", width: "100%", height: "100%" }} />
           </div>
           <div>
             <div style={{ fontWeight: 900, fontSize: "0.95rem", color: TEXT, letterSpacing: "-0.01em", lineHeight: 1 }}>Destiny Springs</div>

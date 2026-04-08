@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 // ─── Route → Page title map ────────────────────────────────────────────────────
@@ -76,6 +77,11 @@ export function MobileTopBar({ role, userName }: Props) {
           <line x1="3" y1="18" x2="21" y2="18" />
         </svg>
       </button>
+
+      {/* Logo */}
+      <div style={{ width: 28, height: 28, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <Image src="/dshlogo.png" alt="Destiny Springs" width={28} height={28} style={{ objectFit: "contain", width: "100%", height: "100%" }} />
+      </div>
 
       {/* Page title */}
       <span className="nyx-topbar-title">{title}</span>
