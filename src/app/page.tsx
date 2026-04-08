@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import Image from "next/image";
 
 const C = {
@@ -43,7 +43,6 @@ const workflow = [
   { n: "03", title: "Count Referrals Received",   desc: "When a referral comes in, log it back to the source. Watch your referral-per-source metrics update in real time." },
   { n: "04", title: "Report to Leadership",       desc: "AI-generated dashboards show referral volume, source performance, team activity, and territory coverage. Ask questions in plain English - get instant answers from your own data." },
 ];
-
 const stats = [
   { value: "AI",        label: "Built-In Assistant",      sub: "Ask questions, get instant answers" },
   { value: "Real-Time", label: "Referral Counts",        sub: "Know your ROI from day one" },
@@ -108,7 +107,7 @@ function DashboardMock() {
             <div style={{ fontSize: "0.65rem", color: C.muted }}>{r.type}</div>
             <div style={{ fontSize: "0.72rem", color: C.muted }}>{r.goal}</div>
             <div style={{ fontSize: "0.72rem", fontWeight: 700, color: r.up ? "var(--nyx-accent)" : "#f87171" }}>{r.actual}</div>
-            <div style={{ fontSize: "0.8rem", fontWeight: 800, color: r.up ? "var(--nyx-accent)" : "#f87171" }}>{r.up ? "?" : "?"}</div>
+            <div style={{ fontSize: "0.8rem", fontWeight: 800, color: r.up ? "var(--nyx-accent)" : "#f87171" }}>{r.up ? "\u2191" : "\u2193"}</div>
           </div>
         ))}
       </div>
@@ -151,7 +150,7 @@ export default function LandingPage() {
         <span style={{ fontWeight: 900, fontSize: "1.1rem", letterSpacing: "-0.03em", whiteSpace: "nowrap", flexShrink: 0 }}>NyxAegis<sup style={{ fontSize: "0.6em", verticalAlign: "super", marginLeft: 1, color: "var(--nyx-accent)" }}>&reg;</sup></span>
         <div style={{ display: "flex", gap: "1rem", alignItems: "center", flexShrink: 0 }}>
           {/* Features + Pricing � hidden on mobile via CSS */}
-          <div className="lp-nav-hide" style={{ gap: "1.5rem", alignItems: "center" }}>
+          <div className="lp-nav-hide" style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
             <Link href="#features" style={{ color: C.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 500 }}>Features</Link>
             <Link href="/pricing" style={{ color: C.muted, textDecoration: "none", fontSize: "0.85rem", fontWeight: 500 }}>Pricing</Link>
           </div>
