@@ -117,7 +117,7 @@ function DashboardMock() {
 
 export default function LandingPage() {
   return (
-    <div style={{ background: C.bg, color: C.text, fontFamily: "'Inter', system-ui, -apple-system, sans-serif", minHeight: "100vh", overflowX: "hidden" }}>
+    <div style={{ background: C.bg, color: C.text, fontFamily: "'Inter', system-ui, -apple-system, sans-serif", minHeight: "100dvh", overflowX: "hidden", overflowY: "auto", position: "relative" }}>
 
       {/* -- Mobile styles injected directly � no external CSS dependency -- */}
       <style>{`
@@ -139,7 +139,7 @@ export default function LandingPage() {
       `}</style>
 
       {/* AMBIENT ORBS */}
-      <div aria-hidden style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0 }}>
+      <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "hidden" }}>
         <div style={{ position: "absolute", top: "10%", left: "15%", width: 600, height: 600, borderRadius: "50%", background: "radial-gradient(circle, var(--nyx-accent-dim) 0%, transparent 70%)", filter: "blur(60px)" }} />
         <div style={{ position: "absolute", top: "50%", right: "10%", width: 500, height: 500, borderRadius: "50%", background: "radial-gradient(circle, var(--nyx-accent-dim) 0%, transparent 70%)", filter: "blur(60px)" }} />
         <div style={{ position: "absolute", bottom: "15%", left: "35%", width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, var(--nyx-accent-dim) 0%, transparent 70%)", filter: "blur(60px)" }} />
