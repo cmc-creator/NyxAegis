@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { NyxLogo } from "@/components/brand/NyxLogo";
 
 const C = {
