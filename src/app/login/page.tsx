@@ -18,8 +18,6 @@ const CYAN = "var(--nyx-accent)";
 const BG = "var(--nyx-bg)";
 const TEXT = "var(--nyx-text)";
 const MUTED = "var(--nyx-text-muted)";
-const CARD = "var(--nyx-card)";
-const BORDER = "var(--nyx-border)";
 
 export default function LoginPage() {
   return (
