@@ -219,6 +219,23 @@ export function Sidebar({ role, userName, userEmail }: SidebarProps) {
     return () => window.removeEventListener("aegis:open-sidebar", handler);
   }, []);
 
+  useEffect(() => {
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileOpen(false);
+    };
+    window.addEventListener("keydown", onEscape);
+    return () => window.removeEventListener("keydown", onEscape);
+  }, []);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [mobileOpen]);
+
   return (
     <>
       {/* Mobile hamburger button — hidden; MobileTopBar owns this on mobile */}
@@ -242,6 +259,8 @@ export function Sidebar({ role, userName, userEmail }: SidebarProps) {
       )}
 
       <aside
+        id="nyx-sidebar"
+        aria-label="Primary navigation"
         className={`nyx-sidebar${mobileOpen ? " is-open" : ""}`}
         style={{ width: 248, height: "100vh", borderRight: `1px solid ${BORDER}`, display: "flex", flexDirection: "column", flexShrink: 0, position: "sticky", top: 0, alignSelf: "flex-start", overflowY: "auto" }}
       >
@@ -279,6 +298,8 @@ export function Sidebar({ role, userName, userEmail }: SidebarProps) {
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
+                  className="nyx-sidebar-link"
+                  aria-current={active ? "page" : undefined}
                   style={{
                     display: "flex",
                     alignItems: "center",

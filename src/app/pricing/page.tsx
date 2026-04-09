@@ -2,8 +2,9 @@ import Link from "next/link";
 
 const CYAN = "var(--nyx-accent)";
 const BG = "var(--nyx-bg)";
-const BORDER = "var(--nyx-accent-dim)";
+const BORDER = "var(--nyx-border)";
 const TEXT = "var(--nyx-text)";
+const TEXT_MUTED = "var(--nyx-text-muted)";
 
 const tiers = [
   {
@@ -85,7 +86,7 @@ export default function PricingPage() {
   return (
     <div style={{ background: BG, color: TEXT, fontFamily: "system-ui, -apple-system, sans-serif", minHeight: "100vh" }}>
       {/* NAV */}
-      <nav style={{ borderBottom: `1px solid ${BORDER}`, padding: "0 2rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: 60, background: "var(--nyx-bg)", backdropFilter: "blur(12px)" }}>
+      <nav style={{ borderBottom: `1px solid ${BORDER}`, padding: "0 2rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: 60, background: "var(--nyx-bg-scrim, var(--nyx-bg))", backdropFilter: "blur(12px)" }}>
         <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}>
           <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
             <rect width="32" height="32" rx="8" fill="var(--nyx-bg)"/>
@@ -95,7 +96,7 @@ export default function PricingPage() {
           <span style={{ fontWeight: 900, color: TEXT }}>NyxAegis</span>
         </Link>
         <div style={{ display: "flex", gap: 16 }}>
-          <Link href="/login" style={{ color: "rgba(216,232,244,0.5)", textDecoration: "none", fontSize: "0.875rem", fontWeight: 500 }}>Sign In</Link>
+          <Link href="/login" style={{ color: TEXT_MUTED, textDecoration: "none", fontSize: "0.875rem", fontWeight: 500 }}>Sign In</Link>
           <Link href="/signup" style={{ background: CYAN, color: BG, padding: "7px 18px", borderRadius: 7, fontWeight: 700, textDecoration: "none", fontSize: "0.875rem" }}>Get Started</Link>
         </div>
       </nav>
@@ -104,35 +105,35 @@ export default function PricingPage() {
       <section style={{ padding: "64px 2rem 48px", textAlign: "center" }}>
         <p style={{ color: CYAN, fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", marginBottom: 12 }}>PRICING</p>
         <h1 style={{ fontSize: "clamp(2rem, 5vw, 3rem)", fontWeight: 900, color: TEXT, letterSpacing: "-0.02em", marginBottom: 16 }}>Simple, transparent pricing</h1>
-        <p style={{ color: "rgba(216,232,244,0.55)", maxWidth: 480, margin: "0 auto", fontSize: "1rem", lineHeight: 1.7 }}>No hidden fees. No per-account charges. Just straightforward pricing for BD teams.</p>
+        <p style={{ color: TEXT_MUTED, maxWidth: 480, margin: "0 auto", fontSize: "1rem", lineHeight: 1.7 }}>No hidden fees. No per-account charges. Just straightforward pricing for BD teams.</p>
       </section>
 
       {/* TIERS */}
       <section style={{ maxWidth: 1060, margin: "0 auto", padding: "0 2rem 72px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24 }}>
         {tiers.map((t) => (
-          <div key={t.name} style={{ background: t.highlight ? "var(--nyx-accent-dim)" : "rgba(255,255,255,0.02)", border: `1px solid ${t.highlight ? "var(--nyx-accent-str)" : BORDER}`, borderRadius: 14, padding: "32px 28px", display: "flex", flexDirection: "column", position: "relative" }}>
+          <div key={t.name} style={{ background: t.highlight ? "var(--nyx-accent-dim)" : "var(--nyx-card)", border: `1px solid ${t.highlight ? "var(--nyx-accent-str)" : BORDER}`, borderRadius: 14, padding: "32px 28px", display: "flex", flexDirection: "column", position: "relative" }}>
             {t.highlight && <div style={{ position: "absolute", top: -1, left: "50%", transform: "translateX(-50%)", background: CYAN, color: BG, padding: "3px 14px", borderRadius: "0 0 8px 8px", fontSize: "0.68rem", fontWeight: 800, letterSpacing: "0.1em", whiteSpace: "nowrap" }}>MOST POPULAR</div>}
             <div>
               <div style={{ fontSize: "0.75rem", fontWeight: 700, color: CYAN, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 6 }}>{t.name}</div>
               <div style={{ display: "flex", alignItems: "baseline", gap: 4, marginBottom: 8 }}>
                 <span style={{ fontSize: "2.8rem", fontWeight: 900, color: TEXT, lineHeight: 1 }}>{t.price}</span>
-                {t.period && <span style={{ color: "rgba(216,232,244,0.45)", fontSize: "0.9rem" }}>{t.period}</span>}
+                {t.period && <span style={{ color: TEXT_MUTED, fontSize: "0.9rem" }}>{t.period}</span>}
               </div>
-              <p style={{ fontSize: "0.85rem", color: "rgba(216,232,244,0.5)", marginBottom: 24, lineHeight: 1.5 }}>{t.desc}</p>
+              <p style={{ fontSize: "0.85rem", color: TEXT_MUTED, marginBottom: 24, lineHeight: 1.5 }}>{t.desc}</p>
               <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px", display: "flex", flexDirection: "column", gap: 9 }}>
                 {t.features.map((f) => (
-                  <li key={f} style={{ display: "flex", gap: 8, fontSize: "0.85rem", color: "rgba(216,232,244,0.7)" }}>
+                  <li key={f} style={{ display: "flex", gap: 8, fontSize: "0.85rem", color: TEXT }}>
                     <span style={{ color: CYAN, flexShrink: 0, marginTop: 1 }}>✓</span> {f}
                   </li>
                 ))}
                 {t.notIncluded.map((f) => (
-                  <li key={f} style={{ display: "flex", gap: 8, fontSize: "0.85rem", color: "rgba(216,232,244,0.25)", textDecoration: "line-through" }}>
+                  <li key={f} style={{ display: "flex", gap: 8, fontSize: "0.85rem", color: TEXT_MUTED, opacity: 0.55, textDecoration: "line-through" }}>
                     <span style={{ flexShrink: 0, marginTop: 1 }}>✗</span> {f}
                   </li>
                 ))}
               </ul>
             </div>
-            <Link href="/signup" style={{ display: "block", textAlign: "center", background: t.highlight ? CYAN : "rgba(255,255,255,0.05)", color: t.highlight ? BG : TEXT, padding: "12px", borderRadius: 8, fontWeight: 700, textDecoration: "none", fontSize: "0.9rem", border: t.highlight ? "none" : `1px solid ${BORDER}`, marginTop: "auto" }}>
+            <Link href="/signup" style={{ display: "block", textAlign: "center", background: t.highlight ? CYAN : "var(--nyx-input-bg)", color: t.highlight ? BG : TEXT, padding: "12px", borderRadius: 8, fontWeight: 700, textDecoration: "none", fontSize: "0.9rem", border: t.highlight ? "none" : `1px solid ${BORDER}`, marginTop: "auto" }}>
               {t.cta}
             </Link>
           </div>
@@ -144,9 +145,9 @@ export default function PricingPage() {
         <h2 style={{ fontSize: "1.6rem", fontWeight: 800, color: TEXT, marginBottom: 32, textAlign: "center" }}>Frequently Asked Questions</h2>
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {faqs.map((faq) => (
-            <div key={faq.q} style={{ background: "rgba(255,255,255,0.02)", border: `1px solid ${BORDER}`, borderRadius: 10, padding: "20px 24px" }}>
+            <div key={faq.q} style={{ background: "var(--nyx-card)", border: `1px solid ${BORDER}`, borderRadius: 10, padding: "20px 24px" }}>
               <h3 style={{ fontSize: "0.95rem", fontWeight: 700, color: TEXT, marginBottom: 8 }}>{faq.q}</h3>
-              <p style={{ fontSize: "0.875rem", color: "rgba(216,232,244,0.55)", lineHeight: 1.7, margin: 0 }}>{faq.a}</p>
+              <p style={{ fontSize: "0.875rem", color: TEXT_MUTED, lineHeight: 1.7, margin: 0 }}>{faq.a}</p>
             </div>
           ))}
         </div>
@@ -154,7 +155,7 @@ export default function PricingPage() {
 
       {/* FOOTER */}
       <footer style={{ borderTop: `1px solid ${BORDER}`, padding: "24px 2rem", textAlign: "center" }}>
-        <p style={{ fontSize: "0.8rem", color: "rgba(216,232,244,0.25)" }}>
+        <p style={{ fontSize: "0.8rem", color: TEXT_MUTED, opacity: 0.7 }}>
           © 2026 NyxCollective LLC ·{" "}
           <Link href="/terms" style={{ color: "inherit" }}>Terms</Link> ·{" "}
           <Link href="/privacy" style={{ color: "inherit" }}>Privacy</Link>

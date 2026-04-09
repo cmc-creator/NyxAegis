@@ -57,10 +57,17 @@ interface Props {
   userName?: string | null;
 }
 
+function getRoleKicker(role: string): string {
+  if (role === "ADMIN") return "Command";
+  if (role === "REP") return "Field";
+  return "Account";
+}
+
 export function MobileTopBar({ role, userName }: Props) {
   const pathname = usePathname();
   const title = getPageTitle(pathname);
   const initials = getInitials(userName);
+  const roleKicker = getRoleKicker(role);
 
   const openMenu   = () => window.dispatchEvent(new CustomEvent("aegis:open-sidebar"));
   const openSearch = () => window.dispatchEvent(new CustomEvent("aegis:open-search"));
@@ -69,7 +76,13 @@ export function MobileTopBar({ role, userName }: Props) {
   return (
     <header className="nyx-topbar" aria-label="Top navigation">
       {/* Hamburger — opens slide-in sidebar */}
-      <button className="nyx-topbar-btn" onClick={openMenu} aria-label="Open menu">
+      <button
+        className="nyx-topbar-btn"
+        onClick={openMenu}
+        aria-label="Open menu"
+        aria-haspopup="menu"
+        aria-controls="nyx-sidebar"
+      >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
           <line x1="3" y1="6" x2="21" y2="6" />
@@ -84,7 +97,10 @@ export function MobileTopBar({ role, userName }: Props) {
       </div>
 
       {/* Page title */}
-      <span className="nyx-topbar-title">{title}</span>
+      <div className="nyx-topbar-center" aria-live="polite">
+        <span className="nyx-topbar-kicker">{roleKicker}</span>
+        <span className="nyx-topbar-title">{title}</span>
+      </div>
 
       {/* Right actions */}
       <div className="nyx-topbar-actions">

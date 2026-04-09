@@ -54,9 +54,13 @@ interface NextAction { label: string; desc: string; prompt: string; urgency: "hi
 
 function SuggestedNextActions({ role }: { role: string }) {
   const [actions, setActions] = useState<NextAction[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (role === "account") return;
+    if (role === "account") {
+      setLoading(false);
+      return;
+    }
     // Build personalized suggestions from stale leads + overdue follow-ups
     const base: NextAction[] = [];
     fetch("/api/leads?limit=20")
@@ -86,30 +90,46 @@ function SuggestedNextActions({ role }: { role: string }) {
         // Sort by urgency, limit to 4
         base.sort((a, b) => (a.urgency === "high" ? -1 : b.urgency === "high" ? 1 : 0));
         setActions(base.slice(0, 4));
+        setLoading(false);
       })
-      .catch(() => {});
+      .catch(() => setLoading(false));
   }, [role]);
 
   const ask = (prompt: string) => window.dispatchEvent(new CustomEvent("aegis:prompt", { detail: prompt }));
 
+  if (loading) {
+    return (
+      <div style={{ borderTop: `1px solid ${BORDER}`, padding: "14px 16px", display: "grid", gap: 8 }}>
+        <div className="nyx-skeleton nyx-skeleton-line" style={{ width: 170 }} />
+        <div className="nyx-skeleton nyx-skeleton-block" />
+      </div>
+    );
+  }
+
   if (actions.length === 0) return null;
 
-  const urgencyColor = (u: "high" | "medium" | "low") =>
-    u === "high" ? "#f87171" : u === "medium" ? "#fbbf24" : MUTED;
+  const urgencyToneClass = (u: "high" | "medium" | "low") =>
+    u === "high" ? "badge-danger" : u === "medium" ? "badge-warn" : "badge-muted";
 
   return (
     <div style={{ borderTop: `1px solid ${BORDER}`, padding: "14px 16px" }}>
-      <p style={{ fontSize: "0.68rem", fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", color: "#f87171", marginBottom: 10 }}>
-        ⚡ Suggested Next Actions
+      <p style={{ fontSize: "0.68rem", fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", color: GOLD, marginBottom: 10 }}>
+        Suggested Next Actions
       </p>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {actions.map((a, i) => (
-          <button key={i} onClick={() => ask(a.prompt)} style={{ background: "rgba(248,113,113,0.05)", border: "1px solid rgba(248,113,113,0.15)", borderRadius: 8, padding: "9px 12px", textAlign: "left", cursor: "pointer", transition: "background 0.15s" }}
-            onMouseEnter={e => (e.currentTarget.style.background = "rgba(248,113,113,0.1)")}
-            onMouseLeave={e => (e.currentTarget.style.background = "rgba(248,113,113,0.05)")}>
+          <button key={i} onClick={() => ask(a.prompt)} style={{ background: "var(--nyx-input-bg)", border: `1px solid ${BORDER}`, borderRadius: 8, padding: "9px 12px", textAlign: "left", cursor: "pointer", transition: "background 0.15s, border-color 0.15s" }}
+            onMouseEnter={e => {
+              e.currentTarget.style.background = GOLD_DIM;
+              e.currentTarget.style.borderColor = GOLD_MID;
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = "var(--nyx-input-bg)";
+              e.currentTarget.style.borderColor = BORDER;
+            }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
               <span style={{ fontSize: "0.78rem", fontWeight: 700, color: TEXT, lineHeight: 1.3 }}>{a.label}</span>
-              <span style={{ fontSize: "0.6rem", fontWeight: 800, color: urgencyColor(a.urgency), flexShrink: 0, marginTop: 1, letterSpacing: "0.06em" }}>{a.urgency.toUpperCase()}</span>
+              <span className={urgencyToneClass(a.urgency)} style={{ fontSize: "0.6rem", fontWeight: 800, flexShrink: 0, marginTop: 1, letterSpacing: "0.06em", borderRadius: 999, padding: "2px 7px" }}>{a.urgency.toUpperCase()}</span>
             </div>
             <div style={{ fontSize: "0.68rem", color: MUTED, marginTop: 2 }}>{a.desc}</div>
           </button>
@@ -127,7 +147,7 @@ export default function AIInsightsPanel({ role }: Props) {
   };
 
   return (
-    <div style={{
+    <div className="nyx-surface nyx-stage-enter" style={{
       background: CARD,
       border: `1px solid ${BORDER}`,
       borderRadius: 14,
@@ -137,18 +157,18 @@ export default function AIInsightsPanel({ role }: Props) {
       {/* Top accent line */}
       <div style={{
         position: "absolute", top: 0, left: 0, right: 0, height: 2,
-        background: `linear-gradient(90deg, rgba(167,139,250,0.8), ${GOLD_STR}, transparent)`,
+        background: `linear-gradient(90deg, ${GOLD_STR}, ${GOLD}, transparent)`,
       }} />
 
       {/* Header */}
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
         padding: "16px 18px 12px",
-        background: `linear-gradient(135deg, rgba(167,139,250,0.06), ${GOLD_DIM})`,
+        background: `linear-gradient(135deg, color-mix(in srgb, ${GOLD_DIM} 80%, transparent), ${GOLD_DIM})`,
         borderBottom: `1px solid ${BORDER}`,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <div style={{ color: "#a78bfa" }}><SparkleIcon /></div>
+          <div style={{ color: GOLD }}><SparkleIcon /></div>
           <span style={{ fontSize: "0.7rem", fontWeight: 800, letterSpacing: "0.14em", textTransform: "uppercase", color: GOLD }}>
             Ask Aegis AI
           </span>
@@ -176,8 +196,8 @@ export default function AIInsightsPanel({ role }: Props) {
               key={s.label}
               onClick={() => ask(s.prompt)}
               style={{
-                background: "rgba(167,139,250,0.07)",
-                border: "1px solid rgba(167,139,250,0.2)",
+                background: GOLD_DIM,
+                border: `1px solid ${GOLD_MID}`,
                 borderRadius: 999,
                 padding: "6px 14px",
                 fontSize: "0.75rem",
@@ -189,12 +209,12 @@ export default function AIInsightsPanel({ role }: Props) {
                 lineHeight: 1.4,
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = "rgba(167,139,250,0.15)";
-                e.currentTarget.style.borderColor = "rgba(167,139,250,0.4)";
+                e.currentTarget.style.background = GOLD_MID;
+                e.currentTarget.style.borderColor = GOLD_STR;
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = "rgba(167,139,250,0.07)";
-                e.currentTarget.style.borderColor = "rgba(167,139,250,0.2)";
+                e.currentTarget.style.background = GOLD_DIM;
+                e.currentTarget.style.borderColor = GOLD_MID;
               }}
             >
               {s.label}

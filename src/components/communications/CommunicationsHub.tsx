@@ -71,16 +71,15 @@ function timeAgo(iso: string) {
 }
 
 function statusBadge(status: string) {
-  const map: Record<string, { bg: string; color: string }> = {
-    SENT:      { bg: "rgba(52,211,153,0.12)", color: "#34d399" },
-    DRAFT:     { bg: "rgba(251,191,36,0.12)", color: "#fbbf24" },
-    FAILED:    { bg: "rgba(239,68,68,0.12)",  color: "#f87171" },
-    SCHEDULED: { bg: "rgba(167,139,250,0.12)", color: "#a78bfa" },
+  const toneMap: Record<string, string> = {
+    SENT: "badge-success",
+    DRAFT: "badge-warn",
+    FAILED: "badge-danger",
+    SCHEDULED: "badge-active",
   };
-  const s = map[status] ?? map.DRAFT;
+  const tone = toneMap[status] ?? "badge-muted";
   return (
-    <span style={{ fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.06em",
-      background: s.bg, color: s.color, borderRadius: 20, padding: "2px 8px" }}>
+    <span className={tone} style={{ fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.06em", borderRadius: 20, padding: "2px 8px" }}>
       {status}
     </span>
   );
@@ -323,25 +322,30 @@ export default function CommunicationsHub({ role: _role }: Props) {
 
   if (loading) {
     return (
-      <div style={{ padding: 40, textAlign: "center", color: TEXT_MUTED }}>
-        Loading communications hub…
+      <div className="nyx-shell-pad" style={{ padding: "28px 32px", maxWidth: 1200, margin: "0 auto" }}>
+        <div className="nyx-surface nyx-surface-elevated" style={{ padding: 22, display: "grid", gap: 12 }}>
+          <div className="nyx-skeleton nyx-skeleton-line" style={{ width: 210 }} />
+          <div className="nyx-skeleton nyx-skeleton-line" style={{ width: "52%" }} />
+          <div className="nyx-skeleton nyx-skeleton-block" />
+          <div className="nyx-skeleton nyx-skeleton-block" />
+        </div>
       </div>
     );
   }
 
   // ── Render ────────────────────────────────────────────────────────────────────
   return (
-    <div style={{ padding: "28px 32px", maxWidth: 1200, margin: "0 auto" }}>
+    <div className="nyx-shell-pad" style={{ padding: "28px 32px", maxWidth: 1200, margin: "0 auto" }}>
 
       {/* Page header */}
       <div style={{ marginBottom: 28 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
           <span style={{ fontSize: "1.3rem" }}>📡</span>
-          <h1 style={{ fontSize: "1.5rem", fontWeight: 900, color: TEXT, margin: 0, letterSpacing: "-0.02em" }}>
+          <h1 className="nyx-shell-title" style={{ fontSize: "1.5rem", fontWeight: 900, color: TEXT, margin: 0, letterSpacing: "-0.02em" }}>
             Communications Hub
           </h1>
         </div>
-        <p style={{ fontSize: "0.85rem", color: TEXT_MUTED, margin: 0 }}>
+        <p className="nyx-shell-subtitle" style={{ fontSize: "0.85rem", color: TEXT_MUTED, margin: 0 }}>
           Send emails, Teams messages, and internal notes, all tracked in one place.
         </p>
       </div>
@@ -476,11 +480,13 @@ export default function CommunicationsHub({ role: _role }: Props) {
       )}
 
       {/* Tab bar */}
-      <div style={{ display: "flex", gap: 4, marginBottom: 20, borderBottom: `1px solid ${BORDER}`, paddingBottom: 0 }}>
+      <div role="tablist" aria-label="Communications sections" style={{ display: "flex", gap: 4, marginBottom: 20, borderBottom: `1px solid ${BORDER}`, paddingBottom: 0 }}>
         {(["compose", "history", "templates"] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
+            role="tab"
+            aria-selected={activeTab === tab}
             style={{
               padding: "9px 18px", fontSize: "0.82rem", fontWeight: activeTab === tab ? 700 : 500,
               color: activeTab === tab ? CYAN : TEXT_MUTED,
@@ -496,10 +502,10 @@ export default function CommunicationsHub({ role: _role }: Props) {
 
       {/* ── COMPOSE TAB ───────────────────────────────────────────────────────── */}
       {activeTab === "compose" && (
-        <div className="nyx-comm-compose-grid" style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: 20, alignItems: "start" }}>
+        <div className="nyx-comm-compose-grid nyx-stage-enter" style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: 20, alignItems: "start" }}>
 
           {/* Compose form */}
-          <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 14, padding: 24 }}>
+          <div className="nyx-surface nyx-surface-elevated" style={{ padding: 24 }}>
             <div className="nyx-comm-form-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
               <div>
                 <label style={labelStyle}>To (Email)</label>
@@ -609,7 +615,7 @@ export default function CommunicationsHub({ role: _role }: Props) {
           {/* Quick actions panel */}
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {/* Channel info */}
-            <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 18 }}>
+            <div className="nyx-surface" style={{ padding: 18 }}>
               <div style={{ fontSize: "0.72rem", fontWeight: 700, color: TEXT_MUTED, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 12 }}>Channel Info</div>
               {channel === "OUTLOOK" && (
                 microsoftToken
@@ -632,7 +638,7 @@ export default function CommunicationsHub({ role: _role }: Props) {
             </div>
 
             {/* Quick prompts */}
-            <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 18 }}>
+            <div className="nyx-surface" style={{ padding: 18 }}>
               <div style={{ fontSize: "0.72rem", fontWeight: 700, color: TEXT_MUTED, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 12 }}>Quick Start</div>
               {[
                 ["Introduction", "Write 'meeting request' in subject and click AI Draft"],
@@ -656,10 +662,10 @@ export default function CommunicationsHub({ role: _role }: Props) {
             </div>
 
             {/* Recent activity */}
-            <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 18 }}>
+            <div className="nyx-surface" style={{ padding: 18 }}>
               <div style={{ fontSize: "0.72rem", fontWeight: 700, color: TEXT_MUTED, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 12 }}>Recent Activity</div>
               {logs.length === 0 ? (
-                <div style={{ fontSize: "0.78rem", color: TEXT_MUTED }}>No messages yet.</div>
+                <div className="nyx-empty-state" style={{ fontSize: "0.78rem" }}>No messages yet.</div>
               ) : (
                 logs.slice(0, 5).map((log) => (
                   <div key={log.id} style={{ marginBottom: 10, paddingBottom: 10, borderBottom: `1px solid ${BORDER}` }}>
@@ -682,9 +688,9 @@ export default function CommunicationsHub({ role: _role }: Props) {
 
       {/* ── HISTORY TAB ───────────────────────────────────────────────────────── */}
       {activeTab === "history" && (
-        <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 14, overflow: "hidden" }}>
+        <div className="nyx-surface nyx-stage-enter" style={{ overflow: "hidden" }}>
           {logs.length === 0 ? (
-            <div style={{ padding: 40, textAlign: "center", color: TEXT_MUTED }}>
+            <div className="nyx-empty-state" style={{ margin: 18 }}>
               No messages yet. Start by composing one.
             </div>
           ) : (
@@ -742,7 +748,7 @@ export default function CommunicationsHub({ role: _role }: Props) {
           </div>
 
           {showNewTemplate && (
-            <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 14, padding: 24, marginBottom: 20 }}>
+            <div className="nyx-surface nyx-stage-enter" style={{ padding: 24, marginBottom: 20 }}>
               <div style={{ fontWeight: 700, color: TEXT, marginBottom: 16, fontSize: "0.95rem" }}>New Template</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
                 <div>
@@ -779,16 +785,13 @@ export default function CommunicationsHub({ role: _role }: Props) {
           )}
 
           {templates.length === 0 ? (
-            <div style={{ textAlign: "center", padding: 40, color: TEXT_MUTED }}>
+            <div className="nyx-empty-state">
               No templates yet. Create one above or they&apos;ll be seeded on first use.
             </div>
           ) : (
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 14 }}>
               {templates.map((tpl) => (
-                <div key={tpl.id} style={{
-                  background: CARD, border: `1px solid ${BORDER}`, borderRadius: 12, padding: 18,
-                  display: "flex", flexDirection: "column", gap: 8,
-                }}>
+                <div key={tpl.id} className="nyx-surface" style={{ padding: 18, display: "flex", flexDirection: "column", gap: 8 }}>
                   <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
                     <div style={{ fontWeight: 700, fontSize: "0.88rem", color: TEXT }}>{tpl.name}</div>
                     <span style={{ fontSize: "0.65rem", background: ACCENT_DIM, color: CYAN,

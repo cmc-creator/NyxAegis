@@ -1517,15 +1517,33 @@ main, .nyx-sidebar, .nyx-table-scroll {
   }
 
   .nyx-topbar-title {
-    flex: 1;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 700;
     color: var(--nyx-text);
-    text-align: center;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    letter-spacing: 0.01em;
+  }
+
+  .nyx-topbar-center {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
     padding: 0 4px;
+  }
+
+  .nyx-topbar-kicker {
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--nyx-accent-label);
+    line-height: 1;
   }
 
   .nyx-topbar-actions {
@@ -1558,6 +1576,13 @@ main, .nyx-sidebar, .nyx-table-scroll {
     color: var(--nyx-accent);
   }
 
+  .nyx-topbar-btn:focus-visible {
+    outline: 2px solid var(--nyx-accent-str);
+    outline-offset: 2px;
+    background: var(--nyx-accent-dim);
+    color: var(--nyx-accent);
+  }
+
   /* + quick log button — accent-coloured pill */
   .nyx-topbar-log {
     background: var(--nyx-accent-dim) !important;
@@ -1585,6 +1610,17 @@ main, .nyx-sidebar, .nyx-table-scroll {
     color: var(--nyx-accent);
     flex-shrink: 0;
     user-select: none;
+  }
+
+  .nyx-sidebar-link:focus-visible {
+    outline: 2px solid var(--nyx-accent-str);
+    outline-offset: 1px;
+    background: var(--nyx-accent-dim) !important;
+    color: var(--nyx-accent) !important;
+  }
+
+  .nyx-sidebar-link[aria-current="page"] {
+    box-shadow: inset 0 0 0 1px var(--nyx-accent-mid);
   }
 
   /* On mobile, hide the old floating FABs — topbar quick-log button replaces them */
@@ -1761,6 +1797,31 @@ main, .nyx-sidebar, .nyx-table-scroll {
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
+  .nyx-comm-compose-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .nyx-comm-form-2col {
+    grid-template-columns: 1fr !important;
+  }
+
+  .nyx-cal-toolbar {
+    gap: 10px !important;
+  }
+
+  .nyx-cal-toolbar-left,
+  .nyx-cal-toolbar-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .nyx-cal-title {
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    text-align: right;
+    font-size: 0.92rem !important;
+  }
+
   /* Scorecard panel: full-width bottom sheet on mobile */
   .nyx-scorecard-panel {
     width: 100% !important;
@@ -1863,4 +1924,88 @@ main, .nyx-sidebar, .nyx-table-scroll {
     0 0 0 1px var(--nyx-border),
     0 2px 14px rgba(0,0,0,0.10);
   animation: none;
+}
+
+/* Shared panel and content utilities */
+.nyx-surface {
+  background: var(--nyx-card);
+  border: 1px solid var(--nyx-border);
+  border-radius: 12px;
+}
+
+.nyx-surface-elevated {
+  box-shadow:
+    0 0 0 1px var(--nyx-accent-dim),
+    0 10px 36px rgba(0,0,0,0.3);
+}
+
+.nyx-empty-state {
+  border: 1px dashed var(--nyx-border);
+  border-radius: 12px;
+  padding: 28px;
+  text-align: center;
+  color: var(--nyx-text-muted);
+  background: linear-gradient(180deg, var(--nyx-accent-dim), transparent 65%);
+}
+
+@keyframes nyx-skeleton-sweep {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+.nyx-skeleton {
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--nyx-accent-dim) 20%, var(--nyx-accent-mid) 40%, var(--nyx-accent-dim) 60%);
+  background-size: 220% 100%;
+  animation: nyx-skeleton-sweep 1.4s ease-in-out infinite;
+}
+
+.nyx-skeleton-line {
+  height: 11px;
+}
+
+.nyx-skeleton-block {
+  height: 76px;
+}
+
+.nyx-stage-enter {
+  animation: page-fade-in 220ms ease-out both;
+}
+
+.nyx-status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+  background: currentColor;
+  box-shadow: 0 0 8px color-mix(in srgb, currentColor 35%, transparent);
+}
+
+@media (max-width: 768px) {
+  .nyx-shell-pad {
+    padding: 18px 14px !important;
+  }
+
+  .nyx-shell-title {
+    font-size: 1.18rem !important;
+  }
+
+  .nyx-shell-subtitle {
+    font-size: 0.8rem !important;
+    line-height: 1.45 !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

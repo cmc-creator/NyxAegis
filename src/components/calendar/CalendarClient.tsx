@@ -252,11 +252,15 @@ function ActivityModal({ activity, defaultDate, hospitals, reps, onSave, onDelet
 
   return (
     <div
-      style={{ position:"fixed", inset:0, background:"var(--nyx-bg)", zIndex:1000,
+      style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.68)", zIndex:1000,
                display:"flex", alignItems:"center", justifyContent:"center", padding:16 }}
       onClick={onClose}
     >
       <div
+        className="nyx-surface nyx-stage-enter"
+        role="dialog"
+        aria-modal="true"
+        aria-label={isNew ? "Add activity" : "Edit activity"}
         style={{ background:"var(--nyx-bg)", border:"1px solid var(--nyx-accent-str)", borderRadius:16,
                  padding:"28px 28px 24px", width:"100%", maxWidth:500, maxHeight:"92vh", overflowY:"auto" }}
         onClick={e => e.stopPropagation()}
@@ -361,9 +365,9 @@ function ActivityModal({ activity, defaultDate, hospitals, reps, onSave, onDelet
             </div>
             <span style={{ fontSize:"0.85rem", color:C.muted }}>
               Sync to Outlook / Google Calendar&nbsp;
-              {syncStatus === "syncing" && <span style={{ color:"#fbbf24" }}>syncing…</span>}
-              {syncStatus === "done"    && <span style={{ color:"#34d399" }}>✓ synced</span>}
-              {syncStatus === "error"   && <span style={{ color:"#f87171" }}>⚠ no calendar connected</span>}
+              {syncStatus === "syncing" && <span className="badge-warn" style={{ marginLeft: 6, borderRadius: 999, padding: "2px 7px", fontSize: "0.67rem" }}>syncing...</span>}
+              {syncStatus === "done"    && <span className="badge-success" style={{ marginLeft: 6, borderRadius: 999, padding: "2px 7px", fontSize: "0.67rem" }}>synced</span>}
+              {syncStatus === "error"   && <span className="badge-danger" style={{ marginLeft: 6, borderRadius: 999, padding: "2px 7px", fontSize: "0.67rem" }}>no calendar connected</span>}
             </span>
           </label>
         </div>
@@ -666,8 +670,7 @@ function ListView({
   return (
     <div>
       {upcoming.length === 0 && past.length === 0 && unscheduled.length === 0 && (
-        <div style={{ background:C.card, border:`1px solid ${C.border}`, borderRadius:12,
-                      padding:40, textAlign:"center", color:C.muted, fontSize:"0.875rem" }}>
+        <div className="nyx-empty-state" style={{ fontSize:"0.875rem" }}>
           No activities yet. Click + Add Activity to get started.
         </div>
       )}
@@ -833,6 +836,7 @@ export default function CalendarClient({
 
   return (
     <div
+      className="nyx-surface nyx-stage-enter"
       style={{
         background: "var(--nyx-card)",
         border: "1px solid var(--nyx-accent-str)",
@@ -842,17 +846,17 @@ export default function CalendarClient({
       }}
     >
       {/* ── Toolbar ── */}
-      <div style={{ display:"flex", flexWrap:"wrap", gap:12, alignItems:"center", marginBottom:20, justifyContent:"space-between" }}>
+      <div className="nyx-cal-toolbar" style={{ display:"flex", flexWrap:"wrap", gap:12, alignItems:"center", marginBottom:20, justifyContent:"space-between" }}>
 
         {/* Left: date nav */}
-        <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+        <div className="nyx-cal-toolbar-left" style={{ display:"flex", alignItems:"center", gap:8 }}>
           <button onClick={prev} style={btnBase}>◀</button>
           <button onClick={today}
             style={{ ...btnBase, borderColor:"var(--nyx-accent-str)", color:C.cyan }}>
             Today
           </button>
           <button onClick={next} style={btnBase}>▶</button>
-          <span style={{ fontSize:"1rem", fontWeight:800, color:C.text, marginLeft:8, minWidth:200 }}>
+          <span className="nyx-cal-title" style={{ fontSize:"1rem", fontWeight:800, color:C.text, marginLeft:8, minWidth:200 }}>
             {getTitle()}
           </span>
         </div>
@@ -875,9 +879,9 @@ export default function CalendarClient({
         </div>
 
         {/* Right: today count + add */}
-        <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+        <div className="nyx-cal-toolbar-right" style={{ display:"flex", alignItems:"center", gap:10 }}>
           {todayCount > 0 && (
-            <span style={{ fontSize:"0.72rem", color:C.cyan, background:"var(--nyx-accent-dim)",
+            <span className="badge-active" style={{ fontSize:"0.72rem", color:C.cyan, background:"var(--nyx-accent-dim)",
                            border:`1px solid var(--nyx-accent-str)`, borderRadius:6,
                            padding:"4px 10px", fontWeight:700 }}>
               {todayCount} today
@@ -894,8 +898,10 @@ export default function CalendarClient({
 
       {/* ── Loading ── */}
       {loading && (
-        <div style={{ textAlign:"center", color:C.muted, padding:40, fontSize:"0.875rem" }}>
-          Loading activities…
+        <div style={{ padding: 16, display: "grid", gap: 10 }}>
+          <div className="nyx-skeleton nyx-skeleton-line" style={{ width: 160 }} />
+          <div className="nyx-skeleton nyx-skeleton-block" />
+          <div className="nyx-skeleton nyx-skeleton-block" />
         </div>
       )}
 

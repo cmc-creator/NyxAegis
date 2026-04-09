@@ -34,6 +34,26 @@ export default function QuickLogWidget({ repId, role }: { repId?: string; role: 
     return () => window.removeEventListener("aegis:open-quicklog", handler);
   }, [role]);
 
+  useEffect(() => {
+    if (!open) return;
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setOpen(false);
+      setStep("type");
+      setType("");
+      setTitle("");
+      setNotes("");
+      setSaved(false);
+    };
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onEscape);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener("keydown", onEscape);
+    };
+  }, [open]);
+
   if (role === "ACCOUNT") return null;
 
   const reset = () => { setStep("type"); setType(""); setTitle(""); setNotes(""); setSaved(false); };
@@ -68,6 +88,7 @@ export default function QuickLogWidget({ repId, role }: { repId?: string; role: 
       <button
         onClick={() => setOpen(true)}
         title="Quick log activity"
+        aria-label="Open quick log"
         className="nyx-fab-quicklog"
         style={{
           position: "fixed", bottom: 92, right: 24, zIndex: 500,
@@ -93,8 +114,11 @@ export default function QuickLogWidget({ repId, role }: { repId?: string; role: 
         >
           <div
             onClick={e => e.stopPropagation()}
-            className="nyx-quicklog-panel"
-            style={{ margin: "0 24px 24px 0", width: "min(360px, calc(100vw - 32px))", background: "var(--nyx-card)", border: "1px solid var(--nyx-accent-str)", borderRadius: 16, overflow: "hidden", boxShadow: "0 20px 80px rgba(0,0,0,0.6)" }}
+            className="nyx-quicklog-panel nyx-surface nyx-surface-elevated nyx-stage-enter"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Quick log activity"
+            style={{ margin: "0 24px 24px 0", width: "min(360px, calc(100vw - 32px))", borderColor: "var(--nyx-accent-str)", overflow: "hidden", boxShadow: "0 20px 80px rgba(0,0,0,0.6)" }}
           >
             {/* Header */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 18px", borderBottom: "1px solid var(--nyx-accent-dim)" }}>
@@ -102,11 +126,11 @@ export default function QuickLogWidget({ repId, role }: { repId?: string; role: 
                 <p style={{ fontSize: "0.62rem", fontWeight: 700, color: "var(--nyx-accent-label)", letterSpacing: "0.12em", textTransform: "uppercase" }}>QUICK LOG</p>
                 <p style={{ fontWeight: 700, color: "var(--nyx-text)", fontSize: "0.95rem" }}>Log Activity</p>
               </div>
-              <button onClick={close} style={{ background: "none", border: "none", color: "var(--nyx-text-muted)", cursor: "pointer", fontSize: "1.2rem", lineHeight: 1 }}>×</button>
+              <button onClick={close} aria-label="Close quick log" style={{ background: "none", border: "none", color: "var(--nyx-text-muted)", cursor: "pointer", fontSize: "1.2rem", lineHeight: 1 }}>×</button>
             </div>
 
             {saved ? (
-              <div style={{ padding: 32, textAlign: "center", color: "#34d399", fontSize: "1.5rem" }}>✓ Logged!</div>
+              <div className="nyx-stage-enter" style={{ padding: 32, textAlign: "center", color: "#34d399", fontSize: "1.5rem" }}>✓ Logged!</div>
             ) : step === "type" ? (
               <div style={{ padding: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                 {ACTIVITY_TYPES.map(a => (
