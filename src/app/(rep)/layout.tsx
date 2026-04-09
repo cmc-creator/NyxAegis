@@ -15,7 +15,7 @@ export default async function RepLayout({ children }: { children: React.ReactNod
   if (!session || (session.user.role !== "REP" && session.user.role !== "ADMIN")) redirect("/login");
 
   return (
-    <div className="flex min-h-screen" style={{ color: "var(--nyx-text)" }}>
+    <div className="flex h-screen" style={{ color: "var(--nyx-text)" }}>
       <MobileTopBar role="REP" userName={session.user.name ?? ""} />
       <Sidebar role="REP" userName={session.user.name} userEmail={session.user.email} />
       <main className="flex-1 min-w-0 overflow-x-hidden overflow-y-auto" style={{ background: "var(--nyx-bg-scrim, var(--nyx-bg))" }}>
