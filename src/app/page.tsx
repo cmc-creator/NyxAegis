@@ -121,6 +121,7 @@ export default function LandingPage() {
     <div style={{ background: C.bg, color: C.text, fontFamily: "'Inter', system-ui, -apple-system, sans-serif", minHeight: "100dvh", overflowX: "hidden", overflowY: "auto", position: "relative" }}>
 
       <a
+        className="lp-skip-link"
         href="#main-content"
         style={{
           position: "absolute",
@@ -134,6 +135,7 @@ export default function LandingPage() {
           padding: "8px 12px",
           borderRadius: 8,
           transform: "translateY(-150%)",
+          transition: "transform 0.15s ease",
         }}
       >
         Skip to main content
@@ -141,6 +143,13 @@ export default function LandingPage() {
 
       {/* -- Mobile styles injected directly � no external CSS dependency -- */}
       <style>{`
+        .lp-skip-link:focus,
+        .lp-skip-link:focus-visible {
+          transform: translateY(0) !important;
+          outline: 2px solid #ffffff;
+          outline-offset: 2px;
+        }
+
         @media (max-width: 768px) {
           .lp-nav-hide    { display: none !important; }
           .lp-hero-grid   { grid-template-columns: 1fr !important; }
