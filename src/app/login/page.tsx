@@ -129,30 +129,34 @@ function LoginForm() {
           </div>
 
           {error && (
-            <div style={{ background: "rgba(127,29,29,0.28)", border: "1px solid rgba(248,113,113,0.22)", borderRadius: 14, padding: "13px 16px", marginBottom: 20, fontSize: "0.9rem", color: "#fca5a5", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)" }}>
+            <div role="alert" aria-live="polite" style={{ background: "rgba(127,29,29,0.28)", border: "1px solid rgba(248,113,113,0.22)", borderRadius: 14, padding: "13px 16px", marginBottom: 20, fontSize: "0.9rem", color: "#fca5a5", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)" }}>
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
             <div>
-              <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 800, color: FORM_LABEL, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: 10 }}>Email Address</label>
+              <label htmlFor="login-email" style={{ display: "block", fontSize: "0.72rem", fontWeight: 800, color: FORM_LABEL, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: 10 }}>Email Address</label>
               <input
+                id="login-email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                autoComplete="email"
                 placeholder="admin@nyxaegis.com"
                 style={{ width: "100%", background: "linear-gradient(180deg, rgba(255,255,255,0.3), rgba(255,255,255,0.14))", border: "1px solid rgba(116,80,18,0.22)", borderRadius: 16, padding: "15px 16px", color: FORM_TEXT, fontSize: "0.95rem", outline: "none", boxSizing: "border-box", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.35)" }}
               />
             </div>
             <div>
-              <label style={{ display: "block", fontSize: "0.72rem", fontWeight: 800, color: FORM_LABEL, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: 10 }}>Password</label>
+              <label htmlFor="login-password" style={{ display: "block", fontSize: "0.72rem", fontWeight: 800, color: FORM_LABEL, letterSpacing: "0.16em", textTransform: "uppercase", marginBottom: 10 }}>Password</label>
               <input
+                id="login-password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                autoComplete="current-password"
                 placeholder="••••••••"
                 style={{ width: "100%", background: "linear-gradient(180deg, rgba(255,255,255,0.3), rgba(255,255,255,0.14))", border: "1px solid rgba(116,80,18,0.22)", borderRadius: 16, padding: "15px 16px", color: FORM_TEXT, fontSize: "0.95rem", outline: "none", boxSizing: "border-box", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.35)" }}
               />

@@ -120,6 +120,25 @@ export default function LandingPage() {
   return (
     <div style={{ background: C.bg, color: C.text, fontFamily: "'Inter', system-ui, -apple-system, sans-serif", minHeight: "100dvh", overflowX: "hidden", overflowY: "auto", position: "relative" }}>
 
+      <a
+        href="#main-content"
+        style={{
+          position: "absolute",
+          left: 12,
+          top: 8,
+          zIndex: 100,
+          background: "var(--nyx-accent)",
+          color: "#000",
+          fontWeight: 800,
+          textDecoration: "none",
+          padding: "8px 12px",
+          borderRadius: 8,
+          transform: "translateY(-150%)",
+        }}
+      >
+        Skip to main content
+      </a>
+
       {/* -- Mobile styles injected directly � no external CSS dependency -- */}
       <style>{`
         @media (max-width: 768px) {
@@ -147,7 +166,7 @@ export default function LandingPage() {
       </div>
 
       {/* NAV */}
-      <nav style={{ position: "sticky", top: 0, zIndex: 50, borderBottom: `1px solid ${C.border}`, padding: "0 clamp(1rem, 4vw, 2rem)", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64, background: "color-mix(in srgb, var(--nyx-bg) 85%, transparent)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", gap: 8 }}>
+      <nav aria-label="Primary" style={{ position: "sticky", top: 0, zIndex: 50, borderBottom: `1px solid ${C.border}`, padding: "0 clamp(1rem, 4vw, 2rem)", display: "flex", alignItems: "center", justifyContent: "space-between", height: 64, background: "color-mix(in srgb, var(--nyx-bg) 85%, transparent)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", gap: 8 }}>
         <span style={{ fontWeight: 900, fontSize: "1.1rem", letterSpacing: "-0.03em", whiteSpace: "nowrap", flexShrink: 0 }}>NyxAegis<sup style={{ fontSize: "0.6em", verticalAlign: "super", marginLeft: 1, color: "var(--nyx-accent)" }}>&reg;</sup></span>
         <div style={{ display: "flex", gap: "1rem", alignItems: "center", flexShrink: 0 }}>
           {/* Features + Pricing � hidden on mobile via CSS */}
@@ -160,6 +179,8 @@ export default function LandingPage() {
           <Link href="/signup" style={{ background: "var(--nyx-accent)", color: "#000", padding: "8px 18px", borderRadius: 8, fontWeight: 800, textDecoration: "none", fontSize: "0.85rem", boxShadow: "0 0 20px var(--nyx-accent-str)", whiteSpace: "nowrap" }}>Get Started</Link>
         </div>
       </nav>
+
+      <main id="main-content" tabIndex={-1}>
 
       {/* HERO */}
       <section className="lp-hero-sec lp-section" style={{ position: "relative", zIndex: 1, padding: "100px 2rem 0", maxWidth: 1400, margin: "0 auto" }}>
@@ -417,7 +438,7 @@ export default function LandingPage() {
                     </li>
                   ))}
                 </ul>
-                <Link href={p.name === "Enterprise" ? "/contact" : "/signup"} style={{ display: "block", textAlign: "center", background: p.highlight ? "var(--nyx-accent)" : "rgba(255,255,255,0.05)", color: p.highlight ? "#000" : C.text, padding: "13px", borderRadius: 10, fontWeight: 700, textDecoration: "none", fontSize: "0.88rem", border: p.highlight ? "none" : `1px solid ${C.border}`, boxShadow: p.highlight ? "0 0 24px var(--nyx-accent-str)" : "none" }}>
+                <Link href={p.name === "Enterprise" ? "mailto:ops@nyxaegis.com?subject=NyxAegis%20Enterprise%20Pricing" : "/signup"} aria-label={p.name === "Enterprise" ? "Contact sales by email for enterprise pricing" : "Start free trial"} style={{ display: "block", textAlign: "center", background: p.highlight ? "var(--nyx-accent)" : "rgba(255,255,255,0.05)", color: p.highlight ? "#000" : C.text, padding: "13px", borderRadius: 10, fontWeight: 700, textDecoration: "none", fontSize: "0.88rem", border: p.highlight ? "none" : `1px solid ${C.border}`, boxShadow: p.highlight ? "0 0 24px var(--nyx-accent-str)" : "none" }}>
                   {p.cta}
                 </Link>
               </div>
@@ -442,6 +463,7 @@ export default function LandingPage() {
           </Link>
         </div>
       </section>
+      </main>
 
       {/* FOOTER */}
       <footer className="lp-footer" style={{ position: "relative", zIndex: 1, borderTop: `1px solid ${C.border}`, padding: "48px 2rem 32px" }}>

@@ -65,6 +65,8 @@ export default function SignupPage() {
                 key={r}
                 type="button"
                 onClick={() => setRole(r)}
+                aria-pressed={role === r}
+                aria-label={r === "ACCOUNT" ? "Select hospital account role" : "Select BD rep role"}
                 style={{ flex: 1, padding: "9px", borderRadius: 8, border: "none", cursor: "pointer", fontWeight: 700, fontSize: "0.85rem", background: role === r ? CYAN : "transparent", color: role === r ? BG : "rgba(216,232,244,0.5)", transition: "all 0.2s" }}
               >
                 {r === "ACCOUNT" ? "🏥 Hospital" : "🤝 BD Rep"}
@@ -73,33 +75,33 @@ export default function SignupPage() {
           </div>
 
           {error && (
-            <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 8, padding: "10px 14px", marginBottom: 20, fontSize: "0.875rem", color: "#f87171" }}>{error}</div>
+            <div role="alert" aria-live="polite" style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 8, padding: "10px 14px", marginBottom: 20, fontSize: "0.875rem", color: "#f87171" }}>{error}</div>
           )}
 
           <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <div>
-              <label style={labelStyle}>Full Name</label>
-              <input type="text" required value={form.name} onChange={e => update("name", e.target.value)} placeholder="Dr. Jane Smith" style={inputStyle} />
+              <label htmlFor="signup-name" style={labelStyle}>Full Name</label>
+              <input id="signup-name" type="text" required autoComplete="name" value={form.name} onChange={e => update("name", e.target.value)} placeholder="Dr. Jane Smith" style={inputStyle} />
             </div>
             <div>
-              <label style={labelStyle}>Work Email</label>
-              <input type="email" required value={form.email} onChange={e => update("email", e.target.value)} placeholder="jane@hospital.com" style={inputStyle} />
+              <label htmlFor="signup-email" style={labelStyle}>Work Email</label>
+              <input id="signup-email" type="email" required autoComplete="email" value={form.email} onChange={e => update("email", e.target.value)} placeholder="jane@hospital.com" style={inputStyle} />
             </div>
             {role === "ACCOUNT" && (
               <div>
-                <label style={labelStyle}>Hospital / Organization Name</label>
-                <input type="text" value={form.hospitalName} onChange={e => update("hospitalName", e.target.value)} placeholder="Nashville General Medical Center" style={inputStyle} />
+                <label htmlFor="signup-hospital" style={labelStyle}>Hospital / Organization Name</label>
+                <input id="signup-hospital" type="text" autoComplete="organization" value={form.hospitalName} onChange={e => update("hospitalName", e.target.value)} placeholder="Nashville General Medical Center" style={inputStyle} />
               </div>
             )}
             {role === "REP" && (
               <div>
-                <label style={labelStyle}>Your Title</label>
-                <input type="text" value={form.repTitle} onChange={e => update("repTitle", e.target.value)} placeholder="Account Executive" style={inputStyle} />
+                <label htmlFor="signup-title" style={labelStyle}>Your Title</label>
+                <input id="signup-title" type="text" autoComplete="organization-title" value={form.repTitle} onChange={e => update("repTitle", e.target.value)} placeholder="Account Executive" style={inputStyle} />
               </div>
             )}
             <div>
-              <label style={labelStyle}>Password</label>
-              <input type="password" required minLength={8} value={form.password} onChange={e => update("password", e.target.value)} placeholder="At least 8 characters" style={inputStyle} />
+              <label htmlFor="signup-password" style={labelStyle}>Password</label>
+              <input id="signup-password" type="password" required minLength={8} autoComplete="new-password" value={form.password} onChange={e => update("password", e.target.value)} placeholder="At least 8 characters" style={inputStyle} />
             </div>
             <button
               type="submit"
