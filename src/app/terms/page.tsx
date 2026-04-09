@@ -173,7 +173,7 @@ export default function TermsPage() {
               </a>
             ))}
           </div>
-        </div>
+        </section>
 
         <section style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {sections.map((section) => (
