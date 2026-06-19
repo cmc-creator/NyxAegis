@@ -19,12 +19,24 @@ type MapHospital = {
   status: string; assignedRepName?: string | null;
 };
 type MapRep = { id: string; name: string; color: string; states: string[] };
+type OverdueMapHospital = {
+  id: string; hospitalName: string; city?: string | null; state?: string | null;
+  status: string; daysSinceActivity: number | null;
+  contacts: Array<{ name: string; title?: string | null }>;
+};
 
 export default function TerritoryMapWrapper({
-  hospitals, repTerritories,
+  hospitals, repTerritories, overdueHospitals,
 }: {
   hospitals: MapHospital[];
   repTerritories: MapRep[];
+  overdueHospitals?: OverdueMapHospital[];
 }) {
-  return <TerritoryMapClient hospitals={hospitals} repTerritories={repTerritories} />;
+  return (
+    <TerritoryMapClient
+      hospitals={hospitals}
+      repTerritories={repTerritories}
+      overdueHospitals={overdueHospitals}
+    />
+  );
 }

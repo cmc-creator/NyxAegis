@@ -24,10 +24,16 @@ interface MapHospital {
 interface MapRep {
   id: string; name: string; color: string; states: string[];
 }
+interface OverdueMapHospital {
+  id: string; hospitalName: string; city?: string | null; state?: string | null;
+  status: string; daysSinceActivity: number | null;
+  contacts: Array<{ name: string; title?: string | null }>;
+}
 
 interface Props {
   hospitals: MapHospital[];
   repTerritories: MapRep[];
+  overdueHospitals?: OverdueMapHospital[];
 }
 
 const STATUS_CLR: Record<string, string> = {
@@ -41,7 +47,7 @@ function jitter(seed: number, range: number) {
   return ((a - Math.floor(a)) - 0.5) * range * 2;
 }
 
-export default function TerritoryMapClient({ hospitals, repTerritories }: Props) {
+export default function TerritoryMapClient({ hospitals, repTerritories, overdueHospitals = [] }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<unknown>(null);
 
@@ -67,6 +73,21 @@ export default function TerritoryMapClient({ hospitals, repTerritories }: Props)
         scrollWheelZoom: true,
         zoomControl: true,
       });
+
+      // Inject pulse animation for overdue markers
+      if (!document.getElementById("nyx-overdue-style")) {
+        const style = document.createElement("style");
+        style.id = "nyx-overdue-style";
+        style.textContent = `
+          @keyframes nyx-overdue-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(251,146,60,0.7), 0 0 8px rgba(251,146,60,0.5); }
+            70% { box-shadow: 0 0 0 8px rgba(251,146,60,0), 0 0 8px rgba(251,146,60,0.3); }
+            100% { box-shadow: 0 0 0 0 rgba(251,146,60,0), 0 0 8px rgba(251,146,60,0.5); }
+          }
+          .nyx-overdue-marker { animation: nyx-overdue-pulse 2s ease-out infinite; }
+        `;
+        document.head.appendChild(style);
+      }
 
       // Dark tile layer using CartoDB Dark Matter
       L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
@@ -137,6 +158,54 @@ export default function TerritoryMapClient({ hospitals, repTerritories }: Props)
           `, { maxWidth: 250 });
       });
 
+      // Overdue hospital markers (pulsing amber)
+      const overdueStateCounts = new Map<string, number>();
+      overdueHospitals.forEach((h, idx) => {
+        const state = h.state ?? "";
+        const center = STATE_CENTERS[state];
+        if (!center) return;
+
+        const lat = center[0] + jitter(idx * 7 + 2, 0.55);
+        const lng = center[1] + jitter(idx * 7 + 3, 0.75);
+        overdueStateCounts.set(state, (overdueStateCounts.get(state) ?? 0) + 1);
+
+        const overdueIcon = L.divIcon({
+          className: "",
+          html: `<div class="nyx-overdue-marker" style="
+            width:15px;height:15px;border-radius:50%;
+            background:#fb923c;
+            border:2px solid rgba(255,255,255,0.9);
+            cursor:pointer;
+          "></div>`,
+          iconSize: [15, 15],
+          iconAnchor: [7, 7],
+        });
+
+        const contactHtml = h.contacts.length
+          ? h.contacts.slice(0, 3).map(c => `<div style="font-size:0.75rem;color:#fb923c;margin-top:2px">${c.name}${c.title ? ` <span style="color:#888;font-weight:400">(${c.title})</span>` : ""}</div>`).join("")
+          : `<div style="font-size:0.75rem;color:#888;margin-top:2px">No contacts on file</div>`;
+
+        L.marker([lat, lng], { icon: overdueIcon })
+          .addTo(map)
+          .bindPopup(`
+            <div style="min-width:190px;line-height:1.6">
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#fb923c;flex-shrink:0"></span>
+                <span style="font-weight:800;font-size:0.9rem">${h.hospitalName}</span>
+              </div>
+              <div style="font-size:0.78rem;color:#666">${h.city ?? ""}${h.city && h.state ? ", " : ""}${h.state ?? ""}</div>
+              <div style="margin-top:6px;font-size:0.78rem;font-weight:700;color:#fb923c">
+                ${h.daysSinceActivity != null ? `No contact in ${h.daysSinceActivity} days` : "Never contacted"}
+              </div>
+              <div style="margin-top:6px;font-size:0.7rem;font-weight:700;text-transform:uppercase;color:#888">Status: ${h.status}</div>
+              <div style="margin-top:8px;border-top:1px solid #333;padding-top:8px">
+                <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#888;margin-bottom:4px">Contacts</div>
+                ${contactHtml}
+              </div>
+            </div>
+          `, { maxWidth: 260 });
+      });
+
       // Legend
       const LegendControl = L.Control.extend({
         onAdd() {
@@ -149,6 +218,11 @@ export default function TerritoryMapClient({ hospitals, repTerritories }: Props)
                 <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${c}"></span>${s}
               </div>`
             ).join("")}
+            <div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.08)">
+              <div style="display:flex;align-items:center;gap:6px">
+                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#fb923c"></span>Overdue 30d+
+              </div>
+            </div>
           `;
           return div;
         },
