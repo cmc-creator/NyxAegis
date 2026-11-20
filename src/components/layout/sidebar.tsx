@@ -89,6 +89,8 @@ const ADMIN_NAV: NavGroup[] = [
       { href: "/admin/dashboard",      label: "Dashboard" },
       { href: "/admin/notifications",  label: "Notifications" },
       { href: "/admin/calendar",       label: "Calendar" },
+      { href: "/admin/tasks",          label: "Tasks" },
+      { href: "/admin/messages",       label: "Messages" },
     ],
   },
   {
@@ -118,6 +120,9 @@ const ADMIN_NAV: NavGroup[] = [
       { href: "/admin/reps",           label: "BD Reps" },
       { href: "/admin/communications", label: "Communications" },
       { href: "/admin/compliance",     label: "Compliance" },
+      { href: "/admin/reps/performance", label: "Rep Performance" },
+      { href: "/admin/leaderboard",    label: "Leaderboard" },
+      { href: "/admin/activities",     label: "Activities" },
     ],
   },
   {
@@ -125,6 +130,7 @@ const ADMIN_NAV: NavGroup[] = [
     items: [
       { href: "/admin/invoices",   label: "Invoices" },
       { href: "/admin/contracts",  label: "Contracts" },
+      { href: "/admin/billing",    label: "Billing" },
     ],
   },
   {
@@ -140,6 +146,9 @@ const ADMIN_NAV: NavGroup[] = [
     items: [
       { href: "/admin/integrations", label: "Integrations" },
       { href: "/admin/settings",     label: "Settings" },
+      { href: "/admin/users",        label: "Users" },
+      { href: "/admin/import",       label: "Import" },
+      { href: "/admin/resources",    label: "Resources" },
     ],
   },
 ];
@@ -152,24 +161,34 @@ const REP_NAV: NavGroup[] = [
       { href: "/rep/dashboard",     label: "Dashboard" },
       { href: "/rep/opportunities", label: "My Opportunities" },
       { href: "/rep/territory",     label: "My Territory" },
+      { href: "/rep/tasks",         label: "My Tasks" },
+      { href: "/rep/leaderboard",   label: "Leaderboard" },
     ],
   },
   {
     group: "Outreach", tint: "orange",
     items: [
       { href: "/rep/communications", label: "Communications" },
+      { href: "/rep/contacts",       label: "Contacts" },
+      { href: "/rep/referrals",      label: "Referrals" },
+      { href: "/rep/activities",     label: "Activities" },
+      { href: "/rep/messages",       label: "Messages" },
+      { href: "/rep/notifications",  label: "Notifications" },
+      { href: "/rep/intel",          label: "Competitor Intel" },
     ],
   },
   {
     group: "Files", tint: "blue",
     items: [
       { href: "/rep/documents", label: "Documents" },
+      { href: "/rep/resources", label: "Resources" },
     ],
   },
   {
     group: "Finance", tint: "purple",
     items: [
       { href: "/rep/payments", label: "Payments" },
+      { href: "/rep/settings", label: "Settings" },
     ],
   },
 ];
@@ -180,6 +199,8 @@ const ACCOUNT_NAV: NavGroup[] = [
     items: [
       { href: "/account/dashboard",    label: "Dashboard" },
       { href: "/account/engagements",  label: "Engagements" },
+      { href: "/account/documents",   label: "Documents" },
+      { href: "/account/settings",    label: "Settings" },
     ],
   },
   {
