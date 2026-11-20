@@ -1,0 +1,1542 @@
+import { NextRequest, NextResponse } from "next/server";
+import { randomUUID } from "crypto";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
+import ExcelJS from "exceljs";
+import Papa from "papaparse";
+
+export const maxDuration = 60;
+const MAX_IMPORT_BYTES = 8 * 1024 * 1024;
+
+type ParsedSheet = {
+  rows: Record<string, unknown>[];
+  columns: string[];
+};
+
+type DuplicateMode = "skip" | "update";
+
+type PreviewSample = { action: "create" | "update" | "skip"; reason?: string; fields: Record<string, string> };
+const MAX_PREVIEW = 10;
+
+// ─── column alias maps ─────────────────────────────────────────────────────────
+
+function normalizeKey(v: string): string {
+  return v.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function hasValue(v: unknown): boolean {
+  if (v === undefined || v === null) return false;
+  const s = String(v).trim();
+  return s !== "" && s !== "undefined" && s !== "null";
+}
+
+function col(row: Record<string, unknown>, ...keys: string[]): string {
+  const normalized = Object.entries(row).map(([k, v]) => ({ k, nk: normalizeKey(k), v }));
+  for (const k of keys) {
+    const direct = row[k];
+    if (hasValue(direct)) return String(direct).trim();
+
+    const nk = normalizeKey(k);
+    const found = normalized.find((entry) => entry.nk === nk && hasValue(entry.v));
+    if (found) {
+      return String(found.v).trim();
+    }
+  }
+  return "";
+}
+
+function colByHeaderToken(row: Record<string, unknown>, ...tokens: string[]): string {
+  const normalizedTokens = tokens.map((t) => normalizeKey(t));
+  for (const [header, value] of Object.entries(row)) {
+    if (!hasValue(value)) continue;
+    const key = normalizeKey(header);
+    if (normalizedTokens.some((t) => key.includes(t))) {
+      return String(value).trim();
+    }
+  }
+  return "";
+}
+
+function firstMeaningfulValue(row: Record<string, unknown>): string {
+  const firstEntry = Object.entries(row).find(([, v]) => hasValue(v) && String(v).trim().length > 1);
+  return firstEntry ? String(firstEntry[1]).trim() : "";
+}
+
+function normalizeMondayCellText(value: string): string {
+  let out = String(value ?? "").trim();
+  if (!out) return "";
+
+  // Monday linked/board columns sometimes export as JSON-like strings.
+  if ((out.startsWith("{") && out.endsWith("}")) || (out.startsWith("[") && out.endsWith("]"))) {
+    try {
+      const parsed = JSON.parse(out) as unknown;
+      if (typeof parsed === "string") return parsed.trim();
+      if (Array.isArray(parsed)) {
+        const firstText = parsed.find((v) => typeof v === "string" && v.trim()) as string | undefined;
+        if (firstText) return firstText.trim();
+      }
+      if (parsed && typeof parsed === "object") {
+        const obj = parsed as Record<string, unknown>;
+        const fromText = [obj.text, obj.label, obj.name, obj.display_value, obj.title].find((v) => typeof v === "string" && String(v).trim()) as string | undefined;
+        if (fromText) return fromText.trim();
+      }
+    } catch {
+      // leave original value
+    }
+  }
+
+  // Trim leading emoji/symbol noise and common separators that appear in exports.
+  out = out.replace(/^[^A-Za-z0-9]+/, "").replace(/^[-:|]+\s*/, "").trim();
+  return out;
+}
+
+function toFlatStringSet(value: unknown, out = new Set<string>()): Set<string> {
+  if (value === null || value === undefined) return out;
+  if (typeof value === "string") {
+    const v = value.trim();
+    if (v) out.add(v);
+    if ((v.startsWith("{") && v.endsWith("}")) || (v.startsWith("[") && v.endsWith("]"))) {
+      try {
+        const parsed = JSON.parse(v) as unknown;
+        toFlatStringSet(parsed, out);
+      } catch {
+        // keep raw value only
+      }
+    }
+    return out;
+  }
+  if (typeof value === "number" || typeof value === "boolean") {
+    out.add(String(value));
+    return out;
+  }
+  if (Array.isArray(value)) {
+    for (const item of value) toFlatStringSet(item, out);
+    return out;
+  }
+  if (typeof value === "object") {
+    const obj = value as Record<string, unknown>;
+    const priorityKeys = ["text", "label", "name", "title", "display_value", "value", "person", "owner"];
+    for (const key of priorityKeys) {
+      if (key in obj) toFlatStringSet(obj[key], out);
+    }
+    for (const val of Object.values(obj)) {
+      toFlatStringSet(val, out);
+    }
+  }
+  return out;
+}
+
+function normalizedName(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function extractCandidateNames(raw: unknown): string[] {
+  const values = Array.from(toFlatStringSet(raw));
+  const split: string[] = [];
+  for (const value of values) {
+    const normalized = normalizeMondayCellText(value);
+    if (!normalized) continue;
+    const chunks = normalized.split(/,|;|\||\n|\s+&\s+/g).map((c) => c.trim()).filter(Boolean);
+    split.push(...(chunks.length ? chunks : [normalized]));
+  }
+  const unique = new Map<string, string>();
+  for (const item of split) {
+    const norm = normalizedName(item);
+    if (!norm || norm.length < 2) continue;
+    if (!unique.has(norm)) unique.set(norm, item);
+  }
+  return Array.from(unique.values());
+}
+
+// Excel serial date: serial 25569 = Jan 1 1970 (Unix epoch).
+function excelSerialToDate(serial: number): Date | undefined {
+  if (!Number.isFinite(serial) || serial < 1) return undefined;
+  const date = new Date((serial - 25569) * 86_400_000);
+  return Number.isNaN(date.getTime()) ? undefined : date;
+}
+
+function parseSpreadsheetDate(value: unknown): Date | undefined {
+  if (value instanceof Date) {
+    return Number.isNaN(value.getTime()) ? undefined : value;
+  }
+
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return excelSerialToDate(value);
+  }
+
+  const raw = String(value ?? "").trim();
+  if (!raw) return undefined;
+
+  const asNumber = Number(raw);
+  if (Number.isFinite(asNumber) && asNumber > 20000) {
+    return excelSerialToDate(asNumber);
+  }
+
+  const parsedDate = new Date(raw);
+  return Number.isNaN(parsedDate.getTime()) ? undefined : parsedDate;
+}
+
+function extractBudgetSectionLabel(value: string): string {
+  const normalized = normalizeMondayCellText(value);
+  if (!/^marketing budget\b/i.test(normalized)) return "";
+  return normalized.replace(/^marketing budget\b/i, "").trim();
+}
+
+function formatBudgetPeriod(startDate?: Date, explicitLabel?: string): string {
+  const normalizedLabel = normalizeMondayCellText(explicitLabel || "");
+  if (normalizedLabel) return normalizedLabel;
+  if (!startDate) return "";
+  return startDate.toLocaleDateString("en-US", { month: "long", year: "numeric", timeZone: "UTC" });
+}
+
+function parseCityStateZip(location: string): { city?: string; state?: string; zip?: string } {
+  const raw = String(location || "").trim();
+  if (!raw) return {};
+
+  // Common shapes: "Phoenix, AZ", "Phoenix, Arizona 85016", "Phoenix AZ 85016"
+  const withComma = raw.match(/^(.+?),\s*([A-Za-z]{2}|[A-Za-z ]+?)(?:\s+(\d{5}(?:-\d{4})?))?$/);
+  if (withComma) {
+    return {
+      city: withComma[1]?.trim() || undefined,
+      state: withComma[2]?.trim() || undefined,
+      zip: withComma[3]?.trim() || undefined,
+    };
+  }
+
+  const plain = raw.match(/^(.+?)\s+([A-Za-z]{2})\s+(\d{5}(?:-\d{4})?)$/);
+  if (plain) {
+    return {
+      city: plain[1]?.trim() || undefined,
+      state: plain[2]?.trim() || undefined,
+      zip: plain[3]?.trim() || undefined,
+    };
+  }
+
+  return { city: raw };
+}
+
+function isPlaceholderHeader(v: unknown): boolean {
+  const s = String(v ?? "").trim();
+  if (!s) return true;
+  const upper = s.toUpperCase();
+  return upper.startsWith("__EMPTY") || /^COLUMN_\d+$/i.test(s) || /^COL_\d+$/i.test(s);
+}
+
+function detectHeaderRow(matrix: unknown[][]): number {
+  const scanLimit = Math.min(25, matrix.length);
+  const headerHints = [
+    "name", "account", "facility", "hospital", "organization", "company", "email", "phone",
+    "title", "department", "owner", "assigned", "type", "status", "date", "timeline", "notes",
+  ];
+
+  for (let i = 0; i < scanLimit; i++) {
+    const row = Array.isArray(matrix[i]) ? matrix[i] : [];
+    const cells = row.map((v) => normalizeKey(String(v ?? ""))).filter(Boolean);
+    if (cells.length < 2) continue;
+    const hintCount = cells.filter((c) => headerHints.some((h) => c.includes(h))).length;
+    if (hintCount >= 2) return i;
+  }
+
+  let bestIdx = 0;
+  let bestScore = -1;
+  for (let i = 0; i < Math.min(20, matrix.length); i++) {
+    const row = Array.isArray(matrix[i]) ? matrix[i] : [];
+    const cells = row.map((v) => String(v ?? "").trim()).filter(Boolean);
+    if (!cells.length) continue;
+
+    const normalized = cells.map((c) => normalizeKey(c));
+    const alphaCount = cells.filter((c) => /[A-Za-z]/.test(c)).length;
+    const longCount = cells.filter((c) => c.length > 60).length;
+    const hintCount = normalized.filter((c) => headerHints.some((h) => c.includes(h))).length;
+    const placeholderCount = cells.filter((c) => isPlaceholderHeader(c)).length;
+    const uniqueCount = new Set(normalized.filter(Boolean)).size;
+
+    // Header rows are usually: many short labels, diverse values, multiple known hint tokens,
+    // and very few placeholder labels like __EMPTY.
+    const score =
+      cells.length * 2 +
+      alphaCount +
+      hintCount * 6 +
+      uniqueCount -
+      longCount * 3 -
+      placeholderCount * 5;
+
+    if (score > bestScore) {
+      bestScore = score;
+      bestIdx = i;
+    }
+  }
+
+  // Guard against title/banner rows like: ["Accounts", "", "", ...]
+  const bestRow = Array.isArray(matrix[bestIdx]) ? matrix[bestIdx] : [];
+  const bestMeaningful = bestRow.filter((v) => hasValue(v) && !isPlaceholderHeader(v)).length;
+  if (bestMeaningful <= 1 && bestIdx + 1 < matrix.length) {
+    const nextRow = Array.isArray(matrix[bestIdx + 1]) ? matrix[bestIdx + 1] : [];
+    const nextMeaningful = nextRow.filter((v) => hasValue(v) && !isPlaceholderHeader(v)).length;
+    if (nextMeaningful >= 2) return bestIdx + 1;
+  }
+
+  return bestIdx;
+}
+
+function matrixToRows(matrix: unknown[][]): ParsedSheet {
+  if (!matrix.length) return { rows: [], columns: [] };
+
+  const headerIdx = detectHeaderRow(matrix);
+  const rawHeaders = Array.isArray(matrix[headerIdx]) ? matrix[headerIdx] : [];
+  const populatedHeaders = rawHeaders.filter((h) => hasValue(h));
+  const meaningfulHeaders = populatedHeaders.filter((h) => !isPlaceholderHeader(h));
+
+  if (populatedHeaders.length > 0 && meaningfulHeaders.length < 2) {
+    throw new Error(
+      "Could not detect valid column headers. The file appears to contain placeholder headers (for example __EMPTY). Please export again from Monday and ensure the actual header row is included."
+    );
+  }
+
+  const seen = new Map<string, number>();
+  const headers = rawHeaders.map((h, i) => {
+    const baseRaw = String(h ?? "").trim();
+    const base = !isPlaceholderHeader(baseRaw) ? baseRaw : `column_${i + 1}`;
+    const count = (seen.get(base) ?? 0) + 1;
+    seen.set(base, count);
+    return count > 1 ? `${base}_${count}` : base;
+  });
+
+  const rows: Record<string, unknown>[] = [];
+  for (let i = headerIdx + 1; i < matrix.length; i++) {
+    const row = Array.isArray(matrix[i]) ? matrix[i] : [];
+    if (!row.some((v) => hasValue(v))) continue;
+    const out: Record<string, unknown> = {};
+    headers.forEach((h, idx) => {
+      out[h] = row[idx] ?? "";
+    });
+    rows.push(out);
+  }
+
+  return { rows, columns: headers };
+}
+
+function bestSheetMatrix(sheets: Map<string, unknown[][]>): unknown[][] {
+  let best: unknown[][] = [];
+  let bestScore = -1;
+
+  for (const [, matrix] of sheets) {
+    if (!matrix.length) continue;
+
+    const nonEmptyRows = matrix.filter((row) => Array.isArray(row) && row.some((v) => hasValue(v))).length;
+    const maxCols = matrix.reduce((m, row) => Math.max(m, Array.isArray(row) ? row.length : 0), 0);
+    const headerIdx = detectHeaderRow(matrix);
+    const headerRow = Array.isArray(matrix[headerIdx]) ? matrix[headerIdx] : [];
+    const meaningfulHeaders = headerRow.filter((v) => hasValue(v) && !isPlaceholderHeader(v)).length;
+
+    const score = nonEmptyRows * 3 + meaningfulHeaders * 8 + maxCols;
+    if (score > bestScore) {
+      bestScore = score;
+      best = matrix;
+    }
+  }
+
+  return best;
+}
+
+function cellToScalar(v: ExcelJS.CellValue): unknown {
+  if (v === null || v === undefined) return "";
+  if (v instanceof Date) return v.toISOString();
+  if (typeof v === "object") {
+    const obj = v as unknown as Record<string, unknown>;
+    // RichText
+    if (Array.isArray(obj.richText)) {
+      return (obj.richText as Array<{ text?: string }>).map((r) => r.text ?? "").join("");
+    }
+    // Formula result
+    if ("result" in obj) return obj.result ?? "";
+    // Hyperlink
+    if ("text" in obj) return obj.text ?? "";
+  }
+  return v;
+}
+
+async function parseSheet(file: File): Promise<ParsedSheet> {
+  if (file.size > MAX_IMPORT_BYTES) {
+    throw new Error(`File is too large (${Math.round(file.size / (1024 * 1024))} MB). Max is 8 MB.`);
+  }
+
+  const isCsv = file.name.toLowerCase().endsWith(".csv") || file.type.includes("csv") || file.type.includes("text");
+  const arrayBuffer = await file.arrayBuffer();
+
+  if (isCsv) {
+    const text = Buffer.from(arrayBuffer).toString("utf8");
+    const result = Papa.parse<unknown[]>(text, { header: false, skipEmptyLines: true, dynamicTyping: false });
+    return matrixToRows(result.data as unknown[][]);
+  }
+
+  if (file.name.toLowerCase().endsWith(".xls")) {
+    throw new Error("Old .xls format is not supported. Please re-save the file as .xlsx or export as CSV from Monday.");
+  }
+
+  // XLSX via ExcelJS
+  const workbook = new ExcelJS.Workbook();
+  try {
+    await workbook.xlsx.load(arrayBuffer);
+  } catch {
+    throw new Error("Could not parse this spreadsheet. Please re-export from Monday as CSV or XLSX.");
+  }
+
+  const sheets = new Map<string, unknown[][]>();
+  workbook.eachSheet((sheet) => {
+    const matrix: unknown[][] = [];
+    sheet.eachRow({ includeEmpty: false }, (row) => {
+      const vals = (row.values as ExcelJS.CellValue[]).slice(1); // row.values is 1-indexed
+      if (vals.some((v) => hasValue(cellToScalar(v)))) {
+        matrix.push(vals.map(cellToScalar));
+      }
+    });
+    if (matrix.length) sheets.set(sheet.name, matrix);
+  });
+
+  return matrixToRows(bestSheetMatrix(sheets));
+}
+
+// ─── individual importers ──────────────────────────────────────────────────────
+
+async function importAccounts(rows: Record<string, unknown>[], dryRun = false, duplicateMode: DuplicateMode = "update") {
+  let created = 0, updated = 0, skipped = 0;
+  const errors: string[] = [];
+  const skipReasons: Record<string, number> = {};
+  const preview: PreviewSample[] = [];
+
+  for (const row of rows) {
+    // Try known aliases, then fall back to the very first non-empty column
+    const rawName = col(row,
+      "Client",
+      "Account Name", "Name", "Organization", "Company",
+      "Hospital Name", "Facility Name", "Account", "Title",
+      "Item", "Item Name", "Board Item"
+    ) || colByHeaderToken(row, "account", "facility", "hospital", "organization", "company", "name");
+    let name = normalizeMondayCellText(rawName);
+    if (!name) {
+      // Monday.com: first column is usually the item name regardless of label
+      const firstEntry = Object.entries(row).find(([k, v]) => {
+        const nk = normalizeKey(k);
+        if (nk.includes("subitem") || nk.includes("timeline") || nk.includes("priority")) return false;
+        const s = String(v ?? "").trim();
+        return s.length > 1 && s !== "undefined" && s !== "null";
+      });
+      name = firstEntry ? normalizeMondayCellText(String(firstEntry[1])) : "";
+    }
+    if (!name || normalizeKey(name) === "client") {
+      skipped++;
+      skipReasons["no name found"] = (skipReasons["no name found"] ?? 0) + 1;
+      if (preview.length < MAX_PREVIEW) preview.push({ action: "skip", reason: "no name found", fields: {} });
+      continue;
+    }
+
+    const type = normalizeMondayCellText(col(row, "Account Type", "Type", "Facility Type", "Type of Facility") || colByHeaderToken(row, "facility type"));
+    const location = normalizeMondayCellText(col(row, "Location", "Address", "Billing Address", "City, State"));
+    const parsedLocation = parseCityStateZip(location);
+    const city  = normalizeMondayCellText(col(row, "Billing City", "City") || parsedLocation.city || "");
+    const state = normalizeMondayCellText(col(row, "Billing State", "State", "Billing State/Province") || parsedLocation.state || "");
+    const zip   = normalizeMondayCellText(col(row, "Billing Zip", "Zip", "Billing Postal Code", "Postal Code") || parsedLocation.zip || "");
+    const phone = normalizeMondayCellText(col(row, "Phone", "Main Phone", "Billing Phone"));
+    const npi   = normalizeMondayCellText(col(row, "NPI", "NPI Number"));
+    const beds  = col(row, "Bed Count", "Beds", "Number of Beds", "NumberOfEmployees");
+    const notes = normalizeMondayCellText(col(row, "Description", "Notes", "Comments"));
+    const contactName  = normalizeMondayCellText(col(row, "Primary Contact", "Contact Name", "Main Contact", "Contacts") || colByHeaderToken(row, "contact", "owner", "person"));
+    const contactTitle = normalizeMondayCellText(col(row, "Contact Title", "Primary Contact Title", "Title"));
+    const contactEmail = normalizeMondayCellText(col(row, "Contact Email", "Primary Email", "Email", "E-mail"));
+    const contactPhone = normalizeMondayCellText(col(row, "Contact Phone", "Primary Phone"));
+    const portalEmail = normalizeMondayCellText(col(row, "Portal Email", "Portal Login Email", "Login Email", "User Email", "Account Portal Email"));
+
+    try {
+      const existing = await prisma.hospital.findFirst({
+        where: { hospitalName: { equals: name, mode: "insensitive" } },
+      });
+
+      const updateData = {
+        ...(city ? { city } : {}),
+        ...(state ? { state } : {}),
+        ...(zip ? { zip } : {}),
+        ...(npi ? { npi } : {}),
+        ...(beds ? { bedCount: parseInt(beds) || undefined } : {}),
+        ...(notes ? { notes } : {}),
+        ...(contactName ? { primaryContactName: contactName } : {}),
+        ...(contactTitle ? { primaryContactTitle: contactTitle } : {}),
+        ...(contactEmail ? { primaryContactEmail: contactEmail } : {}),
+        ...((contactPhone || phone) ? { primaryContactPhone: contactPhone || phone } : {}),
+        ...(type ? { hospitalType: mapFacilityType(type) } : {}),
+      };
+
+      if (existing) {
+        if (duplicateMode === "update") {
+          if (!dryRun) {
+            await prisma.hospital.update({
+              where: { id: existing.id },
+              data: updateData,
+            });
+          }
+          updated++;
+          if (preview.length < MAX_PREVIEW) {
+            preview.push({
+              action: "update",
+              fields: Object.fromEntries([
+                ["Name", name], ["City", city], ["State", state], ["Phone", phone],
+                ["NPI", npi], ["Beds", beds], ["Primary Contact", contactName],
+              ].filter(([, v]) => v)),
+            });
+          }
+        } else {
+          skipped++;
+          skipReasons["already exists"] = (skipReasons["already exists"] ?? 0) + 1;
+          if (preview.length < MAX_PREVIEW) preview.push({ action: "skip", reason: "already exists", fields: { Name: name } });
+        }
+        continue;
+      }
+
+      // Create account — portal email is optional.
+      // With portal email: create a linked portal user + hospital.
+      // Without portal email: create the hospital record only (standard for referral accounts).
+      if (portalEmail) {
+        const existingPortalUser = await prisma.user.findUnique({ where: { email: portalEmail } });
+        if (existingPortalUser) {
+          skipped++;
+          skipReasons["portal email already in use"] = (skipReasons["portal email already in use"] ?? 0) + 1;
+          if (preview.length < MAX_PREVIEW) {
+            preview.push({ action: "skip", reason: "portal email already in use", fields: { Name: name, "Portal Email": portalEmail } });
+          }
+          continue;
+        }
+      }
+
+      if (!dryRun) {
+        if (portalEmail) {
+          await prisma.$transaction(async (tx) => {
+            const user = await tx.user.create({
+              data: {
+                email: portalEmail,
+                name: contactName || name,
+                role: "ACCOUNT",
+              },
+            });
+            await tx.hospital.create({
+              data: {
+                userId: user.id,
+                hospitalName: name,
+                city: city || undefined,
+                state: state || undefined,
+                zip: zip || undefined,
+                npi: npi || undefined,
+                bedCount: beds ? parseInt(beds) || undefined : undefined,
+                notes: notes || undefined,
+                primaryContactName: contactName || undefined,
+                primaryContactTitle: contactTitle || undefined,
+                primaryContactEmail: contactEmail || undefined,
+                primaryContactPhone: contactPhone || phone || undefined,
+                hospitalType: mapFacilityType(type),
+                status: "PROSPECT",
+              },
+            });
+          });
+        } else {
+          await prisma.hospital.create({
+            data: {
+              hospitalName: name,
+              city: city || undefined,
+              state: state || undefined,
+              zip: zip || undefined,
+              npi: npi || undefined,
+              bedCount: beds ? parseInt(beds) || undefined : undefined,
+              notes: notes || undefined,
+              primaryContactName: contactName || undefined,
+              primaryContactTitle: contactTitle || undefined,
+              primaryContactEmail: contactEmail || undefined,
+              primaryContactPhone: contactPhone || phone || undefined,
+              hospitalType: mapFacilityType(type),
+              status: "PROSPECT",
+            },
+          });
+        }
+      }
+      created++;
+      if (preview.length < MAX_PREVIEW) {
+        preview.push({ action: "create", fields: Object.fromEntries([
+          ["Name", name], ["City", city], ["State", state], ["Phone", phone],
+          ["NPI", npi], ["Beds", beds], ["Primary Contact", contactName],
+          ...(portalEmail ? [["Portal Email", portalEmail]] : []),
+        ].filter(([, v]) => v)) });
+      }
+    } catch (e) {
+      errors.push(`${name}: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  }
+
+  return { created, updated, skipped, errors, skipReasons, preview };
+}
+
+async function importContacts(rows: Record<string, unknown>[], dryRun = false, duplicateMode: DuplicateMode = "skip") {
+  let created = 0, updated = 0, skipped = 0;
+  const errors: string[] = [];
+  const skipReasons: Record<string, number> = {};
+  const preview: PreviewSample[] = [];
+
+  for (const row of rows) {
+    const activitySignal = col(row, "Activity Type", "Timeline", "Due Date", "Completed Date", "Subitem", "Update") || colByHeaderToken(row, "timeline", "activity", "subitem", "due date");
+    const contactSignal = col(row, "Email", "Phone", "Contact Name", "First Name", "Last Name") || colByHeaderToken(row, "email", "phone", "contact", "person");
+    if (activitySignal && !contactSignal) {
+      skipped++;
+      skipReasons["looks like activity rows - import this file in Activities"] = (skipReasons["looks like activity rows - import this file in Activities"] ?? 0) + 1;
+      if (preview.length < MAX_PREVIEW) preview.push({ action: "skip", reason: "looks like activity row", fields: { "First signal": activitySignal } });
+      continue;
+    }
+
+    const first = col(row, "First Name", "First", "FirstName");
+    const last  = col(row, "Last Name", "Last", "LastName");
+    const rawName = col(row, "Contact", "Name", "Full Name", "Contact Name", "Person", "People") || `${first} ${last}`.trim() || firstMeaningfulValue(row);
+    const name = normalizeMondayCellText(rawName);
+    if (!name || name === " " || normalizeKey(name) === "contact") {
+      skipped++;
+      skipReasons["no name"] = (skipReasons["no name"] ?? 0) + 1;
+      if (preview.length < MAX_PREVIEW) preview.push({ action: "skip", reason: "no name", fields: {} });
+      continue;
+    }
+
+    const rawAccountName = col(row,
+      "Account Name", "Organization", "Company", "Hospital", "Facility",
+      "Account", "Linked Account", "Accounts", "Board", "Board Item",
+      "Referral Source", "Facility Name", "Hospital Name", "Site", "Partner",
+      "Related item", "Related Item", "Related Items", "Related items",
+      "Connect boards", "Connected item", "Connected boards",
+      "Linked item", "Linked items"
+    ) || colByHeaderToken(row, "account", "facility", "hospital", "organization", "company", "site", "partner", "board", "related", "linked");
+    // Strip parenthetical board names from Monday "Connect boards" values (e.g. "Account (Board)")
+    const accountName = normalizeMondayCellText(rawAccountName).replace(/\s*\([^)]*\)\s*$/, "").trim();
+    const title       = col(row, "Title", "Job Title", "Position", "Role");
+    const email       = col(row, "Email", "Work Email", "E-mail", "Email Address");
+    const phone       = col(row, "Phone", "Work Phone", "Mobile", "Cell", "Direct", "Phone Number");
+    const department  = col(row, "Department", "Dept", "Division");
+    const notes       = col(row, "Description", "Notes", "Comments", "Body");
+    const typeStr     = col(row, "Contact Type", "Type", "Role");
+
+    if (!accountName) {
+      skipped++;
+      skipReasons["no account name column"] = (skipReasons["no account name column"] ?? 0) + 1;
+      if (preview.length < MAX_PREVIEW) preview.push({ action: "skip", reason: "no account name", fields: { Name: name } });
+      continue;
+    }
+
+    // Find matching hospital — try contains first, then word-by-word fuzzy match
+    let hospital = await prisma.hospital.findFirst({
+      where: { hospitalName: { contains: accountName, mode: "insensitive" } },
+    });
+    if (!hospital) {
+      // Try matching on the first significant word (handles truncated / abbreviated names)
+      const firstWord = accountName.split(/\s+/)[0];
+      if (firstWord.length >= 4) {
+        hospital = await prisma.hospital.findFirst({
+          where: { hospitalName: { contains: firstWord, mode: "insensitive" } },
+        });
+      }
+    }
+    const hospitalId = hospital?.id;
+
+    if (!hospitalId) {
+      skipped++;
+      const key = `no account matched "${accountName.slice(0, 40)}"`;
+      skipReasons[key] = (skipReasons[key] ?? 0) + 1;
+      if (preview.length < MAX_PREVIEW) preview.push({ action: "skip", reason: `no account matched "${accountName.slice(0, 30)}"`, fields: { Name: name } });
+      continue;
+    }
+
+    const existingContact = await prisma.contact.findFirst({
+      where: {
+        hospitalId,
+        OR: [
+          { name: { equals: name, mode: "insensitive" } },
+          ...(email ? [{ email: { equals: email, mode: "insensitive" as const } }] : []),
+        ],
+      },
+    });
+
+    if (existingContact) {
+      if (duplicateMode === "update") {
+        try {
+          if (!dryRun) {
+            await prisma.contact.update({
+              where: { id: existingContact.id },
+              data: {
+                title: title || undefined,
+                email: email || undefined,
+                phone: phone || undefined,
+                department: department || undefined,
+                notes: notes || undefined,
+                type: mapContactType(typeStr),
+              },
+            });
+          }
+          updated++;
+          if (preview.length < MAX_PREVIEW) {
+            preview.push({ action: "update", fields: Object.fromEntries([
+              ["Name", name], ["Title", title], ["Email", email], ["Phone", phone],
+              ["Account", accountName], ["Department", department],
+            ].filter(([, v]) => v)) });
+          }
+        } catch (e) {
+          errors.push(`${name}: ${e instanceof Error ? e.message : String(e)}`);
+        }
+      } else {
+        skipped++;
+        skipReasons["already exists"] = (skipReasons["already exists"] ?? 0) + 1;
+        if (preview.length < MAX_PREVIEW) preview.push({ action: "skip", reason: "already exists", fields: { Name: name } });
+      }
+      continue;
+    }
+
+    try {
+      if (!dryRun) {
+        await prisma.contact.create({
+          data: {
+            hospitalId,
+            name,
+            title: title || undefined,
+            email: email || undefined,
+            phone: phone || undefined,
+            department: department || undefined,
+            notes: notes || undefined,
+            type: mapContactType(typeStr),
+          },
+        });
+      }
+      created++;
+      if (preview.length < MAX_PREVIEW) {
+        preview.push({ action: "create", fields: Object.fromEntries([
+          ["Name", name], ["Title", title], ["Email", email], ["Phone", phone],
+          ["Account", accountName], ["Department", department],
+        ].filter(([, v]) => v)) });
+      }
+    } catch (e) {
+      errors.push(`${name}: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  }
+
+  return { created, updated, skipped, errors, skipReasons, preview };
+}
+
+/** Filter out Monday.com board description text and stray column-header rows */
+function isJunkActivitySubject(s: string): boolean {
+  const lower = s.toLowerCase().trim();
+  // Monday board boilerplate descriptions
+  if (lower.includes("activities board shows all") || lower.includes("emails & activities in the page")) return true;
+  // Bare column headers that slip through
+  if (/^(name|account activities|account|type|date|notes|subject|description|status|activity)$/i.test(s.trim())) return true;
+  return false;
+}
+
+async function importActivities(rows: Record<string, unknown>[], dryRun = false, duplicateMode: DuplicateMode = "skip") {
+  let created = 0, updated = 0, skipped = 0;
+  let accountsFound = 0, accountsMatched = 0, repsMatched = 0;
+  const errors: string[] = [];
+  const skipReasons: Record<string, number> = {};
+  const preview: PreviewSample[] = [];
+
+  const reps = await prisma.rep.findMany({ include: { user: true } });
+  const hospitals = await prisma.hospital.findMany({
+    select: { id: true, hospitalName: true },
+  });
+
+  for (const row of rows) {
+    // Try known aliases; if nothing matches, fall back to the first non-empty column
+    // (Monday.com exports the item name as whatever the board column is called)
+    let subject = col(row, "Subject", "Activity", "Account Activities", "Activities", "Title", "Name", "Description",
+      "Item", "Task", "Task Name", "Item Name", "Board Item", "Activity Name", "Log", "Summary",
+      "Event", "Action", "Record", "Entry");
+    if (!subject) {
+      subject = firstMeaningfulValue(row);
+    }
+    subject = normalizeMondayCellText(subject);
+    if (!subject) {
+      skipped++;
+      skipReasons["completely empty row"] = (skipReasons["completely empty row"] ?? 0) + 1;
+      if (preview.length < MAX_PREVIEW) preview.push({ action: "skip", reason: "empty row", fields: {} });
+      continue;
+    }
+
+    // Skip Monday board description text and stray column-header rows
+    if (isJunkActivitySubject(subject)) {
+      skipped++;
+      skipReasons["metadata/header row"] = (skipReasons["metadata/header row"] ?? 0) + 1;
+      if (preview.length < MAX_PREVIEW) preview.push({ action: "skip", reason: "metadata/header row", fields: { Subject: subject.slice(0, 80) } });
+      continue;
+    }
+
+    const typeStr = normalizeMondayCellText(col(row, "Type", "Activity Type", "Call Type", "Subitem", "Status", "Category"));
+    const dateStr = col(row, "Date", "Start time", "Start Time", "End time", "End Time", "Due Date", "Completed Date", "ActivityDate", "Close Date",
+      "Created", "Last Updated", "Timeline", "Activities timeline", "Date Created");
+    let accountName = col(row, "Account Name", "Organization", "Hospital", "Facility",
+      "Account", "Accounts", "Client", "Company", "Partner", "Referral Source", "Linked Account",
+      "Related item", "Related Item", "Related Items", "Related items",
+      "Connect boards", "Connected item", "Connected items", "Connected boards",
+      "Related account", "Related Account", "Linked item", "Linked items",
+      "Item link", "Board link", "Mirror", "Subitems");
+    if (!accountName) {
+      accountName = colByHeaderToken(row, "account", "hospital", "facility", "organization", "company", "client", "related", "linked", "connect", "mirror");
+    }
+    accountName = normalizeMondayCellText(accountName);
+    // Monday "Connect boards" values may include parenthetical board names like "Account Name (Board)"
+    // Strip them so we match on the item name only.
+    accountName = accountName.replace(/\s*\([^)]*\)\s*$/, "").trim();
+    const repCell = col(row, "Owner", "Assigned To", "Rep", "Rep Name", "Created By",
+      "Assignee", "Person", "People", "Team Member") || colByHeaderToken(row, "owner", "assignee", "person", "rep", "people");
+    const notes     = normalizeMondayCellText(col(row, "Description", "Comments", "Notes", "Body", "Details", "Update"));
+
+    // Monday titles are often "Account - Activity" format. Always extract both parts
+    // so we can use the prefix as a hospital-match fallback and the suffix as the real title.
+    let resolvedTitle = subject;
+    let titlePrefixAccount = "";
+    let titleSuffixActivity = "";
+    {
+      const dashIdx = subject.indexOf(" - ");
+      if (dashIdx > 2 && dashIdx < 80) {
+        const pfx = subject.slice(0, dashIdx).trim();
+        const sfx = subject.slice(dashIdx + 3).trim();
+        if (pfx && sfx) {
+          titlePrefixAccount = pfx;
+          titleSuffixActivity = sfx;
+        }
+      }
+    }
+
+    // If no explicit account from any column, fall back to title prefix
+    if (!accountName && titlePrefixAccount) {
+      accountName = titlePrefixAccount;
+      resolvedTitle = titleSuffixActivity;
+    }
+
+    // Match hospital.
+    // Monday "Connect boards" / "Related item" columns can hold multiple linked items as a
+    // comma-separated string. Split into individual segments so we try each one.
+    // Also include the title prefix (e.g. "Account - Activity") as a final fallback.
+    function splitAccountCandidates(raw: string): string[] {
+      // Split on comma or semicolon, strip any residual parenthetical board names, dedupe.
+      const seen = new Set<string>();
+      const out: string[] = [];
+      for (const seg of raw.split(/[,;]+/)) {
+        const clean = seg.replace(/\s*\([^)]*\)\s*$/, "").trim();
+        if (clean && !seen.has(clean.toLowerCase())) {
+          seen.add(clean.toLowerCase());
+          out.push(clean);
+        }
+      }
+      return out;
+    }
+
+    let hospitalId: string | undefined;
+    if (accountName) {
+      accountsFound++;
+      // Build all candidates: every comma-separated segment from the Related item value,
+      // plus the title prefix if it's different.
+      const rawCandidates = splitAccountCandidates(accountName);
+      if (titlePrefixAccount && !rawCandidates.some((c) => normalizedName(c) === normalizedName(titlePrefixAccount))) {
+        rawCandidates.push(titlePrefixAccount);
+      }
+
+      outer:
+      for (const candidate of rawCandidates) {
+        const norm = normalizedName(candidate);
+        if (!norm) continue;
+        // 1. Exact normalized match
+        const exact = hospitals.find((h) => normalizedName(h.hospitalName) === norm);
+        if (exact) {
+          hospitalId = exact.id;
+          if (titleSuffixActivity && normalizedName(candidate) === normalizedName(titlePrefixAccount)) {
+            resolvedTitle = titleSuffixActivity;
+          }
+          break outer;
+        }
+        // 2. Fuzzy: one contains the other (handles abbreviations / partial names)
+        const fuzzy = hospitals.find((h) => {
+          const n = normalizedName(h.hospitalName);
+          return n.includes(norm) || norm.includes(n);
+        });
+        if (fuzzy) {
+          hospitalId = fuzzy.id;
+          if (titleSuffixActivity && normalizedName(candidate) === normalizedName(titlePrefixAccount)) {
+            resolvedTitle = titleSuffixActivity;
+          }
+          break outer;
+        }
+        // 3. First-word match (≥4 chars) as last resort
+        const firstWord = norm.split(/\s+/)[0];
+        if (firstWord.length >= 4) {
+          const byWord = hospitals.find((h) => normalizedName(h.hospitalName).startsWith(firstWord));
+          if (byWord) {
+            hospitalId = byWord.id;
+            if (titleSuffixActivity && normalizedName(candidate) === normalizedName(titlePrefixAccount)) {
+              resolvedTitle = titleSuffixActivity;
+            }
+            break outer;
+          }
+        }
+      }
+
+      if (hospitalId) accountsMatched++;
+    }
+
+    // Always use the activity suffix part as the resolved title when we detected a dash-split,
+    // regardless of whether the hospital matched — this puts the real activity in the Title column.
+    if (titleSuffixActivity && resolvedTitle === subject) {
+      resolvedTitle = titleSuffixActivity;
+    }
+
+    // Match rep by name
+    let repId: string | undefined;
+    let createdByUserId: string | undefined;
+    const repCandidates = extractCandidateNames(repCell);
+    if (repCandidates.length) {
+      const matched = repCandidates
+        .map((candidate) => {
+          const needle = normalizedName(candidate);
+          return reps.find((r) => {
+            const repName = normalizedName(r.user.name ?? "");
+            if (!repName) return false;
+            return repName === needle || repName.includes(needle) || needle.includes(repName);
+          });
+        })
+        .find(Boolean);
+      if (matched) {
+        repId = matched.id;
+        createdByUserId = matched.userId;
+        repsMatched++;
+      }
+    }
+
+    const dateRaw = row[Object.keys(row).find((k) => {
+      const nk = normalizeKey(k);
+      return ["date", "start time", "end time", "due date", "completed date", "activitydate",
+        "close date", "created", "last updated", "timeline", "activities timeline", "date created"].includes(nk);
+    }) ?? ""] ?? dateStr;
+    let completedAt: Date | undefined = parseSpreadsheetDate(dateRaw);
+    if (!completedAt && dateStr) completedAt = parseSpreadsheetDate(dateStr);
+
+    // Dedup by title only — do NOT filter by hospitalId here because existing records
+    // from a previous import may have hospitalId = null and would never be found otherwise.
+    const existingActivity = await prisma.activity.findFirst({
+      where: {
+        title: { equals: resolvedTitle.slice(0, 255), mode: "insensitive" },
+      },
+    });
+    if (existingActivity) {
+      if (duplicateMode === "update") {
+        try {
+          if (!dryRun) {
+            await prisma.activity.update({
+              where: { id: existingActivity.id },
+              data: {
+                type: mapActivityType(typeStr),
+                notes: notes || undefined,
+                hospitalId: hospitalId ?? existingActivity.hospitalId ?? undefined,
+                repId: repId ?? existingActivity.repId ?? undefined,
+                createdByUserId: createdByUserId ?? existingActivity.createdByUserId ?? undefined,
+                completedAt: completedAt ?? existingActivity.completedAt ?? new Date(),
+              },
+            });
+          }
+          updated++;
+          if (preview.length < MAX_PREVIEW) {
+            preview.push({ action: "update", fields: Object.fromEntries([
+              ["Subject", resolvedTitle.slice(0, 80)], ["Type", mapActivityType(typeStr)],
+              ["Date", dateStr],
+              ["Account", accountName ? `${accountName}${hospitalId ? " ✓" : " ✗"}` : ""],
+              ["Rep", repCandidates[0] ? `${repCandidates[0]}${repId ? " ✓" : " ✗"}` : ""],
+            ].filter(([, v]) => v)) });
+          }
+        } catch (e) {
+          errors.push(`${subject}: ${e instanceof Error ? e.message : String(e)}`);
+        }
+      } else {
+        skipped++;
+        skipReasons["already exists"] = (skipReasons["already exists"] ?? 0) + 1;
+        if (preview.length < MAX_PREVIEW) preview.push({ action: "skip", reason: "already exists", fields: { Subject: resolvedTitle.slice(0, 80) } });
+      }
+      continue;
+    }
+
+    try {
+      if (!dryRun) {
+        await prisma.activity.create({
+          data: {
+            type: mapActivityType(typeStr),
+            title: resolvedTitle.slice(0, 255),
+            notes: notes || undefined,
+            hospitalId: hospitalId ?? undefined,
+            repId: repId ?? undefined,
+            createdByUserId: createdByUserId ?? undefined,
+            completedAt: completedAt ?? new Date(),
+          },
+        });
+      }
+      created++;
+      if (preview.length < MAX_PREVIEW) {
+        preview.push({ action: "create", fields: Object.fromEntries([
+          ["Subject", resolvedTitle.slice(0, 80)], ["Type", mapActivityType(typeStr)],
+          ["Date", dateStr],
+          ["Account", accountName ? `${accountName}${hospitalId ? " ✓" : " ✗"}` : ""],
+          ["Rep", repCandidates[0] ? `${repCandidates[0]}${repId ? " ✓" : " ✗"}` : ""],
+        ].filter(([, v]) => v)) });
+      }
+    } catch (e) {
+      errors.push(`${subject}: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  }
+
+  return { created, updated, skipped, errors, skipReasons, preview, accountsFound, accountsMatched, repsMatched };
+}
+
+async function importLeads(rows: Record<string, unknown>[], dryRun = false, duplicateMode: DuplicateMode = "skip") {
+  let created = 0, updated = 0, skipped = 0;
+  const errors: string[] = [];
+  const skipReasons: Record<string, number> = {};
+  const preview: PreviewSample[] = [];
+
+  for (const row of rows) {
+    let hospitalName = col(row, "Lead", "Hospital Name", "Hospital", "Lead Name", "Prospect", "Company", "Organization", "Account Name");
+    hospitalName = normalizeMondayCellText(hospitalName);
+    if (!hospitalName) {
+      skipped++;
+      skipReasons["missing lead name"] = (skipReasons["missing lead name"] ?? 0) + 1;
+      if (preview.length < MAX_PREVIEW) preview.push({ action: "skip", reason: "missing lead name", fields: {} });
+      continue;
+    }
+
+    const status = col(row, "Status") || "NEW";
+    const contactName = normalizeMondayCellText(col(row, "Contact Name", "Name", "Contact", "Primary Contact", "POC"));
+    const contactEmail = col(row, "Email", "Contact Email", "Email Address");
+    const contactPhone = col(row, "Phone", "Contact Phone", "Phone Number");
+    const contactTitle = normalizeMondayCellText(col(row, "Title", "Contact Title", "Position", "Role"));
+    const serviceInterest = normalizeMondayCellText(col(row, "Service Interest", "Services", "Interest", "Service Line", "Interested In"));
+    const estValueStr = col(row, "Estimated Value", "Value", "Est Value", "Potential Value");
+    const estimatedValue = estValueStr ? parseFloat(estValueStr) : undefined;
+    const notes = normalizeMondayCellText(col(row, "Notes", "Description", "Comments", "Details"));
+    const _lastInteractionStr = col(row, "Last Interaction", "Last Activity", "Last Contact", "Last Touchpoint", "Last Date");
+
+    // Detect duplicates by hospitalName
+    let existingLead = null;
+    if (duplicateMode === "update") {
+      existingLead = await prisma.lead.findFirst({
+        where: { hospitalName: { contains: hospitalName, mode: "insensitive" } },
+      });
+    }
+
+    if (existingLead && duplicateMode === "update") {
+      try {
+        if (!dryRun) {
+          await prisma.lead.update({
+            where: { id: existingLead.id },
+            data: {
+              ...(contactName && { contactName }),
+              ...(contactEmail && { contactEmail }),
+              ...(contactPhone && { contactPhone }),
+              ...(contactTitle && { contactTitle }),
+              ...(serviceInterest && { serviceInterest }),
+              ...(estimatedValue && { estimatedValue: new Prisma.Decimal(estimatedValue) }),
+              ...(notes && { notes }),
+            },
+          });
+        }
+        updated++;
+        if (preview.length < MAX_PREVIEW) preview.push({ action: "update", fields: { Lead: hospitalName } });
+      } catch (e) {
+        errors.push(`Failed to update lead: ${e instanceof Error ? e.message : String(e)}`);
+      }
+    } else if (existingLead) {
+      skipped++;
+      skipReasons["already exists"] = (skipReasons["already exists"] ?? 0) + 1;
+      if (preview.length < MAX_PREVIEW) preview.push({ action: "skip", reason: "already exists", fields: { Lead: hospitalName } });
+    } else {
+      try {
+        if (!dryRun) {
+          const leadStatus: "NEW" | "CONTACTED" | "QUALIFIED" = status.toUpperCase() === "QUALIFIED" ? "QUALIFIED" : status.toUpperCase() === "CONTACTED" ? "CONTACTED" : "NEW";
+          await prisma.lead.create({
+            data: {
+              hospitalName,
+              status: leadStatus,
+              contactName: contactName || undefined,
+              contactEmail: contactEmail || undefined,
+              contactPhone: contactPhone || undefined,
+              contactTitle: contactTitle || undefined,
+              serviceInterest: serviceInterest || undefined,
+              estimatedValue: estimatedValue ? new Prisma.Decimal(estimatedValue) : undefined,
+              notes: notes || undefined,
+            },
+          });
+        }
+        created++;
+        if (preview.length < MAX_PREVIEW) preview.push({ action: "create", fields: { Lead: hospitalName, Email: contactEmail || "", Phone: contactPhone || "" } });
+      } catch (e) {
+        errors.push(`Failed to create lead: ${e instanceof Error ? e.message : String(e)}`);
+      }
+    }
+  }
+
+  return { created, updated, skipped, errors, skipReasons, preview };
+}
+
+function mapReferralSourceType(input: string) {
+  const v = input.toLowerCase();
+  if (!v) return "OTHER" as const;
+  if (v.includes("emergency") || v.includes("ed") || v.includes("hospital")) return "EMERGENCY_DEPARTMENT" as const;
+  if (v.includes("primary care") || v.includes("pcp") || v.includes("family medicine") || v.includes("internal medicine")) return "PRIMARY_CARE_PHYSICIAN" as const;
+  if (v.includes("psychiatrist") || v.includes("psych md")) return "PSYCHIATRIST" as const;
+  if (v.includes("therap") || v.includes("counsel") || v.includes("lpc") || v.includes("lcsw")) return "OUTPATIENT_THERAPIST" as const;
+  if (v.includes("iop") || v.includes("php")) return "IOP_PHP_PROGRAM" as const;
+  if (v.includes("crisis line") || v.includes("hotline")) return "CRISIS_LINE" as const;
+  if (v.includes("crisis")) return "CRISIS_STABILIZATION_UNIT" as const;
+  if (v.includes("court") || v.includes("legal") || v.includes("probation") || v.includes("dcs")) return "COURT_LEGAL_SYSTEM" as const;
+  if (v.includes("community") || v.includes("mental health") || v.includes("fqhc")) return "COMMUNITY_MENTAL_HEALTH" as const;
+  if (v.includes("snf") || v.includes("ltach") || v.includes("nursing")) return "SNF_LTACH" as const;
+  if (v.includes("school")) return "SCHOOL_COUNSELOR" as const;
+  if (v.includes("peer") || v.includes("recovery")) return "PEER_SUPPORT" as const;
+  if (v.includes("self") || v.includes("family")) return "SELF_REFERRAL" as const;
+  return "OTHER" as const;
+}
+
+async function importReferralSources(rows: Record<string, unknown>[], dryRun = false, duplicateMode: DuplicateMode = "update") {
+  let created = 0, updated = 0, skipped = 0;
+  const errors: string[] = [];
+  const skipReasons: Record<string, number> = {};
+  const preview: PreviewSample[] = [];
+
+  for (const row of rows) {
+    const rawName = col(
+      row,
+      "Referral Source",
+      "Referral Source Name",
+      "Source Name",
+      "Facility Name",
+      "Referring Facility",
+      "Name",
+      "Practice Name",
+      "Organization",
+      "Company",
+      "Account Name",
+      "Account",
+    ) || colByHeaderToken(row, "referral source", "source name", "facility name", "practice", "organization", "company", "account", "name");
+    const name = normalizeMondayCellText(rawName);
+
+    if (!name || normalizeKey(name) === "name" || normalizeKey(name) === "referral source") {
+      skipped++;
+      skipReasons["missing referral source name"] = (skipReasons["missing referral source name"] ?? 0) + 1;
+      if (preview.length < MAX_PREVIEW) preview.push({ action: "skip", reason: "missing referral source name", fields: {} });
+      continue;
+    }
+
+    const typeStr = normalizeMondayCellText(col(row, "Type", "Source Type", "Referral Type", "Facility Type", "Category", "Specialty Type"));
+    const specialty = normalizeMondayCellText(col(row, "Specialty", "Service Line", "Focus", "Program"));
+    const practiceName = normalizeMondayCellText(col(row, "Practice Name", "Organization", "Company", "Group", "Agency"));
+    const npi = normalizeMondayCellText(col(row, "NPI", "NPI Number", "Provider NPI"));
+    const contactName = normalizeMondayCellText(col(row, "Contact Name", "Primary Contact", "Contact", "Point of Contact", "POC", "Person"));
+    const email = normalizeMondayCellText(col(row, "Email", "Contact Email", "Primary Email", "E-mail", "Email Address"));
+    const phone = normalizeMondayCellText(col(row, "Phone", "Contact Phone", "Primary Phone", "Work Phone", "Mobile"));
+    const address = normalizeMondayCellText(col(row, "Address", "Street", "Billing Address", "Location"));
+    const parsedLocation = parseCityStateZip(address);
+    const city = normalizeMondayCellText(col(row, "City", "Billing City") || parsedLocation.city || "");
+    const state = normalizeMondayCellText(col(row, "State", "Billing State", "Billing State/Province") || parsedLocation.state || "");
+    const zip = normalizeMondayCellText(col(row, "Zip", "Postal Code", "Billing Zip") || parsedLocation.zip || "");
+    const monthlyGoalStr = col(row, "Monthly Goal", "Goal", "Monthly Referrals", "Target");
+    const monthlyGoal = monthlyGoalStr ? parseInt(monthlyGoalStr, 10) : undefined;
+    const notes = normalizeMondayCellText(col(row, "Notes", "Description", "Comments", "Competitive Intelligence"));
+
+    let existing = null;
+    if (npi) {
+      existing = await prisma.referralSource.findFirst({ where: { npi: { equals: npi, mode: "insensitive" } } });
+    }
+    if (!existing) {
+      existing = await prisma.referralSource.findFirst({ where: { name: { equals: name, mode: "insensitive" } } });
+    }
+
+    const data = {
+      name,
+      type: mapReferralSourceType(typeStr || specialty),
+      specialty: specialty || undefined,
+      practiceName: practiceName || undefined,
+      npi: npi || undefined,
+      contactName: contactName || undefined,
+      email: email || undefined,
+      phone: phone || undefined,
+      address: address || undefined,
+      city: city || undefined,
+      state: state || undefined,
+      zip: zip || undefined,
+      monthlyGoal: Number.isFinite(monthlyGoal) ? monthlyGoal : undefined,
+      notes: notes || undefined,
+      active: true,
+    };
+
+    if (existing && duplicateMode === "update") {
+      try {
+        if (!dryRun) {
+          await prisma.referralSource.update({
+            where: { id: existing.id },
+            data,
+          });
+        }
+        updated++;
+        if (preview.length < MAX_PREVIEW) preview.push({ action: "update", fields: { Name: name, Type: data.type, Contact: contactName || "" } });
+      } catch (e) {
+        errors.push(`Failed to update referral source ${name}: ${e instanceof Error ? e.message : String(e)}`);
+      }
+      continue;
+    }
+
+    if (existing) {
+      skipped++;
+      skipReasons["already exists"] = (skipReasons["already exists"] ?? 0) + 1;
+      if (preview.length < MAX_PREVIEW) preview.push({ action: "skip", reason: "already exists", fields: { Name: name } });
+      continue;
+    }
+
+    try {
+      if (!dryRun) {
+        await prisma.referralSource.create({ data });
+      }
+      created++;
+      if (preview.length < MAX_PREVIEW) preview.push({ action: "create", fields: { Name: name, Type: data.type, Contact: contactName || "", Email: email || "" } });
+    } catch (e) {
+      errors.push(`Failed to create referral source ${name}: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  }
+
+  return { created, updated, skipped, errors, skipReasons, preview };
+}
+
+async function importMarketingBudget(rows: Record<string, unknown>[], dryRun = false, duplicateMode: DuplicateMode = "skip") {
+  let created = 0, updated = 0, skipped = 0;
+  const errors: string[] = [];
+  const skipReasons: Record<string, number> = {};
+  const preview: PreviewSample[] = [];
+
+  const hospitalCache = new Map<string, { id: string; hospitalName: string } | null>();
+  let currentSectionPeriod = "";
+  let currentSectionAccount = "";
+  let currentSectionPointOfContact = "";
+  let currentSectionStartDate: Date | undefined;
+
+  async function findHospitalByName(name: string) {
+    const normalizedName = normalizeMondayCellText(name);
+    if (!normalizedName) return null;
+    const cacheKey = normalizeKey(normalizedName);
+    if (hospitalCache.has(cacheKey)) return hospitalCache.get(cacheKey) ?? null;
+
+    let hospital = await prisma.hospital.findFirst({
+      where: { hospitalName: { equals: normalizedName, mode: "insensitive" } },
+      select: { id: true, hospitalName: true },
+    });
+
+    if (!hospital) {
+      hospital = await prisma.hospital.findFirst({
+        where: { hospitalName: { contains: normalizedName, mode: "insensitive" } },
+        select: { id: true, hospitalName: true },
+      });
+    }
+
+    hospitalCache.set(cacheKey, hospital ?? null);
+    return hospital ?? null;
+  }
+
+  for (const row of rows) {
+    const item = normalizeMondayCellText(col(row, "Item", "Item Name", "Budget Item", "Task", "Activity", "Name", "Subitems"));
+    const explicitAccountName = normalizeMondayCellText(col(row, "Account", "Hospital", "Facility", "Company", "Organization", "Account Name", "Client"));
+    const explicitPointOfContact = normalizeMondayCellText(col(row, "Point of Contact", "POC", "Contact", "Contact Name", "Person", "Point of contact"));
+    const explicitPeriodMonth = normalizeMondayCellText(col(row, "Period", "Month", "Period Month", "Time", "Time Period"));
+    const explicitStartDate = parseSpreadsheetDate(col(row, "Start Date", "Date", "Due Date", "Timeline", "Activities timeline", "Start Date - Start"));
+
+    const parseMoney = (val: unknown): number | undefined => {
+      if (val === undefined || val === null || String(val).trim() === "") return undefined;
+      const str = String(val).replace(/[$,]/g, "").trim();
+      const num = parseFloat(str);
+      return Number.isNaN(num) ? undefined : num;
+    };
+
+    const marketingMeals = parseMoney(col(row, "Marketing Meals")) || 0;
+    const marketingSupplies = parseMoney(col(row, "Marketing Supplies")) || 0;
+    const marketingEvents = parseMoney(col(row, "Marketing Events")) || 0;
+    const actualSpend = parseMoney(col(row, "Actual Spend")) || 0;
+    const budgeted = parseMoney(col(row, "Budgeted")) || 0;
+    const hasMoney = [marketingMeals, marketingSupplies, marketingEvents, actualSpend, budgeted].some((value) => value !== 0);
+
+    const isRepeatedHeader =
+      normalizeKey(item) === "name" &&
+      normalizeKey(explicitAccountName) === "account" &&
+      normalizeKey(explicitPointOfContact) === "point of contact";
+
+    if (isRepeatedHeader) {
+      continue;
+    }
+
+    const sectionLabel = extractBudgetSectionLabel(item);
+    const isSectionTitle = Boolean(sectionLabel) && !explicitAccountName && !explicitPointOfContact && !explicitStartDate && !hasMoney;
+    if (isSectionTitle) {
+      currentSectionPeriod = sectionLabel;
+      currentSectionAccount = "";
+      currentSectionPointOfContact = "";
+      currentSectionStartDate = undefined;
+      continue;
+    }
+
+    if (!item && !explicitAccountName && !explicitPointOfContact && !explicitStartDate && !hasMoney) {
+      continue;
+    }
+
+    if (normalizeKey(item) === "marketing budget" && explicitAccountName) {
+      currentSectionAccount = explicitAccountName;
+      currentSectionPointOfContact = explicitPointOfContact || currentSectionPointOfContact;
+      currentSectionStartDate = explicitStartDate || currentSectionStartDate;
+      currentSectionPeriod = explicitPeriodMonth || currentSectionPeriod || formatBudgetPeriod(currentSectionStartDate);
+    }
+
+    const startDate = explicitStartDate || currentSectionStartDate;
+    const pointOfContact = explicitPointOfContact || currentSectionPointOfContact;
+    const periodMonth = formatBudgetPeriod(startDate, explicitPeriodMonth || currentSectionPeriod);
+    const accountName = explicitAccountName || currentSectionAccount;
+
+    if (!item) {
+      skipped++;
+      skipReasons["summary row"] = (skipReasons["summary row"] ?? 0) + 1;
+      if (preview.length < MAX_PREVIEW) preview.push({ action: "skip", reason: "summary row", fields: {} });
+      continue;
+    }
+
+    if (/^task\s+\d+$/i.test(item) && !explicitAccountName && !explicitPointOfContact && !explicitStartDate && !hasMoney) {
+      skipped++;
+      skipReasons["empty placeholder row"] = (skipReasons["empty placeholder row"] ?? 0) + 1;
+      if (preview.length < MAX_PREVIEW) preview.push({ action: "skip", reason: "empty placeholder row", fields: { Item: item } });
+      continue;
+    }
+
+    if (!accountName) {
+      skipped++;
+      skipReasons["missing account"] = (skipReasons["missing account"] ?? 0) + 1;
+      if (preview.length < MAX_PREVIEW) preview.push({ action: "skip", reason: "missing account", fields: { Item: item } });
+      continue;
+    }
+
+    let resolvedItem = item;
+    let hospital = await findHospitalByName(accountName);
+    if (!hospital && explicitAccountName && currentSectionAccount && normalizeKey(explicitAccountName) !== normalizeKey(currentSectionAccount)) {
+      const sectionHospital = await findHospitalByName(currentSectionAccount);
+      if (sectionHospital) {
+        hospital = sectionHospital;
+        resolvedItem = `${item} - ${explicitAccountName}`;
+      }
+    }
+
+    if (!hospital) {
+      skipped++;
+      skipReasons["account not found"] = (skipReasons["account not found"] ?? 0) + 1;
+      if (preview.length < MAX_PREVIEW) preview.push({ action: "skip", reason: "account not found", fields: { Item: item, Account: accountName } });
+      continue;
+    }
+
+    // Detect duplicates by item + hospitalId + periodMonth
+    let existingBudget = null;
+    if (duplicateMode === "update") {
+      const periodCondition = periodMonth
+        ? Prisma.sql`period_month = ${periodMonth}`
+        : Prisma.sql`period_month IS NULL`;
+      const rows = await prisma.$queryRaw<Array<{ id: string }>>(
+        Prisma.sql`
+          SELECT id
+          FROM public.marketing_budgets
+          WHERE hospital_id = ${hospital.id}
+            AND LOWER(item) = LOWER(${resolvedItem})
+            AND ${periodCondition}
+          LIMIT 1
+        `,
+      );
+      existingBudget = rows[0] ?? null;
+    }
+
+    if (existingBudget && duplicateMode === "update") {
+      try {
+        if (!dryRun) {
+          const updates: Prisma.Sql[] = [
+            Prisma.sql`marketing_meals = ${new Prisma.Decimal(marketingMeals)}`,
+            Prisma.sql`marketing_supplies = ${new Prisma.Decimal(marketingSupplies)}`,
+            Prisma.sql`marketing_events = ${new Prisma.Decimal(marketingEvents)}`,
+            Prisma.sql`actual_spend = ${new Prisma.Decimal(actualSpend)}`,
+            Prisma.sql`budgeted = ${new Prisma.Decimal(budgeted)}`,
+            Prisma.sql`updated_at = NOW()`,
+          ];
+
+          if (pointOfContact) updates.push(Prisma.sql`point_of_contact = ${pointOfContact}`);
+          if (startDate) updates.push(Prisma.sql`start_date = ${startDate}`);
+          if (periodMonth) updates.push(Prisma.sql`period_month = ${periodMonth}`);
+
+          await prisma.$executeRaw(
+            Prisma.sql`
+              UPDATE public.marketing_budgets
+              SET ${Prisma.join(updates, ", ")}
+              WHERE id = ${existingBudget.id}
+            `,
+          );
+        }
+        updated++;
+        if (preview.length < MAX_PREVIEW) preview.push({ action: "update", fields: { Item: resolvedItem, Account: hospital.hospitalName } });
+      } catch (e) {
+        errors.push(`Failed to update budget: ${e instanceof Error ? e.message : String(e)}`);
+      }
+    } else if (existingBudget) {
+      skipped++;
+      skipReasons["already exists"] = (skipReasons["already exists"] ?? 0) + 1;
+      if (preview.length < MAX_PREVIEW) preview.push({ action: "skip", reason: "already exists", fields: { Item: item } });
+    } else {
+      try {
+        if (!dryRun) {
+          await prisma.$executeRaw(
+            Prisma.sql`
+              INSERT INTO public.marketing_budgets (
+                id,
+                item,
+                point_of_contact,
+                period_month,
+                start_date,
+                marketing_meals,
+                marketing_supplies,
+                marketing_events,
+                actual_spend,
+                budgeted,
+                hospital_id,
+                created_at,
+                updated_at
+              ) VALUES (
+                ${randomUUID()},
+                ${resolvedItem},
+                ${pointOfContact || null},
+                ${periodMonth || null},
+                ${startDate || null},
+                ${new Prisma.Decimal(marketingMeals)},
+                ${new Prisma.Decimal(marketingSupplies)},
+                ${new Prisma.Decimal(marketingEvents)},
+                ${new Prisma.Decimal(actualSpend)},
+                ${new Prisma.Decimal(budgeted)},
+                ${hospital.id},
+                NOW(),
+                NOW()
+              )
+            `,
+          );
+        }
+        created++;
+        if (preview.length < MAX_PREVIEW) preview.push({ action: "create", fields: { Item: resolvedItem, Account: hospital.hospitalName, Spent: String(actualSpend) } });
+      } catch (e) {
+        errors.push(`Failed to create budget: ${e instanceof Error ? e.message : String(e)}`);
+      }
+    }
+  }
+
+  return { created, updated, skipped, errors, skipReasons, preview };
+}
+
+// ─── enum mappers ──────────────────────────────────────────────────────────────
+
+function mapFacilityType(s: string) {
+  const v = s.toLowerCase();
+  if (v.includes("emergency") || v.includes("ed ") || v.includes(" ed")) return "EMERGENCY_DEPARTMENT" as const;
+  if (v.includes("inpatient") || v.includes("psychiatric hospital")) return "INPATIENT_MEDICAL" as const;
+  if (v.includes("primary care") || v.includes("pcp") || v.includes("family medicine") || v.includes("internal medicine")) return "PRIMARY_CARE" as const;
+  if (v.includes("doctor") || v.includes("physician") || v.includes("private practice") || v.includes("medical office") || v.includes("physicians office")) return "PHYSICIANS_OFFICE" as const;
+  if (v.includes("outpatient psych") || v.includes("outpatient psychiatry") || v.includes("counseling practice")) return "OUTPATIENT_PSYCHIATRY" as const;
+  if (v.includes("outpatient") || v.includes("clinic") || v.includes("treatment center")) return "OUTPATIENT_PROGRAM" as const;
+  if (v.includes("iop") || v.includes("php")) return "IOP_PHP" as const;
+  if (v.includes("crisis stabilization") || v.includes("csu") || v.includes("mobile crisis")) return "CRISIS_STABILIZATION_UNIT" as const;
+  if (v.includes("crisis line") || v.includes("hotline")) return "CRISIS_LINE" as const;
+  if (v.includes("crisis")) return "CRISIS_STABILIZATION_UNIT" as const;
+  if (v.includes("court") || v.includes("legal") || v.includes("probation") || v.includes("dcs")) return "COURT_LEGAL" as const;
+  if (v.includes("community") || v.includes("fqhc") || v.includes("mental health center")) return "COMMUNITY_MENTAL_HEALTH" as const;
+  if (v.includes("church") || v.includes("faith") || v.includes("ministry") || v.includes("congregation") || v.includes("parish") || v.includes("mosque") || v.includes("synagogue")) return "FAITH_ORGANIZATION" as const;
+  if (v.includes("volunteer") || v.includes("nonprofit") || v.includes("non-profit") || v.includes("charity") || v.includes("foundation") || v.includes("association")) return "VOLUNTEER_ORGANIZATION" as const;
+  if (v.includes("school counselor") || v.includes("school-based")) return "SCHOOL_COUNSELOR" as const;
+  if (v.includes("school") || v.includes("university") || v.includes("college") || v.includes("district") || v.includes("education")) return "SCHOOL" as const;
+  if (v.includes("peer") || v.includes("recovery")) return "PEER_SUPPORT" as const;
+  if (v.includes("snf") || v.includes("skilled") || v.includes("ltach") || v.includes("nursing home")) return "SNF_LTACH" as const;
+  if (v.includes("self") || v.includes("family")) return "SELF_REFERRAL" as const;
+  return "OTHER" as const;
+}
+
+function mapContactType(s: string) {
+  const v = s.toLowerCase();
+  if (v.includes("social worker")) return "SOCIAL_WORKER" as const;
+  if (v.includes("case manager")) return "CASE_MANAGER" as const;
+  if (v.includes("discharge")) return "DISCHARGE_PLANNER" as const;
+  if (v.includes("ed physician") || v.includes("emergency physician")) return "ED_PHYSICIAN" as const;
+  if (v.includes("primary care") || v.includes("pcp")) return "PRIMARY_CARE_PHYSICIAN" as const;
+  if (v.includes("psychiatrist") || v.includes("psychiatry")) return "PSYCHIATRIST" as const;
+  if (v.includes("therapist") || v.includes("counselor")) return "THERAPIST" as const;
+  if (v.includes("crisis")) return "CRISIS_COUNSELOR" as const;
+  if (v.includes("director")) return "DIRECTOR" as const;
+  if (v.includes("coordinator")) return "COORDINATOR" as const;
+  if (v.includes("cmo") || v.includes("chief medical")) return "CMO" as const;
+  if (v.includes("cfo") || v.includes("chief financial")) return "CFO" as const;
+  if (v.includes("ceo") || v.includes("chief executive")) return "CEO" as const;
+  if (v.includes("coo") || v.includes("chief operating")) return "COO" as const;
+  if (v.includes("vp")) return "VP_BUSINESS_DEVELOPMENT" as const;
+  return "OTHER" as const;
+}
+
+function mapActivityType(s: string) {
+  const v = s.toLowerCase();
+  if (v.includes("call") || v.includes("phone")) return "CALL" as const;
+  if (v.includes("email")) return "EMAIL" as const;
+  if (v.includes("meeting") || v.includes("inservice") || v.includes("in-service")) return "MEETING" as const;
+  if (v.includes("site") || v.includes("visit")) return "SITE_VISIT" as const;
+  if (v.includes("proposal")) return "PROPOSAL_SENT" as const;
+  if (v.includes("contract")) return "CONTRACT_SENT" as const;
+  if (v.includes("referral")) return "REFERRAL_RECEIVED" as const;
+  if (v.includes("follow")) return "FOLLOW_UP" as const;
+  return "NOTE" as const;
+}
+
+// ─── route handler ─────────────────────────────────────────────────────────────
+// Supports: accounts, contacts, activities, leads, referralsources, marketingbudget
+
+export async function POST(req: NextRequest) {
+  const session = await auth();
+  if (!session || session.user.role !== "ADMIN") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const formData = await req.formData();
+    const file     = formData.get("file") as File | null;
+    const type     = (formData.get("type") as string ?? "").toLowerCase(); // accounts | contacts | activities | leads | referralsources | marketingbudget
+    const dryRun   = formData.get("dryRun") === "true";
+    const duplicateModeRaw = (formData.get("duplicateMode") as string ?? "skip").toLowerCase();
+    const duplicateMode: DuplicateMode = duplicateModeRaw === "update" ? "update" : "skip";
+
+    if (!file) return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
+    if (!["accounts", "contacts", "activities", "leads", "referralsources", "marketingbudget"].includes(type)) {
+      return NextResponse.json({ error: "type must be accounts, contacts, activities, leads, referral sources, or marketingbudget" }, { status: 400 });
+    }
+
+    const parsed = await parseSheet(file);
+    const rows = parsed.rows;
+
+    if (rows.length === 0) {
+      return NextResponse.json({ error: "No rows found in spreadsheet" }, { status: 400 });
+    }
+
+    const columns = parsed.columns.length > 0 ? parsed.columns : (rows.length > 0 ? Object.keys(rows[0]) : []);
+
+    let result;
+    if (type === "accounts")    result = await importAccounts(rows, dryRun, duplicateMode);
+    else if (type === "contacts") result = await importContacts(rows, dryRun, duplicateMode);
+    else if (type === "activities") result = await importActivities(rows, dryRun, duplicateMode);
+    else if (type === "leads")  result = await importLeads(rows, dryRun, duplicateMode);
+    else if (type === "referralsources") result = await importReferralSources(rows, dryRun, duplicateMode);
+    else                         result = await importMarketingBudget(rows, dryRun, duplicateMode);
+
+    return NextResponse.json({ ok: true, isDryRun: dryRun, type, totalRows: rows.length, columns, duplicateMode, ...result });
+  } catch (err) {
+    console.error("[admin/import]", err);
+    return NextResponse.json({ error: err instanceof Error ? err.message : "Import failed" }, { status: 500 });
+  }
+}
