@@ -1,8 +1,9 @@
-﻿import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { formatCurrency, formatRelativeTime } from "@/lib/utils";
 import AIInsightsPanel from "@/components/ai/AIInsightsPanel";
+import DashboardTasksWidget from "@/components/dashboard/DashboardTasksWidget";
 import Link from "next/link";
 
 const CYAN = "var(--nyx-accent)";
@@ -33,6 +34,20 @@ export default async function RepDashboard() {
   });
 
   if (!rep) redirect("/login");
+
+  const myTasks = await prisma.task.findMany({
+    where: { repId: rep.id, status: { in: ["OPEN", "IN_PROGRESS"] } },
+    include: {
+      hospital: { select: { id: true, hospitalName: true } },
+      opportunity: { select: { id: true, title: true } },
+    },
+    orderBy: [{ dueAt: "asc" }, { createdAt: "desc" }],
+    take: 8,
+  });
+  const myTasksSerialized = myTasks.map((t) => ({
+    id: t.id, title: t.title, notes: t.notes, status: t.status, priority: t.priority,
+    dueAt: t.dueAt ? t.dueAt.toISOString() : null, hospital: t.hospital, opportunity: t.opportunity,
+  }));
 
   const now = new Date();
 
@@ -137,6 +152,11 @@ export default async function RepDashboard() {
       {/* AI Insights */}
       <div style={{ marginBottom: 28 }}>
         <AIInsightsPanel role="rep" />
+      </div>
+
+      {/* My Tasks (ported from DestinySpringsCRM) */}
+      <div style={{ marginBottom: 28 }}>
+        <DashboardTasksWidget initialTasks={myTasksSerialized} />
       </div>
 
       <div className="nyx-page-grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
