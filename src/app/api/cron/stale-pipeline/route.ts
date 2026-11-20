@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
   // Opportunities that haven't been updated in 5+ days and aren't closed
   const staleOpps = await prisma.opportunity.findMany({
     where: {
-      stage: { notIn: ["DISCHARGED", "DECLINED"] },
+      stage: { notIn: ["CLOSED_WON", "CLOSED_LOST"] },
       updatedAt: { lte: cutoff },
       assignedRepId: { not: null },
     },

@@ -56,13 +56,13 @@ export default async function LeaderboardPage() {
 
   const rows: RepRow[] = reps.map((rep) => {
     const admissionsThisMonth = rep.opportunities.filter(
-      (o) => o.stage === "DISCHARGED" && o.updatedAt >= monthStart
+      (o) => o.stage === "CLOSED_WON" && o.updatedAt >= monthStart
     ).length;
     const admissionsLastMonth = rep.opportunities.filter(
-      (o) => o.stage === "DISCHARGED" && o.updatedAt >= lastMonthStart && o.updatedAt <= lastMonthEnd
+      (o) => o.stage === "CLOSED_WON" && o.updatedAt >= lastMonthStart && o.updatedAt <= lastMonthEnd
     ).length;
     const pipelineValue = rep.opportunities
-      .filter((o) => !["DISCHARGED", "DECLINED"].includes(o.stage))
+      .filter((o) => !["CLOSED_WON", "CLOSED_LOST"].includes(o.stage))
       .reduce((s, o) => s + Number(o.value ?? 0), 0);
     const activitiesThisMonth = rep.activities.length;
 

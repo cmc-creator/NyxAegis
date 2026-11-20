@@ -80,17 +80,17 @@ export default async function RepPerformancePage({ params }: { params: Promise<{
   const maxMonthlyAct = Math.max(...monthlyActData.map(m => m.count), 1);
 
   // Pipeline stats
-  const pipeline = rep.opportunities.filter(o => !["DISCHARGED", "DECLINED"].includes(o.stage));
+  const pipeline = rep.opportunities.filter(o => !["CLOSED_WON", "CLOSED_LOST"].includes(o.stage));
   const pipelineValue = pipeline.reduce((s, o) => s + Number(o.value ?? 0), 0);
-  const wonOpps = rep.opportunities.filter(o => o.stage === "DISCHARGED");
+  const wonOpps = rep.opportunities.filter(o => o.stage === "CLOSED_WON");
   const wonValue = wonOpps.reduce((s, o) => s + Number(o.value ?? 0), 0);
 
   // Lead stats
   const openLeads = rep.leads.filter(l => ["NEW", "CONTACTED", "QUALIFIED"].includes(l.status)).length;
 
   const stageColors: Record<string, string> = {
-    INQUIRY: "#94a3b8", CLINICAL_REVIEW: "#fbbf24", INSURANCE_AUTH: "#f59e0b",
-    ADMITTED: GOLD, ACTIVE: "#60a5fa", DISCHARGED: "#34d399", DECLINED: "#f87171", ON_HOLD: "#64748b",
+    DISCOVERY: "#94a3b8", QUALIFICATION: "#fbbf24", DEMO: "#f59e0b",
+    PROPOSAL: GOLD, NEGOTIATION: "#60a5fa", CLOSED_WON: "#34d399", CLOSED_LOST: "#f87171", ON_HOLD: "#64748b",
   };
 
   return (
