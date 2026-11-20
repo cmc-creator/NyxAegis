@@ -2,6 +2,167 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 
+type ResponseStyle = "concise" | "checklist" | "strategy_memo" | "draft_email";
+type SuggestionAggressiveness = "minimal" | "balanced" | "proactive";
+type DigestCadence = "daily" | "weekly";
+
+type TerritorySavedView = {
+  id: string;
+  label: string;
+  repFilter: string;
+};
+
+type UserPreferenceState = {
+  ai: {
+    responseStyle: ResponseStyle;
+    suggestionAggressiveness: SuggestionAggressiveness;
+    preferredChannels: string[];
+    favoriteWorkflow: string;
+  };
+  automations: {
+    followUpReminders: boolean;
+    quietReferralAlerts: boolean;
+    lowCensusPlaybooks: boolean;
+    stageStallAlerts: boolean;
+    draftedOutreach: boolean;
+    dailyDigest: boolean;
+    digestCadence: DigestCadence;
+    approvalRequiredForOutreach: boolean;
+  };
+  alerts: {
+    staleLeadDays: number;
+    stageStallDays: number;
+    noContactDays: number;
+    lowCensusThreshold: number;
+  };
+  dashboard: {
+    focusStatIds: string[];
+    statTargets: Record<string, number>;
+  };
+  territory: {
+    defaultViewId: string;
+    savedViews: TerritorySavedView[];
+  };
+};
+
+const DEFAULT_PREFS: UserPreferenceState = {
+  ai: {
+    responseStyle: "concise",
+    suggestionAggressiveness: "balanced",
+    preferredChannels: ["emergency_department", "crisis_unit"],
+    favoriteWorkflow: "relationship_reactivation",
+  },
+  automations: {
+    followUpReminders: true,
+    quietReferralAlerts: true,
+    lowCensusPlaybooks: true,
+    stageStallAlerts: true,
+    draftedOutreach: true,
+    dailyDigest: true,
+    digestCadence: "daily",
+    approvalRequiredForOutreach: true,
+  },
+  alerts: {
+    staleLeadDays: 14,
+    stageStallDays: 10,
+    noContactDays: 5,
+    lowCensusThreshold: 4,
+  },
+  dashboard: {
+    focusStatIds: ["leads", "opportunities", "invoices"],
+    statTargets: {
+      leads: 30,
+      opportunities: 20,
+      invoices: 12,
+    },
+  },
+  territory: {
+    defaultViewId: "",
+    savedViews: [],
+  },
+};
+
+const CHANNEL_OPTIONS = [
+  ["emergency_department", "Emergency Departments"],
+  ["crisis_unit", "Crisis Units"],
+  ["court_legal", "Court / Legal"],
+  ["outpatient_psych", "Outpatient Psychiatry"],
+  ["community_mh", "Community Mental Health"],
+  ["primary_care", "Primary Care"],
+] as const;
+
+const KPI_OPTIONS = [
+  ["reps", "Active Reps"],
+  ["hospitals", "Active Clients"],
+  ["leads", "Open Leads"],
+  ["opportunities", "Open Opportunities"],
+  ["won", "Discharged"],
+  ["invoices", "Pending Invoices"],
+] as const;
+
+function clampNumber(value: unknown, fallback: number, min: number, max: number): number {
+  const n = typeof value === "number" ? value : Number(value);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.min(max, Math.max(min, Math.round(n)));
+}
+
+function normalizePrefs(value: unknown): UserPreferenceState {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return DEFAULT_PREFS;
+  const prefs = value as Record<string, unknown>;
+  const ai = prefs.ai && typeof prefs.ai === "object" && !Array.isArray(prefs.ai) ? prefs.ai as Record<string, unknown> : {};
+  const automations = prefs.automations && typeof prefs.automations === "object" && !Array.isArray(prefs.automations) ? prefs.automations as Record<string, unknown> : {};
+  const alerts = prefs.alerts && typeof prefs.alerts === "object" && !Array.isArray(prefs.alerts) ? prefs.alerts as Record<string, unknown> : {};
+  const dashboard = prefs.dashboard && typeof prefs.dashboard === "object" && !Array.isArray(prefs.dashboard) ? prefs.dashboard as Record<string, unknown> : {};
+  const territory = prefs.territory && typeof prefs.territory === "object" && !Array.isArray(prefs.territory) ? prefs.territory as Record<string, unknown> : {};
+  const statTargets = dashboard.statTargets && typeof dashboard.statTargets === "object" && !Array.isArray(dashboard.statTargets)
+    ? Object.fromEntries(Object.entries(dashboard.statTargets as Record<string, unknown>).map(([key, target]) => [key, clampNumber(target, 0, 0, 100000)]))
+    : DEFAULT_PREFS.dashboard.statTargets;
+
+  return {
+    ai: {
+      responseStyle: ai.responseStyle === "checklist" || ai.responseStyle === "strategy_memo" || ai.responseStyle === "draft_email" ? ai.responseStyle : DEFAULT_PREFS.ai.responseStyle,
+      suggestionAggressiveness: ai.suggestionAggressiveness === "minimal" || ai.suggestionAggressiveness === "proactive" ? ai.suggestionAggressiveness : DEFAULT_PREFS.ai.suggestionAggressiveness,
+      preferredChannels: Array.isArray(ai.preferredChannels) ? ai.preferredChannels.filter((item): item is string => typeof item === "string") : DEFAULT_PREFS.ai.preferredChannels,
+      favoriteWorkflow: typeof ai.favoriteWorkflow === "string" && ai.favoriteWorkflow.trim() ? ai.favoriteWorkflow : DEFAULT_PREFS.ai.favoriteWorkflow,
+    },
+    automations: {
+      followUpReminders: typeof automations.followUpReminders === "boolean" ? automations.followUpReminders : DEFAULT_PREFS.automations.followUpReminders,
+      quietReferralAlerts: typeof automations.quietReferralAlerts === "boolean" ? automations.quietReferralAlerts : DEFAULT_PREFS.automations.quietReferralAlerts,
+      lowCensusPlaybooks: typeof automations.lowCensusPlaybooks === "boolean" ? automations.lowCensusPlaybooks : DEFAULT_PREFS.automations.lowCensusPlaybooks,
+      stageStallAlerts: typeof automations.stageStallAlerts === "boolean" ? automations.stageStallAlerts : DEFAULT_PREFS.automations.stageStallAlerts,
+      draftedOutreach: typeof automations.draftedOutreach === "boolean" ? automations.draftedOutreach : DEFAULT_PREFS.automations.draftedOutreach,
+      dailyDigest: typeof automations.dailyDigest === "boolean" ? automations.dailyDigest : DEFAULT_PREFS.automations.dailyDigest,
+      digestCadence: automations.digestCadence === "weekly" ? "weekly" : DEFAULT_PREFS.automations.digestCadence,
+      approvalRequiredForOutreach: typeof automations.approvalRequiredForOutreach === "boolean" ? automations.approvalRequiredForOutreach : DEFAULT_PREFS.automations.approvalRequiredForOutreach,
+    },
+    alerts: {
+      staleLeadDays: clampNumber(alerts.staleLeadDays, DEFAULT_PREFS.alerts.staleLeadDays, 1, 120),
+      stageStallDays: clampNumber(alerts.stageStallDays, DEFAULT_PREFS.alerts.stageStallDays, 1, 120),
+      noContactDays: clampNumber(alerts.noContactDays, DEFAULT_PREFS.alerts.noContactDays, 1, 60),
+      lowCensusThreshold: clampNumber(alerts.lowCensusThreshold, DEFAULT_PREFS.alerts.lowCensusThreshold, 1, 50),
+    },
+    dashboard: {
+      focusStatIds: Array.isArray(dashboard.focusStatIds)
+        ? dashboard.focusStatIds.filter((item): item is string => typeof item === "string")
+        : DEFAULT_PREFS.dashboard.focusStatIds,
+      statTargets,
+    },
+    territory: {
+      defaultViewId: typeof territory.defaultViewId === "string" ? territory.defaultViewId : "",
+      savedViews: Array.isArray(territory.savedViews)
+        ? territory.savedViews
+            .map((item) => {
+              if (!item || typeof item !== "object" || Array.isArray(item)) return null;
+              const view = item as Record<string, unknown>;
+              if (typeof view.id !== "string" || typeof view.label !== "string" || typeof view.repFilter !== "string") return null;
+              return { id: view.id, label: view.label, repFilter: view.repFilter };
+            })
+            .filter((item): item is TerritorySavedView => Boolean(item))
+        : [],
+    },
+  };
+}
+
 const inp: React.CSSProperties = {
   width: "100%", background: "var(--nyx-input-bg)", border: "1px solid var(--nyx-border)",
   borderRadius: 7, padding: "8px 12px", color: "var(--nyx-text)", fontSize: "0.875rem",
@@ -522,7 +683,7 @@ function applyStoredBgs(themeKey: string) {
   const theme = THEMES.find(t => t.key === themeKey);
   const html  = document.documentElement;
   (["backgrounds", "sidebar", "cards"] as const).forEach(type => {
-    const stored = localStorage.getItem(`nyxaegis-bg-${themeKey}-${type}`);
+    const stored = localStorage.getItem(`destinysprings-bg-${themeKey}-${type}`);
     const cssVar = BG_VAR_MAP[type];
     if (stored) {
       html.style.setProperty(cssVar, `url('${stored}')`);
@@ -733,13 +894,20 @@ function TwoFactorToggle() {
 }
 
 /*  Main component  */
-export default function SettingsClient() {
+export default function SettingsClient({ personalMode = false }: { personalMode?: boolean }) {
   const { data: session } = useSession();
   const isAdmin = session?.user?.role === "ADMIN";
+  const isProduction = process.env.NODE_ENV === "production";
+  const roleLabel = session?.user?.role === "REP" ? "Rep" : session?.user?.role === "ACCOUNT" ? "Account" : "Admin";
+  const isAccountRole = session?.user?.role === "ACCOUNT";
+  const showPersonalHeading = personalMode || isAccountRole;
   const [activeTheme, setActiveTheme]     = useState("luxury");
   const [orgName, setOrgName]             = useState("NyxAegis");
-  const [supportEmail, setSupportEmail]   = useState("support@nyxaegis.com");
+  const [supportEmail, setSupportEmail]   = useState("intake@destinysprings.com");
   const [notifs, setNotifs]               = useState({ email: true, push: false, digest: true, leads: true, contracts: false });
+  const [prefs, setPrefs]                 = useState<UserPreferenceState>(DEFAULT_PREFS);
+  const [prefsLoading, setPrefsLoading]   = useState(true);
+  const [prefsError, setPrefsError]       = useState("");
   const [devMsg, setDevMsg]               = useState("");
   const [devLoading, setDevLoading]       = useState<string | null>(null);
   const [confirmAction, setConfirmAction] = useState<string | null>(null);
@@ -750,31 +918,77 @@ export default function SettingsClient() {
   const [bgLoading, setBgLoading]       = useState(false);
   const [bgSelections, setBgSelections] = useState<Record<string, string>>({});
   const [bgTile, setBgTile]             = useState(false);
+  const [profileForm, setProfileForm] = useState({
+    fullName: "",
+    email: "",
+    avatar: "",
+    title: "",
+    phone: "",
+    city: "",
+    state: "",
+    bio: "",
+    organizationName: "",
+  });
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileError, setProfileError] = useState("");
+  const [profileSuccess, setProfileSuccess] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordSaving, setPasswordSaving] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState("");
 
   useEffect(() => {
-    const stored = typeof window !== "undefined" ? localStorage.getItem("nyxaegis-theme") ?? "luxury" : "luxury";
+    const stored = typeof window !== "undefined" ? localStorage.getItem("destinysprings-theme") ?? "luxury" : "luxury";
     setActiveTheme(stored);
     applyTheme(stored);
-    const org = localStorage.getItem("nyxaegis-orgName");
+    const org = localStorage.getItem("destinysprings-orgName");
     if (org) setOrgName(org);
-    const em = localStorage.getItem("nyxaegis-supportEmail");
+    const em = localStorage.getItem("destinysprings-supportEmail");
     if (em) setSupportEmail(em);
-    const n = localStorage.getItem("nyxaegis-notifs");
+    const n = localStorage.getItem("destinysprings-notifs");
     if (n) try { setNotifs(JSON.parse(n)); } catch { /* ignore */ }
     // Load stored bg selections
     const sels: Record<string, string> = {};
     THEMES.forEach(t => {
       ["backgrounds", "sidebar", "cards"].forEach(type => {
-        const k = `nyxaegis-bg-${t.key}-${type}`;
+        const k = `destinysprings-bg-${t.key}-${type}`;
         const v = localStorage.getItem(k);
         if (v) sels[k] = v;
       });
     });
     setBgSelections(sels);
     // Load tile mode for current theme
-    const tile = localStorage.getItem(`nyxaegis-bg-tile-${stored}`) === "1";
+    const tile = localStorage.getItem(`destinysprings-bg-tile-${stored}`) === "1";
     setBgTile(tile);
     applyTileMode(tile);
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/preferences")
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Could not load preferences");
+        return response.json() as Promise<{ preferences?: unknown }>;
+      })
+      .then((data) => {
+        if (!active) return;
+        setPrefs(normalizePrefs(data.preferences));
+        setPrefsError("");
+      })
+      .catch(() => {
+        if (!active) return;
+        setPrefs(DEFAULT_PREFS);
+        setPrefsError("Could not load Aegis preferences. Defaults are shown.");
+      })
+      .finally(() => {
+        if (active) setPrefsLoading(false);
+      });
+    return () => {
+      active = false;
+    };
   }, []);
 
   // Fetch available images whenever theme or tab changes
@@ -786,17 +1000,65 @@ export default function SettingsClient() {
       .finally(() => setBgLoading(false));
   }, [activeTheme, bgTab]);
 
+  useEffect(() => {
+    if (!showPersonalHeading) return;
+    let active = true;
+    setProfileLoading(true);
+    fetch("/api/me/profile")
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Could not load profile");
+        return response.json() as Promise<{ profile?: {
+          fullName?: string;
+          email?: string;
+          avatar?: string;
+          title?: string;
+          phone?: string;
+          city?: string;
+          state?: string;
+          bio?: string;
+          organizationName?: string;
+        } }>;
+      })
+      .then((data) => {
+        if (!active) return;
+        const profile = data.profile;
+        setProfileForm({
+          fullName: profile?.fullName ?? "",
+          email: profile?.email ?? "",
+          avatar: profile?.avatar ?? "",
+          title: profile?.title ?? "",
+          phone: profile?.phone ?? "",
+          city: profile?.city ?? "",
+          state: profile?.state ?? "",
+          bio: profile?.bio ?? "",
+          organizationName: profile?.organizationName ?? "",
+        });
+        setProfileError("");
+      })
+      .catch(() => {
+        if (!active) return;
+        setProfileError("Could not load profile details right now.");
+      })
+      .finally(() => {
+        if (active) setProfileLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [showPersonalHeading]);
+
   function selectTheme(key: string) {
     setActiveTheme(key);
-    localStorage.setItem("nyxaegis-theme", key);
+    localStorage.setItem("destinysprings-theme", key);
     applyTheme(key);
-    const tile = localStorage.getItem(`nyxaegis-bg-tile-${key}`) === "1";
+    const tile = localStorage.getItem(`destinysprings-bg-tile-${key}`) === "1";
     setBgTile(tile);
     applyTileMode(tile);
   }
 
   function selectBg(url: string) {
-    const lsKey  = `nyxaegis-bg-${activeTheme}-${bgTab}`;
+    const lsKey  = `destinysprings-bg-${activeTheme}-${bgTab}`;
     const cssVar = BG_VAR_MAP[bgTab];
     const theme  = THEMES.find(t => t.key === activeTheme);
     if (url) {
@@ -825,13 +1087,26 @@ export default function SettingsClient() {
 
   function selectTile(tiled: boolean) {
     setBgTile(tiled);
-    localStorage.setItem(`nyxaegis-bg-tile-${activeTheme}`, tiled ? "1" : "0");
+    localStorage.setItem(`destinysprings-bg-tile-${activeTheme}`, tiled ? "1" : "0");
     applyTileMode(tiled);
   }
 
-  function saveOrg() {
-    localStorage.setItem("nyxaegis-orgName", orgName);
-    localStorage.setItem("nyxaegis-supportEmail", supportEmail);
+  async function saveOrg() {
+    localStorage.setItem("destinysprings-orgName", orgName);
+    localStorage.setItem("destinysprings-supportEmail", supportEmail);
+    try {
+      const response = await fetch("/api/preferences", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ preferences: prefs }),
+      });
+      if (!response.ok) throw new Error("save_failed");
+      setPrefsError("");
+    } catch {
+      setPrefsError("Could not save Aegis settings right now.");
+      setSaved(false);
+      return;
+    }
     setSaved(true);
     setTimeout(() => setSaved(false), 2200);
   }
@@ -839,10 +1114,70 @@ export default function SettingsClient() {
   function setNotif(k: keyof typeof notifs, v: boolean) {
     const updated = { ...notifs, [k]: v };
     setNotifs(updated);
-    localStorage.setItem("nyxaegis-notifs", JSON.stringify(updated));
+    localStorage.setItem("destinysprings-notifs", JSON.stringify(updated));
+  }
+
+  function setAiPref<K extends keyof UserPreferenceState["ai"]>(key: K, value: UserPreferenceState["ai"][K]) {
+    setPrefs((current) => ({ ...current, ai: { ...current.ai, [key]: value } }));
+  }
+
+  function setAutomationPref<K extends keyof UserPreferenceState["automations"]>(key: K, value: UserPreferenceState["automations"][K]) {
+    setPrefs((current) => ({ ...current, automations: { ...current.automations, [key]: value } }));
+  }
+
+  function setAlertPref<K extends keyof UserPreferenceState["alerts"]>(key: K, value: UserPreferenceState["alerts"][K]) {
+    setPrefs((current) => ({ ...current, alerts: { ...current.alerts, [key]: value } }));
+  }
+
+  function toggleFocusStat(statId: string) {
+    setPrefs((current) => {
+      const exists = current.dashboard.focusStatIds.includes(statId);
+      return {
+        ...current,
+        dashboard: {
+          ...current.dashboard,
+          focusStatIds: exists
+            ? current.dashboard.focusStatIds.filter((id) => id !== statId)
+            : [...current.dashboard.focusStatIds, statId],
+        },
+      };
+    });
+  }
+
+  function setStatTarget(statId: string, target: number) {
+    setPrefs((current) => ({
+      ...current,
+      dashboard: {
+        ...current.dashboard,
+        statTargets: {
+          ...current.dashboard.statTargets,
+          [statId]: Math.max(0, Math.round(target)),
+        },
+      },
+    }));
+  }
+
+  function toggleChannel(channel: string) {
+    setPrefs((current) => {
+      const exists = current.ai.preferredChannels.includes(channel);
+      return {
+        ...current,
+        ai: {
+          ...current.ai,
+          preferredChannels: exists
+            ? current.ai.preferredChannels.filter((item) => item !== channel)
+            : [...current.ai.preferredChannels, channel],
+        },
+      };
+    });
   }
 
   async function devAction(action: string) {
+    if (isProduction && action === "seed-demo") {
+      setDevMsg("Demo seeding is disabled in production.");
+      return;
+    }
+
     if (action !== "seed-demo" && !confirmAction) { setConfirmAction(action); return; }
     if (confirmAction && confirmAction !== action) { setConfirmAction(action); return; }
     setDevLoading(action); setDevMsg(""); setConfirmAction(null);
@@ -854,15 +1189,252 @@ export default function SettingsClient() {
     finally { setDevLoading(null); }
   }
 
+  async function updatePassword() {
+    setPasswordError("");
+    setPasswordSuccess("");
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setPasswordError("Please complete all password fields.");
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      setPasswordError("New password must be at least 8 characters.");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPasswordError("New password and confirmation do not match.");
+      return;
+    }
+
+    setPasswordSaving(true);
+    try {
+      const response = await fetch("/api/preferences/password", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          currentPassword,
+          newPassword,
+          confirmPassword,
+        }),
+      });
+      const data = (await response.json().catch(() => ({}))) as { error?: string; message?: string };
+      if (!response.ok) {
+        setPasswordError(data.error ?? "Could not update password right now.");
+        return;
+      }
+
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setPasswordSuccess(data.message ?? "Password updated successfully.");
+    } catch {
+      setPasswordError("Network error while updating password.");
+    } finally {
+      setPasswordSaving(false);
+    }
+  }
+
+  async function saveProfile() {
+    setProfileError("");
+    setProfileSuccess("");
+    if (!profileForm.fullName.trim()) {
+      setProfileError("Full name is required.");
+      return;
+    }
+
+    setProfileSaving(true);
+    try {
+      const response = await fetch("/api/me/profile", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fullName: profileForm.fullName,
+          avatar: profileForm.avatar || null,
+          title: profileForm.title,
+          phone: profileForm.phone,
+          city: profileForm.city,
+          state: profileForm.state,
+          bio: profileForm.bio,
+        }),
+      });
+      const data = (await response.json().catch(() => ({}))) as { error?: string };
+      if (!response.ok) {
+        setProfileError(data.error ?? "Could not save profile right now.");
+        return;
+      }
+
+      setProfileSuccess("Profile updated successfully.");
+    } catch {
+      setProfileError("Network error while saving profile.");
+    } finally {
+      setProfileSaving(false);
+    }
+  }
+
+  async function selectAvatarFile(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setProfileError("Please choose an image file.");
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      setProfileError("Image must be 2MB or smaller.");
+      return;
+    }
+
+    const dataUrl = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result ?? ""));
+      reader.onerror = () => reject(new Error("read_failed"));
+      reader.readAsDataURL(file);
+    }).catch(() => "");
+
+    if (!dataUrl || !dataUrl.startsWith("data:image/")) {
+      setProfileError("Could not load selected image.");
+      return;
+    }
+
+    setProfileError("");
+    setProfileSuccess("");
+    setProfileForm((current) => ({ ...current, avatar: dataUrl }));
+  }
+
   const curTheme = THEMES.find(t => t.key === activeTheme) ?? THEMES[0];
 
   return (
     <div style={{ maxWidth: 740, paddingBottom: 40 }}>
       <div style={{ marginBottom: 32 }}>
         <p style={{ color: "var(--nyx-accent)", opacity: 0.55, fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 4 }}>CONFIGURATION</p>
-        <h1 style={{ fontSize: "1.9rem", fontWeight: 900, color: "var(--nyx-text)", letterSpacing: "-0.025em" }}>Settings</h1>
-        <p style={{ color: "var(--nyx-text-muted)", fontSize: "0.875rem", marginTop: 5 }}>Appearance, organization, notifications, and developer tools</p>
+        <h1 style={{ fontSize: "1.9rem", fontWeight: 900, color: "var(--nyx-text)", letterSpacing: "-0.025em" }}>{showPersonalHeading ? "My Account" : "Settings"}</h1>
+        <p style={{ color: "var(--nyx-text-muted)", fontSize: "0.875rem", marginTop: 5 }}>{showPersonalHeading ? "Personal preferences, notifications, AI behavior, and account security" : "Appearance, organization, notifications, and developer tools"}</p>
       </div>
+
+      {showPersonalHeading && (
+        <Section title="Profile">
+          <p style={{ fontSize: "0.78rem", color: "var(--nyx-text-muted)", marginBottom: 12, lineHeight: 1.6 }}>
+            Manage your personal account details used across the platform.
+          </p>
+          {profileLoading ? (
+            <div style={{ fontSize: "0.78rem", color: "var(--nyx-text-muted)" }}>Loading profile…</div>
+          ) : (
+            <>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 14 }}>
+                <div style={{ gridColumn: "1 / -1", display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+                  <div
+                    style={{
+                      width: 64,
+                      height: 64,
+                      borderRadius: "50%",
+                      border: "1px solid var(--nyx-border)",
+                      background: "rgba(0,0,0,0.25)",
+                      backgroundImage: profileForm.avatar ? `url(${profileForm.avatar})` : "none",
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "var(--nyx-text-muted)",
+                      fontSize: "0.9rem",
+                      fontWeight: 700,
+                    }}
+                  >
+                    {!profileForm.avatar ? (profileForm.fullName?.trim()?.charAt(0)?.toUpperCase() || "?") : ""}
+                  </div>
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                    <label
+                      style={{
+                        background: "var(--nyx-accent-dim)",
+                        border: "1px solid var(--nyx-accent-str)",
+                        borderRadius: 8,
+                        padding: "8px 12px",
+                        color: "var(--nyx-accent)",
+                        fontSize: "0.76rem",
+                        fontWeight: 700,
+                        cursor: "pointer",
+                      }}
+                    >
+                      Upload Photo
+                      <input type="file" accept="image/*" onChange={selectAvatarFile} style={{ display: "none" }} />
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setProfileForm((current) => ({ ...current, avatar: "" }))}
+                      style={{
+                        background: "rgba(239,68,68,0.08)",
+                        border: "1px solid rgba(239,68,68,0.2)",
+                        borderRadius: 8,
+                        padding: "8px 12px",
+                        color: "#fca5a5",
+                        fontSize: "0.76rem",
+                        fontWeight: 700,
+                        cursor: "pointer",
+                      }}
+                    >
+                      Remove Photo
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <label style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", display: "block", marginBottom: 4 }}>FULL NAME</label>
+                  <input style={inp} value={profileForm.fullName} onChange={(event) => setProfileForm((current) => ({ ...current, fullName: event.target.value }))} />
+                </div>
+                <div>
+                  <label style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", display: "block", marginBottom: 4 }}>EMAIL</label>
+                  <input style={{ ...inp, opacity: 0.72 }} value={profileForm.email} disabled />
+                </div>
+                {profileForm.organizationName ? (
+                  <div>
+                    <label style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", display: "block", marginBottom: 4 }}>ORGANIZATION</label>
+                    <input style={{ ...inp, opacity: 0.72 }} value={profileForm.organizationName} disabled />
+                  </div>
+                ) : null}
+                <div>
+                  <label style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", display: "block", marginBottom: 4 }}>TITLE</label>
+                  <input style={inp} value={profileForm.title} onChange={(event) => setProfileForm((current) => ({ ...current, title: event.target.value }))} />
+                </div>
+                <div>
+                  <label style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", display: "block", marginBottom: 4 }}>PHONE</label>
+                  <input style={inp} value={profileForm.phone} onChange={(event) => setProfileForm((current) => ({ ...current, phone: event.target.value }))} />
+                </div>
+                {session?.user?.role === "REP" && (
+                  <>
+                    <div>
+                      <label style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", display: "block", marginBottom: 4 }}>CITY</label>
+                      <input style={inp} value={profileForm.city} onChange={(event) => setProfileForm((current) => ({ ...current, city: event.target.value }))} />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", display: "block", marginBottom: 4 }}>STATE</label>
+                      <input style={inp} value={profileForm.state} onChange={(event) => setProfileForm((current) => ({ ...current, state: event.target.value }))} />
+                    </div>
+                    <div style={{ gridColumn: "1 / -1" }}>
+                      <label style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", display: "block", marginBottom: 4 }}>BIO</label>
+                      <textarea style={{ ...inp, minHeight: 84, resize: "vertical" }} value={profileForm.bio} onChange={(event) => setProfileForm((current) => ({ ...current, bio: event.target.value }))} />
+                    </div>
+                  </>
+                )}
+              </div>
+              {(profileError || profileSuccess) && (
+                <div style={{ marginTop: 10, fontSize: "0.78rem", color: profileError ? "#f87171" : "#34d399" }}>
+                  {profileError || profileSuccess}
+                </div>
+              )}
+              <div style={{ marginTop: 14 }}>
+                <button
+                  type="button"
+                  onClick={saveProfile}
+                  disabled={profileSaving}
+                  style={{ background: "var(--nyx-accent)", border: "1px solid transparent", borderRadius: 8, padding: "10px 18px", color: "#fff", cursor: profileSaving ? "not-allowed" : "pointer", fontSize: "0.82rem", fontWeight: 700, opacity: profileSaving ? 0.75 : 1 }}
+                >
+                  {profileSaving ? "Saving..." : "Save Profile"}
+                </button>
+              </div>
+            </>
+          )}
+        </Section>
+      )}
 
       {/*  THEMES  */}
       <Section title="Appearance &mdash; Theme">
@@ -943,8 +1515,8 @@ export default function SettingsClient() {
               <button type="button" onClick={() => selectBg("")} style={{
                 flexShrink: 0, width: 68, height: 68, borderRadius: 8, display: "flex", flexDirection: "column",
                 alignItems: "center", justifyContent: "center", gap: 3, cursor: "pointer",
-                background: !bgSelections[`nyxaegis-bg-${activeTheme}-${bgTab}`] ? "var(--nyx-accent-dim)" : "rgba(0,0,0,0.25)",
-                border: `2px solid ${!bgSelections[`nyxaegis-bg-${activeTheme}-${bgTab}`] ? "var(--nyx-accent)" : "var(--nyx-border)"}`,
+                background: !bgSelections[`destinysprings-bg-${activeTheme}-${bgTab}`] ? "var(--nyx-accent-dim)" : "rgba(0,0,0,0.25)",
+                border: `2px solid ${!bgSelections[`destinysprings-bg-${activeTheme}-${bgTab}`] ? "var(--nyx-accent)" : "var(--nyx-border)"}`,
                 color: "var(--nyx-text-muted)", fontSize: "0.62rem", fontWeight: 600, transition: "all 0.15s",
               }}>
                 <span style={{ fontSize: "1.1rem", lineHeight: 1 }}>∅</span>
@@ -952,11 +1524,17 @@ export default function SettingsClient() {
               </button>
               {bgAssets.length === 0 ? (
                 <div style={{ fontSize: "0.75rem", color: "var(--nyx-text-muted)", padding: "20px 10px", lineHeight: 1.7, alignSelf: "center" }}>
-                  No images yet, drop images into{" "}
-                  <code style={{ fontFamily: "monospace", fontSize: "0.68rem" }}>public/themes/{activeTheme}/{bgTab}/</code>
+                  {isAdmin ? (
+                    <>
+                      No images yet, drop images into{" "}
+                      <code style={{ fontFamily: "monospace", fontSize: "0.68rem" }}>public/themes/{activeTheme}/{bgTab}/</code>
+                    </>
+                  ) : (
+                    "No images available for this theme section yet."
+                  )}
                 </div>
               ) : bgAssets.map(url => {
-                const isSelected = bgSelections[`nyxaegis-bg-${activeTheme}-${bgTab}`] === url;
+                const isSelected = bgSelections[`destinysprings-bg-${activeTheme}-${bgTab}`] === url;
                 return (
                   <button key={url} type="button" onClick={() => selectBg(url)} title={url.split("/").pop()} style={{
                     flexShrink: 0, width: 80, height: 68, borderRadius: 8, cursor: "pointer",
@@ -982,8 +1560,8 @@ export default function SettingsClient() {
           )}
         </div>
       </Section>
-      <Section title="Organization">
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+      {!personalMode && <Section title="Organization">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 14 }}>
           <div>
             <label style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", display: "block", marginBottom: 4 }}>ORG / BRAND NAME</label>
             <input style={inp} value={orgName} onChange={e => setOrgName(e.target.value)} />
@@ -993,7 +1571,7 @@ export default function SettingsClient() {
             <input style={inp} type="email" value={supportEmail} onChange={e => setSupportEmail(e.target.value)} />
           </div>
         </div>
-      </Section>
+      </Section>}
 
       {/*  NOTIFICATIONS  */}
       <Section title="Notifications">
@@ -1010,6 +1588,168 @@ export default function SettingsClient() {
         ))}
       </Section>
 
+      <Section title="Aegis AI Preferences">
+        <p style={{ fontSize: "0.78rem", color: "var(--nyx-text-muted)", marginBottom: 18, lineHeight: 1.65 }}>
+          Control how Aegis supports your workflow. These settings shape response style, proactive guidance, preferred referral channels, and automation behavior for your {roleLabel.toLowerCase()} workflow.
+        </p>
+        {prefsLoading ? (
+          <div style={{ fontSize: "0.78rem", color: "var(--nyx-text-muted)" }}>Loading Aegis profile…</div>
+        ) : (
+          <>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 14, marginBottom: 18 }}>
+              <div>
+                <label style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", display: "block", marginBottom: 4 }}>RESPONSE STYLE</label>
+                <select style={inp} value={prefs.ai.responseStyle} onChange={e => setAiPref("responseStyle", e.target.value as ResponseStyle)}>
+                  <option value="concise">Concise</option>
+                  <option value="checklist">Checklist</option>
+                  <option value="strategy_memo">Strategy Memo</option>
+                  <option value="draft_email">Draft Email</option>
+                </select>
+              </div>
+              <div>
+                <label style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", display: "block", marginBottom: 4 }}>SUGGESTION STYLE</label>
+                <select style={inp} value={prefs.ai.suggestionAggressiveness} onChange={e => setAiPref("suggestionAggressiveness", e.target.value as SuggestionAggressiveness)}>
+                  <option value="minimal">Minimal</option>
+                  <option value="balanced">Balanced</option>
+                  <option value="proactive">Proactive</option>
+                </select>
+              </div>
+            </div>
+            <div style={{ marginBottom: 18 }}>
+              <label style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", display: "block", marginBottom: 4 }}>FAVORITE WORKFLOW</label>
+              <input style={inp} value={prefs.ai.favoriteWorkflow} onChange={e => setAiPref("favoriteWorkflow", e.target.value)} placeholder="relationship_reactivation, pipeline_recovery, account_strategy" />
+            </div>
+            <div>
+              <div style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", marginBottom: 8 }}>PRIORITY REFERRAL CHANNELS</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {CHANNEL_OPTIONS.map(([value, label]) => {
+                  const selected = prefs.ai.preferredChannels.includes(value);
+                  return (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => toggleChannel(value)}
+                      style={{
+                        padding: "6px 12px",
+                        borderRadius: 999,
+                        border: `1px solid ${selected ? "var(--nyx-accent-str)" : "var(--nyx-border)"}`,
+                        background: selected ? "var(--nyx-accent-dim)" : "rgba(255,255,255,0.03)",
+                        color: selected ? "var(--nyx-accent)" : "var(--nyx-text-muted)",
+                        cursor: "pointer",
+                        fontSize: "0.75rem",
+                        fontWeight: selected ? 700 : 500,
+                      }}
+                    >
+                      {selected ? "✓ " : ""}{label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </>
+        )}
+      </Section>
+
+      <Section title="Automation Preferences">
+        <p style={{ fontSize: "0.78rem", color: "var(--nyx-text-muted)", marginBottom: 10, lineHeight: 1.65 }}>
+          Choose which automations Aegis should prepare or monitor for you. High-risk actions remain approval-based by design.
+        </p>
+        {([
+          ["followUpReminders", "Follow-Up Reminders", "Notify when leads or opportunities are due or overdue"],
+          ["quietReferralAlerts", "Quiet Referral Alerts", "Flag sending facilities or referral sources that have gone quiet"],
+          ["lowCensusPlaybooks", "Pipeline Recovery Playbooks", "Generate action plans when pipeline volume softens"],
+          ["stageStallAlerts", "Stage Stall Alerts", "Detect opportunities sitting too long in Inquiry, Clinical Review, or Insurance Auth"],
+          ["draftedOutreach", "Drafted Outreach", "Let Aegis generate outreach sequences and follow-up drafts"],
+          ["dailyDigest", "Digest Emails", "Prepare daily or weekly workload summaries"],
+          ["approvalRequiredForOutreach", "Approval Required For Outreach", "Never auto-send relationship or marketing emails without review"],
+        ] as [keyof UserPreferenceState["automations"], string, string][]).map(([key, label, desc]) => (
+          <SettingRow key={key} label={label} desc={desc}>
+            <Toggle checked={prefs.automations[key] as boolean} onChange={v => setAutomationPref(key, v as never)} />
+          </SettingRow>
+        ))}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 14, marginTop: 16 }}>
+          <div>
+            <label style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", display: "block", marginBottom: 4 }}>DIGEST CADENCE</label>
+            <select style={inp} value={prefs.automations.digestCadence} onChange={e => setAutomationPref("digestCadence", e.target.value as DigestCadence)}>
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+            </select>
+          </div>
+        </div>
+      </Section>
+
+      <Section title="Personal KPI Cards">
+        <p style={{ fontSize: "0.78rem", color: "var(--nyx-text-muted)", marginBottom: 12, lineHeight: 1.6 }}>
+          Pick the KPI cards that matter most to you and set your personal targets. The dashboard can prioritize these metrics first.
+        </p>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 16 }}>
+          {KPI_OPTIONS.map(([id, label]) => {
+            const selected = prefs.dashboard.focusStatIds.includes(id);
+            return (
+              <button
+                key={id}
+                type="button"
+                onClick={() => toggleFocusStat(id)}
+                style={{
+                  padding: "6px 12px",
+                  borderRadius: 999,
+                  border: `1px solid ${selected ? "var(--nyx-accent-str)" : "var(--nyx-border)"}`,
+                  background: selected ? "var(--nyx-accent-dim)" : "rgba(255,255,255,0.03)",
+                  color: selected ? "var(--nyx-accent)" : "var(--nyx-text-muted)",
+                  cursor: "pointer",
+                  fontSize: "0.75rem",
+                  fontWeight: selected ? 700 : 500,
+                }}
+              >
+                {selected ? "* " : ""}{label}
+              </button>
+            );
+          })}
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 12 }}>
+          {prefs.dashboard.focusStatIds.map((id) => {
+            const label = KPI_OPTIONS.find(([key]) => key === id)?.[1] ?? id;
+            return (
+              <div key={id}>
+                <label style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", display: "block", marginBottom: 4 }}>{label.toUpperCase()} TARGET</label>
+                <input
+                  type="number"
+                  min={0}
+                  style={inp}
+                  value={prefs.dashboard.statTargets[id] ?? 0}
+                  onChange={(event) => setStatTarget(id, Number(event.target.value || 0))}
+                />
+              </div>
+            );
+          })}
+        </div>
+      </Section>
+
+      <Section title="Alert Thresholds">
+        <p style={{ fontSize: "0.78rem", color: "var(--nyx-text-muted)", marginBottom: 12, lineHeight: 1.6 }}>
+          Define when Aegis should nudge you. These thresholds drive personal reminders and stage-stall alert timing.
+        </p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 14 }}>
+          <div>
+            <label style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", display: "block", marginBottom: 4 }}>STALE LEAD DAYS</label>
+            <input type="number" min={1} max={120} style={inp} value={prefs.alerts.staleLeadDays} onChange={e => setAlertPref("staleLeadDays", clampNumber(e.target.value, 14, 1, 120))} />
+          </div>
+          <div>
+            <label style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", display: "block", marginBottom: 4 }}>STAGE STALL DAYS</label>
+            <input type="number" min={1} max={120} style={inp} value={prefs.alerts.stageStallDays} onChange={e => setAlertPref("stageStallDays", clampNumber(e.target.value, 10, 1, 120))} />
+          </div>
+          <div>
+            <label style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", display: "block", marginBottom: 4 }}>NO-CONTACT DAYS</label>
+            <input type="number" min={1} max={60} style={inp} value={prefs.alerts.noContactDays} onChange={e => setAlertPref("noContactDays", clampNumber(e.target.value, 5, 1, 60))} />
+          </div>
+          <div>
+            <label style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", display: "block", marginBottom: 4 }}>LOW PIPELINE THRESHOLD</label>
+            <input type="number" min={1} max={50} style={inp} value={prefs.alerts.lowCensusThreshold} onChange={e => setAlertPref("lowCensusThreshold", clampNumber(e.target.value, 4, 1, 50))} />
+          </div>
+        </div>
+      </Section>
+
       {/*  SECURITY / 2FA  */}
       <Section title="Security &amp; Authentication">
         <SettingRow
@@ -1024,8 +1764,79 @@ export default function SettingsClient() {
         </SettingRow>
       </Section>
 
+      {personalMode && (
+        <Section title="Change Password">
+          <p style={{ fontSize: "0.78rem", color: "var(--nyx-text-muted)", marginBottom: 14, lineHeight: 1.6 }}>
+            Update your account password. You must enter your current password to confirm this change.
+          </p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 14 }}>
+            <div>
+              <label style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", display: "block", marginBottom: 4 }}>CURRENT PASSWORD</label>
+              <input
+                type="password"
+                autoComplete="current-password"
+                style={inp}
+                value={currentPassword}
+                onChange={(event) => setCurrentPassword(event.target.value)}
+              />
+            </div>
+            <div>
+              <label style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", display: "block", marginBottom: 4 }}>NEW PASSWORD</label>
+              <input
+                type="password"
+                autoComplete="new-password"
+                style={inp}
+                value={newPassword}
+                onChange={(event) => setNewPassword(event.target.value)}
+              />
+            </div>
+            <div>
+              <label style={{ fontSize: "0.72rem", color: "var(--nyx-text-muted)", display: "block", marginBottom: 4 }}>CONFIRM NEW PASSWORD</label>
+              <input
+                type="password"
+                autoComplete="new-password"
+                style={inp}
+                value={confirmPassword}
+                onChange={(event) => setConfirmPassword(event.target.value)}
+              />
+            </div>
+          </div>
+          {(passwordError || passwordSuccess) && (
+            <div
+              style={{
+                marginTop: 12,
+                fontSize: "0.78rem",
+                color: passwordError ? "#f87171" : "#34d399",
+              }}
+            >
+              {passwordError || passwordSuccess}
+            </div>
+          )}
+          <div style={{ marginTop: 14 }}>
+            <button
+              type="button"
+              onClick={updatePassword}
+              disabled={passwordSaving}
+              style={{
+                background: "var(--nyx-accent)",
+                border: "1px solid transparent",
+                borderRadius: 8,
+                padding: "10px 18px",
+                color: "#fff",
+                cursor: passwordSaving ? "not-allowed" : "pointer",
+                fontSize: "0.82rem",
+                fontWeight: 700,
+                opacity: passwordSaving ? 0.75 : 1,
+              }}
+            >
+              {passwordSaving ? "Updating..." : "Update Password"}
+            </button>
+          </div>
+        </Section>
+      )}
+
       {/*  DEV TOOLS  */}
-      <Section title="Developer Tools">
+      {!personalMode && !isProduction && <Section title="Developer Tools">
         {/* Admin-only warning banner */}
         <div style={{ background: "rgba(248,113,113,0.08)", border: "1px solid rgba(248,113,113,0.30)", borderRadius: 9, padding: "12px 16px", marginBottom: 16, display: "flex", alignItems: "flex-start", gap: 10 }}>
           <span style={{ fontSize: "1.1rem", lineHeight: "1.3", flexShrink: 0 }}>⚠️</span>
@@ -1043,14 +1854,15 @@ export default function SettingsClient() {
         )}
         <p style={{ fontSize: "0.8rem", color: "var(--nyx-text-muted)", marginBottom: 18 }}>Manage demo data for testing and presentations. Use with caution in production.</p>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          {/* Seed */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "rgba(0,0,0,0.2)", borderRadius: 9, padding: "14px 18px", border: "1px solid rgba(52,211,153,0.12)" }}>
-            <div>
-              <div style={{ fontSize: "0.875rem", fontWeight: 600, color: "#34d399" }}>Seed Demo Data</div>
-              <div style={{ fontSize: "0.75rem", color: "var(--nyx-text-muted)", marginTop: 2 }}>Creates sample leads, opportunities, and activities for demonstration</div>
+          {!isProduction && (
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "rgba(0,0,0,0.2)", borderRadius: 9, padding: "14px 18px", border: "1px solid rgba(52,211,153,0.12)" }}>
+              <div>
+                <div style={{ fontSize: "0.875rem", fontWeight: 600, color: "#34d399" }}>Seed Demo Data</div>
+                <div style={{ fontSize: "0.75rem", color: "var(--nyx-text-muted)", marginTop: 2 }}>Creates sample leads, opportunities, and activities for demonstration</div>
+              </div>
+              <button onClick={() => devAction("seed-demo")} disabled={devLoading !== null} style={{ background: "rgba(52,211,153,0.1)", border: "1px solid rgba(52,211,153,0.25)", borderRadius: 7, padding: "8px 18px", color: "#34d399", cursor: "pointer", fontWeight: 700, fontSize: "0.8rem", whiteSpace: "nowrap" }}>{devLoading === "seed-demo" ? "Seeding\u2026" : "Seed Demo"}</button>
             </div>
-            <button onClick={() => devAction("seed-demo")} disabled={devLoading !== null} style={{ background: "rgba(52,211,153,0.1)", border: "1px solid rgba(52,211,153,0.25)", borderRadius: 7, padding: "8px 18px", color: "#34d399", cursor: "pointer", fontWeight: 700, fontSize: "0.8rem", whiteSpace: "nowrap" }}>{devLoading === "seed-demo" ? "Seeding\u2026" : "Seed Demo"}</button>
-          </div>
+          )}
 
           {/* Clear Demo */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "rgba(0,0,0,0.2)", borderRadius: 9, padding: "14px 18px", border: "1px solid rgba(251,191,36,0.18)", opacity: isAdmin ? 1 : 0.45 }}>
@@ -1095,7 +1907,7 @@ export default function SettingsClient() {
             {devMsg}
           </div>
         )}
-      </Section>
+      </Section>}
 
       {/* Save bar */}
       <div style={{
@@ -1103,6 +1915,7 @@ export default function SettingsClient() {
         gap: 14, marginTop: 32, paddingTop: 20, paddingBottom: 32,
         borderTop: "1px solid var(--nyx-border)",
       }}>
+        {prefsError && <span style={{ fontSize: "0.78rem", color: "#f87171", marginRight: "auto" }}>{prefsError}</span>}
         <button onClick={saveOrg} style={{
           background: saved ? "rgba(52,211,153,0.18)" : "var(--nyx-accent)",
           border: `1px solid ${saved ? "rgba(52,211,153,0.45)" : "transparent"}`,
