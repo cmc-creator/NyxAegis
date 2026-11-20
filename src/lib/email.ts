@@ -224,22 +224,6 @@ export async function sendContractExpiredEmail(opts: {
     .catch((e: unknown) => console.error("[email] contract-expired failed:", e));
 }
 
-) {
-  if (!canSend()) return;
-  await deliver({
-      from: FROM,
-      to: opts.to,
-      subject: `Referral Admitted: ${opts.oppTitle}`,
-      html: layout(`
-        <h2 style="margin:0 0 6px;color:#34d399;font-size:17px;font-weight:800;">Referral Admitted &#127881;</h2>
-        <p style="color:rgba(237,228,207,0.55);margin:0 0 18px;font-size:14px;">Hi ${opts.name || "there"},<br>Great news &mdash; your referral has been officially admitted.</p>
-        ${infoBox("#34d399", "ADMITTED", opts.oppTitle, opts.hospitalName)}
-        ${btn(`${BASE}/rep/opportunities`, "View Opportunities", "#34d399", "#052e16")}
-      `),
-    })
-    .catch((e: unknown) => console.error("[email] admission failed:", e));
-}
-
 // ── Weekly Digest (sent to each active rep every Monday) ────────────────────
 export async function sendWeeklyDigestEmail(opts: {
   to: string;
@@ -320,23 +304,6 @@ export async function sendInactiveSourceEmail(opts: {
       `),
     })
     .catch((e: unknown) => console.error("[email] inactive-source failed:", e));
-}
-
-) {
-  if (!canSend()) return;
-  const pct = opts.totalBeds > 0 ? Math.round((opts.totalAvailable / opts.totalBeds) * 100) : 0;
-  await deliver({
-      from: FROM,
-      to: opts.to,
-      subject: `Low Census Alert: ${opts.totalAvailable} beds available (${pct}% capacity)`,
-      html: layout(`
-        <h2 style="margin:0 0 6px;color:#34d399;font-size:17px;font-weight:800;">Low Census — Push Referrals Now</h2>
-        <p style="color:rgba(237,228,207,0.55);margin:0 0 18px;font-size:14px;">Hi ${opts.name || "there"},<br>Today's census shows low bed availability. This is the time to activate referral source outreach.</p>
-        ${infoBox("#34d399", "LOW CENSUS", `${opts.totalAvailable} of ${opts.totalBeds} beds available`, `Census date: ${opts.date} &bull; ${pct}% capacity open`)}
-        ${btn(`${BASE}/rep/bedboard`, "View Bedboard", "#34d399", "#052e16")}
-      `),
-    })
-    .catch((e: unknown) => console.error("[email] low-census failed:", e));
 }
 
 // ── Rep Inactive Activity Alert (to rep) ─────────────────────────────────────
