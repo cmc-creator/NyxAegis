@@ -190,10 +190,6 @@ export default async function RepTerritoryPage() {
   );
 }
 
-const CARD = "var(--nyx-card)";
-const BORDER = "var(--nyx-accent-dim)";
-const TEXT = "var(--nyx-text)";
-const TEXT_MUTED = "var(--nyx-text-muted)";
 
 export default async function RepTerritoryPage() {
   const session = await auth();
