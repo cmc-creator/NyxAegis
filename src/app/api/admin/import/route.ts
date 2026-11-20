@@ -1083,19 +1083,14 @@ async function importLeads(rows: Record<string, unknown>[], dryRun = false, dupl
 function mapReferralSourceType(input: string) {
   const v = input.toLowerCase();
   if (!v) return "OTHER" as const;
-  if (v.includes("emergency") || v.includes("ed") || v.includes("hospital")) return "EMERGENCY_DEPARTMENT" as const;
-  if (v.includes("primary care") || v.includes("pcp") || v.includes("family medicine") || v.includes("internal medicine")) return "PRIMARY_CARE_PHYSICIAN" as const;
-  if (v.includes("psychiatrist") || v.includes("psych md")) return "PSYCHIATRIST" as const;
-  if (v.includes("therap") || v.includes("counsel") || v.includes("lpc") || v.includes("lcsw")) return "OUTPATIENT_THERAPIST" as const;
-  if (v.includes("iop") || v.includes("php")) return "IOP_PHP_PROGRAM" as const;
-  if (v.includes("crisis line") || v.includes("hotline")) return "CRISIS_LINE" as const;
-  if (v.includes("crisis")) return "CRISIS_STABILIZATION_UNIT" as const;
-  if (v.includes("court") || v.includes("legal") || v.includes("probation") || v.includes("dcs")) return "COURT_LEGAL_SYSTEM" as const;
-  if (v.includes("community") || v.includes("mental health") || v.includes("fqhc")) return "COMMUNITY_MENTAL_HEALTH" as const;
-  if (v.includes("snf") || v.includes("ltach") || v.includes("nursing")) return "SNF_LTACH" as const;
-  if (v.includes("school")) return "SCHOOL_COUNSELOR" as const;
-  if (v.includes("peer") || v.includes("recovery")) return "PEER_SUPPORT" as const;
-  if (v.includes("self") || v.includes("family")) return "SELF_REFERRAL" as const;
+  if (v.includes("snf") || v.includes("ltach") || v.includes("nursing")) return "SNF" as const;
+  if (v.includes("rehab")) return "REHAB_FACILITY" as const;
+  if (v.includes("home health")) return "HOME_HEALTH" as const;
+  if (v.includes("emergency") || v.includes("hospital")) return "HOSPITAL" as const;
+  if (v.includes("primary care") || v.includes("pcp") || v.includes("family medicine") || v.includes("internal medicine")) return "PHYSICIAN" as const;
+  if (v.includes("psychiat") || v.includes("therap") || v.includes("counsel") || v.includes("specialist")) return "SPECIALIST" as const;
+  if (v.includes("practice") || v.includes("group")) return "PRACTICE_GROUP" as const;
+  if (v.includes("iop") || v.includes("php") || v.includes("community") || v.includes("fqhc") || v.includes("facility")) return "CARE_FACILITY" as const;
   return "OTHER" as const;
 }
 
@@ -1440,45 +1435,36 @@ async function importMarketingBudget(rows: Record<string, unknown>[], dryRun = f
 
 function mapFacilityType(s: string) {
   const v = s.toLowerCase();
-  if (v.includes("emergency") || v.includes("ed ") || v.includes(" ed")) return "EMERGENCY_DEPARTMENT" as const;
-  if (v.includes("inpatient") || v.includes("psychiatric hospital")) return "INPATIENT_MEDICAL" as const;
-  if (v.includes("primary care") || v.includes("pcp") || v.includes("family medicine") || v.includes("internal medicine")) return "PRIMARY_CARE" as const;
-  if (v.includes("doctor") || v.includes("physician") || v.includes("private practice") || v.includes("medical office") || v.includes("physicians office")) return "PHYSICIANS_OFFICE" as const;
-  if (v.includes("outpatient psych") || v.includes("outpatient psychiatry") || v.includes("counseling practice")) return "OUTPATIENT_PSYCHIATRY" as const;
-  if (v.includes("outpatient") || v.includes("clinic") || v.includes("treatment center")) return "OUTPATIENT_PROGRAM" as const;
-  if (v.includes("iop") || v.includes("php")) return "IOP_PHP" as const;
-  if (v.includes("crisis stabilization") || v.includes("csu") || v.includes("mobile crisis")) return "CRISIS_STABILIZATION_UNIT" as const;
-  if (v.includes("crisis line") || v.includes("hotline")) return "CRISIS_LINE" as const;
-  if (v.includes("crisis")) return "CRISIS_STABILIZATION_UNIT" as const;
-  if (v.includes("court") || v.includes("legal") || v.includes("probation") || v.includes("dcs")) return "COURT_LEGAL" as const;
-  if (v.includes("community") || v.includes("fqhc") || v.includes("mental health center")) return "COMMUNITY_MENTAL_HEALTH" as const;
-  if (v.includes("church") || v.includes("faith") || v.includes("ministry") || v.includes("congregation") || v.includes("parish") || v.includes("mosque") || v.includes("synagogue")) return "FAITH_ORGANIZATION" as const;
-  if (v.includes("volunteer") || v.includes("nonprofit") || v.includes("non-profit") || v.includes("charity") || v.includes("foundation") || v.includes("association")) return "VOLUNTEER_ORGANIZATION" as const;
-  if (v.includes("school counselor") || v.includes("school-based")) return "SCHOOL_COUNSELOR" as const;
-  if (v.includes("school") || v.includes("university") || v.includes("college") || v.includes("district") || v.includes("education")) return "SCHOOL" as const;
-  if (v.includes("peer") || v.includes("recovery")) return "PEER_SUPPORT" as const;
-  if (v.includes("snf") || v.includes("skilled") || v.includes("ltach") || v.includes("nursing home")) return "SNF_LTACH" as const;
-  if (v.includes("self") || v.includes("family")) return "SELF_REFERRAL" as const;
+  if (v.includes("urgent care")) return "URGENT_CARE" as const;
+  if (v.includes("critical access")) return "CRITICAL_ACCESS" as const;
+  if (v.includes("children") || v.includes("pediatric")) return "CHILDRENS" as const;
+  if (v.includes("cancer") || v.includes("oncology")) return "CANCER_CENTER" as const;
+  if (v.includes("rehab")) return "REHABILITATION" as const;
+  if (v.includes("behavioral") || v.includes("psych")) return "BEHAVIORAL_HEALTH" as const;
+  if (v.includes("snf") || v.includes("skilled") || v.includes("ltach") || v.includes("nursing home") || v.includes("long term")) return "LONG_TERM_CARE" as const;
+  if (v.includes("health system")) return "HEALTH_SYSTEM" as const;
+  if (v.includes("ambulatory") || v.includes("surgery center") || v.includes("surgical center")) return "AMBULATORY" as const;
+  if (v.includes("primary care") || v.includes("pcp") || v.includes("family medicine") || v.includes("internal medicine")) return "PCP" as const;
+  if (v.includes("private practice") || v.includes("physician") || v.includes("medical office") || v.includes("doctor")) return "PRIVATE_PRACTICE" as const;
+  if (v.includes("specialty")) return "SPECIALTY" as const;
+  if (v.includes("emergency") || v.includes("inpatient") || v.includes("hospital")) return "ACUTE_CARE" as const;
+  if (v.includes("outpatient") || v.includes("clinic")) return "OUTPATIENT" as const;
   return "OTHER" as const;
 }
 
 function mapContactType(s: string) {
   const v = s.toLowerCase();
-  if (v.includes("social worker")) return "SOCIAL_WORKER" as const;
-  if (v.includes("case manager")) return "CASE_MANAGER" as const;
-  if (v.includes("discharge")) return "DISCHARGE_PLANNER" as const;
-  if (v.includes("ed physician") || v.includes("emergency physician")) return "ED_PHYSICIAN" as const;
-  if (v.includes("primary care") || v.includes("pcp")) return "PRIMARY_CARE_PHYSICIAN" as const;
-  if (v.includes("psychiatrist") || v.includes("psychiatry")) return "PSYCHIATRIST" as const;
-  if (v.includes("therapist") || v.includes("counselor")) return "THERAPIST" as const;
-  if (v.includes("crisis")) return "CRISIS_COUNSELOR" as const;
+  if (v.includes("social worker") || v.includes("case manager") || v.includes("discharge")) return "COORDINATOR" as const;
+  if (v.includes("physician") || v.includes("psychiatrist") || v.includes("doctor")) return "PHYSICIAN_CHAMPION" as const;
+  if (v.includes("department head")) return "DEPARTMENT_HEAD" as const;
   if (v.includes("director")) return "DIRECTOR" as const;
   if (v.includes("coordinator")) return "COORDINATOR" as const;
   if (v.includes("cmo") || v.includes("chief medical")) return "CMO" as const;
   if (v.includes("cfo") || v.includes("chief financial")) return "CFO" as const;
+  if (v.includes("cno") || v.includes("chief nursing")) return "CNO" as const;
   if (v.includes("ceo") || v.includes("chief executive")) return "CEO" as const;
   if (v.includes("coo") || v.includes("chief operating")) return "COO" as const;
-  if (v.includes("vp")) return "VP_BUSINESS_DEVELOPMENT" as const;
+  if (v.includes("vp") || v.includes("vice president")) return "VP_BUSINESS_DEVELOPMENT" as const;
   return "OTHER" as const;
 }
 
@@ -1490,7 +1476,9 @@ function mapActivityType(s: string) {
   if (v.includes("site") || v.includes("visit")) return "SITE_VISIT" as const;
   if (v.includes("proposal")) return "PROPOSAL_SENT" as const;
   if (v.includes("contract")) return "CONTRACT_SENT" as const;
-  if (v.includes("referral")) return "REFERRAL_RECEIVED" as const;
+  if (v.includes("demo")) return "DEMO_COMPLETED" as const;
+  if (v.includes("conference")) return "CONFERENCE" as const;
+  if (v.includes("lunch")) return "LUNCH" as const;
   if (v.includes("follow")) return "FOLLOW_UP" as const;
   return "NOTE" as const;
 }
