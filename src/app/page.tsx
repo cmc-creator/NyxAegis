@@ -53,21 +53,21 @@ const stats = [
 
 const pricing = [
   {
-    name: "Solo User", price: "$49", period: "/mo",
-    desc: "For an individual managing their own referral relationships and territory.",
+    name: "Starter", price: "$149", period: "/mo",
+    desc: "For a single facility getting its BD work organized. Includes up to 3 reps.",
     features: ["Up to 100 referral sources", "Activity & visit logging", "Referral count tracking", "Document storage", "Mobile portal"],
     cta: "Start Free Trial", highlight: false,
   },
   {
-    name: "Team", price: "$199", period: "/mo",
-    desc: "For teams of 2-10 with shared analytics, territory management, and collaboration.",
+    name: "Growth", price: "$399", period: "/mo",
+    desc: "For BD teams of up to 10 reps with shared analytics, territory management, and collaboration.",
     features: ["Unlimited referral sources", "Team referral dashboards", "Territory assignment & maps", "Member performance KPIs", "AI insights & smart recommendations", "Contract management", "Compliance doc management", "Priority support"],
     cta: "Start Free Trial", highlight: true,
   },
   {
-    name: "Enterprise", price: "Custom", period: "",
+    name: "Enterprise", price: "$999", period: "/mo",
     desc: "For large organizations and multi-location operations.",
-    features: ["Everything in Team", "Advanced AI analytics & forecasting", "White-label branding", "Custom integrations", "SSO / SAML", "Dedicated success manager", "SLA guarantee"],
+    features: ["Everything in Growth", "Advanced AI analytics & forecasting", "White-label branding", "Custom integrations", "SSO / SAML", "Dedicated success manager", "SLA guarantee"],
     cta: "Contact Sales", highlight: false,
   },
 ];

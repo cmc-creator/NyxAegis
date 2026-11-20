@@ -8,10 +8,10 @@ const TEXT_MUTED = "var(--nyx-text-muted)";
 
 const tiers = [
   {
-    name: "Solo Rep",
-    price: "$49",
+    name: "Starter",
+    price: "$149",
     period: "/mo",
-    desc: "For independent BD reps managing their own book of business.",
+    desc: "For a single facility or a small BD team getting started. Includes up to 3 reps.",
     features: [
       "Up to 50 accounts",
       "Opportunity pipeline (up to 100 opps)",
@@ -26,10 +26,10 @@ const tiers = [
     highlight: false,
   },
   {
-    name: "BD Team",
-    price: "$199",
+    name: "Growth",
+    price: "$399",
     period: "/mo",
-    desc: "For BD teams of 2–10 reps with shared pipeline and reporting.",
+    desc: "For BD teams of up to 10 reps with shared pipeline and reporting.",
     features: [
       "Unlimited accounts",
       "Unlimited opportunities",
@@ -49,12 +49,12 @@ const tiers = [
     highlight: true,
   },
   {
-    name: "Health System",
-    price: "Custom",
-    period: "",
-    desc: "For enterprise health systems and large BD organizations (10+ reps).",
+    name: "Enterprise",
+    price: "$999",
+    period: "/mo",
+    desc: "For health systems and large BD organizations with more than 10 reps.",
     features: [
-      "Everything in BD Team",
+      "Everything in Growth",
       "White-label branding (custom domain)",
       "SSO / SAML authentication",
       "Custom integrations (Salesforce, Epic, etc.)",
@@ -76,10 +76,10 @@ const tiers = [
 const faqs = [
   { q: "Is NyxAegis HIPAA compliant?", a: "NyxAegis is designed with HIPAA requirements in mind. We provide BAA (Business Associate Agreement) templates, HIPAA training doc storage, and encrypt data at rest and in transit. Contact us for a BAA for your organization." },
   { q: "Can I try NyxAegis before paying?", a: "Yes - all plans include a 14-day free trial with no credit card required. You'll have full access to all features in your chosen plan." },
-  { q: "What counts as an 'account'?", a: "Each distinct facility or health system entity counts as one account. A 10-facility IDN would count as 10 accounts on Solo Rep, or unlimited on BD Team and above." },
-  { q: "Can I add more BD reps to my team?", a: "Yes. BD Team supports up to 10 reps. Additional rep seats are $25/rep/mo. Health System plans include unlimited reps." },
+  { q: "What counts as an 'account'?", a: "Each distinct facility or health system entity counts as one account. A 10-facility IDN would count as 10 accounts on Starter, or unlimited on Growth and above." },
+  { q: "Can I add more BD reps to my team?", a: "Yes. Starter includes up to 3 reps and Growth supports up to 10 reps. Enterprise plans include unlimited reps." },
   { q: "Do you offer nonprofit or academic medical center discounts?", a: "Yes - contact us at ops@nyxaegis.com for nonprofit, academic, or government healthcare pricing." },
-  { q: "What integrations do you support?", a: "Health System plans include custom integration development. We currently support Stripe for payments, Resend for email, and have open APIs for CRM, EHR, and BI tool integrations." },
+  { q: "What integrations do you support?", a: "Enterprise plans include custom integration development. We currently support Stripe for payments, Resend for email, and have open APIs for CRM, EHR, and BI tool integrations." },
 ];
 
 export default function PricingPage() {
