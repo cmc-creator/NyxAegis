@@ -67,6 +67,10 @@ model User {
   rep       Rep?
   hospital  Hospital?
 
+  firstLoginAt DateTime?
+  onboardedAt  DateTime?
+  createdActivities Activity[]    @relation("ActivityCreatedBy")
+  userSessions      UserSession[]
   @@map("users")
 }
 
@@ -164,6 +168,7 @@ model Rep {
   leads           Lead[]
   referralSources ReferralSource[]
 
+  tasks Task[]
   @@map("reps")
 }
 
@@ -283,6 +288,9 @@ model Hospital {
   activities    Activity[]
   leads         Lead[]
 
+  isPriorityPartner       Boolean @default(false)
+  priorityDiscountPercent Int     @default(20)
+  tasks                   Task[]
   @@map("hospitals")
 }
 
@@ -387,6 +395,7 @@ model Lead {
 
   activities Activity[]
 
+  tasks Task[]
   @@map("leads")
 }
 
@@ -458,6 +467,7 @@ model Opportunity {
   invoices   Invoice[]
   contracts  Contract[]
 
+  tasks Task[]
   @@map("opportunities")
 }
 
@@ -495,6 +505,10 @@ model Invoice {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  discountPercent    Int?
+  discountApprovedBy String?
+  discountApprovedAt DateTime?
+  pricingTier        String?
   @@map("invoices")
 }
 
@@ -533,6 +547,10 @@ model Contract {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  discountPercent    Int?
+  discountApprovedBy String?
+  discountApprovedAt DateTime?
+  pricingTier        String?
   @@map("contracts")
 }
 
@@ -619,6 +637,13 @@ model Activity {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  latitude        Float?
+  longitude       Float?
+  arrivedAt       DateTime?
+  departedAt      DateTime?
+  durationMinutes Int?
+  createdByUserId String?
+  createdByUser   User?     @relation("ActivityCreatedBy", fields: [createdByUserId], references: [id])
   @@map("activities")
 }
 
@@ -868,6 +893,12 @@ model ReferralSource {
   referrals Referral[]
   activities Activity[]
 
+  mapLabel        String?
+  mapColor        String?
+  tier            String? @default("TIER_2")
+  influenceRole   String?
+  influenceLevel  String?
+  competitorIntel String?
   @@map("referral_sources")
 }
 
@@ -962,3 +993,154 @@ model AiChatMessage {
   @@index([userId, createdAt])
   @@map("ai_chat_messages")
 }
+
+// ---- Ported from DestinySpringsCRM (2026-11-20) ----
+
+enum TaskStatus {
+  OPEN
+  IN_PROGRESS
+  DONE
+  CANCELLED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum ResourceCategory {
+  BROCHURE
+  CLINICAL_PROTOCOL
+  INSURANCE_GUIDE
+  VISITATION_POLICY
+  BED_AVAILABILITY
+  REFERRAL_FORM
+  TRAINING_MATERIAL
+  MARKETING_ASSET
+  OTHER
+}
+
+enum LegalDocType {
+  CONFLICT_OF_INTEREST    // COI Disclosure & Recusal Memo
+  IP_OWNERSHIP            // Independent Development & IP Ownership Affidavit
+  NDA                     // Mutual Non-Disclosure Agreement
+  MSLA                    // Master Software License Agreement
+  BAA                     // HIPAA Business Associate Agreement
+  SLA                     // Service Level Agreement
+  AUP                     // Acceptable Use Policy
+  SOLE_SOURCE             // Sole Source Justification
+}
+
+model Task {
+  id    String @id @default(cuid())
+  title String
+  notes String?
+
+  status   TaskStatus   @default(OPEN)
+  priority TaskPriority @default(MEDIUM)
+
+  dueAt       DateTime?
+  completedAt DateTime?
+
+  repId   String?
+  rep     Rep?   @relation(fields: [repId], references: [id])
+
+  hospitalId String?
+  hospital   Hospital? @relation(fields: [hospitalId], references: [id])
+
+  leadId String?
+  lead   Lead?  @relation(fields: [leadId], references: [id])
+
+  opportunityId String?
+  opportunity   Opportunity? @relation(fields: [opportunityId], references: [id])
+
+  createdByUserId String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("tasks")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@map("password_reset_tokens")
+}
+
+model UserSession {
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  loginAt      DateTime  @default(now())
+  logoutAt     DateTime?
+  durationSecs Int?
+  ipAddress    String?
+  userAgent    String?
+  deviceType   String?   // "mobile" | "tablet" | "desktop"
+  createdAt    DateTime  @default(now())
+
+  pageViews PageView[]
+
+  @@index([userId])
+  @@index([loginAt])
+  @@map("user_sessions")
+}
+
+model PageView {
+  id        String      @id @default(cuid())
+  sessionId String
+  session   UserSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  userId    String
+  path      String
+  visitedAt DateTime    @default(now())
+
+  @@index([userId])
+  @@index([sessionId])
+  @@index([path])
+  @@map("page_views")
+}
+
+model Resource {
+  id          String           @id @default(cuid())
+  title       String
+  description String?
+  category    ResourceCategory @default(OTHER)
+  tags        String[]
+  fileUrl     String?          // URL to hosted file (e.g. S3, Vercel Blob)
+  externalUrl String?          // Link to external resource
+  mimeType    String?          // e.g. "application/pdf"
+  fileSizeKb  Int?
+  thumbnail   String?
+  active      Boolean          @default(true)
+  uploadedById String?         // userId of admin who uploaded
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("resources")
+}
+
+model LegalDocSignature {
+  id          String      @id @default(cuid())
+  docType     LegalDocType
+  signerName  String      // Typed full name
+  signerEmail String
+  signerTitle String?
+  signerRole  String      // "licensor" | "licensee" | "business_associate" | "covered_entity" | "approver" | "acknowledger"
+  ipAddress   String?
+  userAgent   String?
+  signedAt    DateTime    @default(now())
+
+  userId      String?     // If signed while logged in
+
+  @@map("legal_doc_signatures")
+}
+
