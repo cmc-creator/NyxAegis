@@ -190,7 +190,6 @@ export default async function RepTerritoryPage() {
   );
 }
 
-const CYAN = "var(--nyx-accent)";
 const CARD = "var(--nyx-card)";
 const BORDER = "var(--nyx-accent-dim)";
 const TEXT = "var(--nyx-text)";
