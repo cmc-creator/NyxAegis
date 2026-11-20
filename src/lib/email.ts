@@ -1,0 +1,378 @@
+import { Resend } from "resend";
+import nodemailer from "nodemailer";
+
+// Ported from DestinySpringsCRM and rebranded for NyxAegis (2026-11-20).
+// Transport: SMTP (Spacemail) when SMTP_HOST is set, otherwise Resend.
+const FROM_ADDRESS = process.env.SMTP_FROM ?? process.env.RESEND_FROM_EMAIL ?? "info@nyxaegis.com";
+const FROM = `NyxAegis <${FROM_ADDRESS}>`;
+const BASE = process.env.NEXTAUTH_URL ?? "https://www.nyxaegis.com";
+
+function canSend(): boolean {
+  return Boolean(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASSWORD) || Boolean(process.env.RESEND_API_KEY);
+}
+
+async function deliver(opts: { from?: string; to: string; subject: string; html: string }) {
+  if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASSWORD) {
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT ?? 465),
+      secure: (process.env.SMTP_PORT ?? "465") === "465",
+      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASSWORD },
+    });
+    await transporter.sendMail({ from: FROM, to: opts.to, subject: opts.subject, html: opts.html });
+    return;
+  }
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  await resend.emails.send({ from: FROM, to: opts.to, subject: opts.subject, html: opts.html });
+}
+
+function layout(content: string): string {
+  return `
+<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:20px;background:#0a0a0a;font-family:'Helvetica Neue',Arial,sans-serif;">
+  <div style="max-width:560px;margin:0 auto;background:#0f0d0a;border:1px solid rgba(201,168,76,0.25);border-radius:12px;overflow:hidden;">
+    <div style="background:linear-gradient(135deg,#1a1208 0%,#0f0d0a 100%);padding:20px 28px;border-bottom:1px solid rgba(201,168,76,0.2);">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.2em;color:#c9a84c;text-transform:uppercase;margin-bottom:2px;">NYXAEGIS</div>
+      <div style="font-size:18px;font-weight:900;color:#ede4cf;letter-spacing:-0.01em;">NyxAegis CRM</div>
+    </div>
+    <div style="padding:24px 28px;">
+      ${content}
+    </div>
+    <div style="padding:14px 28px;border-top:1px solid rgba(201,168,76,0.1);text-align:center;">
+      <p style="margin:0;font-size:11px;color:rgba(237,228,207,0.3);">NyxAegis &bull; CRM Notification &bull; Do not reply</p>
+    </div>
+  </div>
+</body>
+</html>
+  `.trim();
+}
+
+function btn(href: string, label: string, color = "#c9a84c", textColor = "#1a1208"): string {
+  return `<a href="${href}" style="display:inline-block;background:${color};color:${textColor};padding:10px 22px;border-radius:7px;font-weight:800;text-decoration:none;font-size:13px;letter-spacing:0.3px;">${label}</a>`;
+}
+
+function infoBox(accent: string, badgeText: string, title: string, sub: string): string {
+  return `
+    <div style="background:${accent}0f;border:1px solid ${accent}33;border-radius:8px;padding:14px 18px;margin-bottom:20px;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.1em;color:${accent};margin-bottom:4px;">${badgeText}</div>
+      <div style="font-size:15px;font-weight:700;color:#ede4cf;">${title}</div>
+      ${sub ? `<div style="font-size:12px;color:rgba(237,228,207,0.5);margin-top:3px;">${sub}</div>` : ""}
+    </div>
+  `;
+}
+
+// ── Task: Due Soon ───────────────────────────────────────────────────────────
+export async function sendTaskDueSoonEmail(opts: {
+  to: string;
+  name: string;
+  taskTitle: string;
+  dueDate: string;
+}) {
+  if (!canSend()) return;
+  await deliver({
+      from: FROM,
+      to: opts.to,
+      subject: `Task Due Soon: ${opts.taskTitle}`,
+      html: layout(`
+        <h2 style="margin:0 0 6px;color:#ede4cf;font-size:17px;font-weight:800;">Task Due Soon</h2>
+        <p style="color:rgba(237,228,207,0.55);margin:0 0 18px;font-size:14px;">Hi ${opts.name || "there"},<br>The following task is coming up soon.</p>
+        ${infoBox("#fbbf24", "UPCOMING TASK", opts.taskTitle, `Due: ${opts.dueDate}`)}
+        ${btn(`${BASE}/rep/tasks`, "View My Tasks")}
+      `),
+    })
+    .catch((e: unknown) => console.error("[email] task-due-soon failed:", e));
+}
+
+// ── Task: Overdue ────────────────────────────────────────────────────────────
+export async function sendTaskOverdueEmail(opts: {
+  to: string;
+  name: string;
+  taskTitle: string;
+  dueDate: string;
+}) {
+  if (!canSend()) return;
+  await deliver({
+      from: FROM,
+      to: opts.to,
+      subject: `Overdue Task: ${opts.taskTitle}`,
+      html: layout(`
+        <h2 style="margin:0 0 6px;color:#f87171;font-size:17px;font-weight:800;">Task Overdue</h2>
+        <p style="color:rgba(237,228,207,0.55);margin:0 0 18px;font-size:14px;">Hi ${opts.name || "there"},<br>The following task is past its due date and still open.</p>
+        ${infoBox("#f87171", "OVERDUE TASK", opts.taskTitle, `Was due: ${opts.dueDate}`)}
+        ${btn(`${BASE}/rep/tasks`, "View My Tasks", "#f87171", "#fff")}
+      `),
+    })
+    .catch((e: unknown) => console.error("[email] task-overdue failed:", e));
+}
+
+// ── Opportunity: Assigned to Rep ─────────────────────────────────────────────
+export async function sendOpportunityAssignedEmail(opts: {
+  to: string;
+  name: string;
+  oppTitle: string;
+  hospitalName: string;
+  stage: string;
+}) {
+  if (!canSend()) return;
+  const stageLabel = opts.stage.replace(/_/g, " ");
+  await deliver({
+      from: FROM,
+      to: opts.to,
+      subject: `New Opportunity Assigned: ${opts.oppTitle}`,
+      html: layout(`
+        <h2 style="margin:0 0 6px;color:#ede4cf;font-size:17px;font-weight:800;">Opportunity Assigned to You</h2>
+        <p style="color:rgba(237,228,207,0.55);margin:0 0 18px;font-size:14px;">Hi ${opts.name || "there"},<br>A new opportunity has been assigned to you in NyxAegis.</p>
+        ${infoBox("#c9a84c", "NEW OPPORTUNITY", opts.oppTitle, `${opts.hospitalName} &bull; ${stageLabel}`)}
+        ${btn(`${BASE}/rep/opportunities`, "View Opportunities")}
+      `),
+    })
+    .catch((e: unknown) => console.error("[email] opp-assigned failed:", e));
+}
+
+// ── Compliance: Expiring Soon (to rep) ───────────────────────────────────────
+export async function sendComplianceExpiringSoonEmail(opts: {
+  to: string;
+  name: string;
+  docTitle: string;
+  docType: string;
+  expiresOn: string;
+}) {
+  if (!canSend()) return;
+  const typeLabel = opts.docType.replace(/_/g, " ");
+  await deliver({
+      from: FROM,
+      to: opts.to,
+      subject: `Compliance Document Expiring: ${opts.docTitle}`,
+      html: layout(`
+        <h2 style="margin:0 0 6px;color:#fbbf24;font-size:17px;font-weight:800;">Compliance Document Expiring Soon</h2>
+        <p style="color:rgba(237,228,207,0.55);margin:0 0 18px;font-size:14px;">Hi ${opts.name || "there"},<br>The following compliance document will expire soon. Please renew it to stay active.</p>
+        ${infoBox("#fbbf24", typeLabel, opts.docTitle, `Expires: ${opts.expiresOn}`)}
+        ${btn(`${BASE}/rep/documents`, "View My Documents", "#fbbf24", "#1a1208")}
+      `),
+    })
+    .catch((e: unknown) => console.error("[email] compliance-expiring failed:", e));
+}
+
+// ── Compliance: Expired (to admin) ───────────────────────────────────────────
+export async function sendComplianceExpiredAdminEmail(opts: {
+  to: string;
+  repName: string;
+  docTitle: string;
+  docType: string;
+  expiredOn: string;
+}) {
+  if (!canSend()) return;
+  const typeLabel = opts.docType.replace(/_/g, " ");
+  await deliver({
+      from: FROM,
+      to: opts.to,
+      subject: `Expired Compliance Doc: ${opts.repName} — ${opts.docTitle}`,
+      html: layout(`
+        <h2 style="margin:0 0 6px;color:#f87171;font-size:17px;font-weight:800;">Compliance Document Expired</h2>
+        <p style="color:rgba(237,228,207,0.55);margin:0 0 18px;font-size:14px;">A rep's compliance document has expired and requires attention.</p>
+        ${infoBox("#f87171", typeLabel, opts.docTitle, `Rep: ${opts.repName} &bull; Expired: ${opts.expiredOn}`)}
+        ${btn(`${BASE}/admin/compliance`, "View Compliance Center", "#f87171", "#fff")}
+      `),
+    })
+    .catch((e: unknown) => console.error("[email] compliance-expired-admin failed:", e));
+}
+
+// ── Contract: Expiring Soon (to admin) ───────────────────────────────────────
+export async function sendContractExpiringEmail(opts: {
+  to: string;
+  contractTitle: string;
+  hospitalName: string;
+  endsOn: string;
+  daysLeft: number;
+}) {
+  if (!canSend()) return;
+  const urgencyColor = opts.daysLeft <= 14 ? "#f97316" : "#fbbf24";
+  await deliver({
+      from: FROM,
+      to: opts.to,
+      subject: `Contract Expiring in ${opts.daysLeft} Day${opts.daysLeft === 1 ? "" : "s"}: ${opts.contractTitle}`,
+      html: layout(`
+        <h2 style="margin:0 0 6px;color:${urgencyColor};font-size:17px;font-weight:800;">Contract Expiring Soon</h2>
+        <p style="color:rgba(237,228,207,0.55);margin:0 0 18px;font-size:14px;">The following contract is approaching its end date and may need renewal.</p>
+        ${infoBox(urgencyColor, `${opts.daysLeft}d LEFT`, opts.contractTitle, `Hospital: ${opts.hospitalName} &bull; Ends: ${opts.endsOn}`)}
+        ${btn(`${BASE}/admin/contracts`, "View Contracts", urgencyColor, "#1a1208")}
+      `),
+    })
+    .catch((e: unknown) => console.error("[email] contract-expiring failed:", e));
+}
+
+// ── Contract: Expired (to admin) ─────────────────────────────────────────────
+export async function sendContractExpiredEmail(opts: {
+  to: string;
+  contractTitle: string;
+  hospitalName: string;
+  expiredOn: string;
+}) {
+  if (!canSend()) return;
+  await deliver({
+      from: FROM,
+      to: opts.to,
+      subject: `Contract Expired: ${opts.contractTitle}`,
+      html: layout(`
+        <h2 style="margin:0 0 6px;color:#f87171;font-size:17px;font-weight:800;">Contract Expired</h2>
+        <p style="color:rgba(237,228,207,0.55);margin:0 0 18px;font-size:14px;">A contract has passed its end date and its status has been automatically set to Expired.</p>
+        ${infoBox("#f87171", "EXPIRED", opts.contractTitle, `Hospital: ${opts.hospitalName} &bull; Expired: ${opts.expiredOn}`)}
+        ${btn(`${BASE}/admin/contracts`, "View Contracts", "#f87171", "#fff")}
+      `),
+    })
+    .catch((e: unknown) => console.error("[email] contract-expired failed:", e));
+}
+
+) {
+  if (!canSend()) return;
+  await deliver({
+      from: FROM,
+      to: opts.to,
+      subject: `Referral Admitted: ${opts.oppTitle}`,
+      html: layout(`
+        <h2 style="margin:0 0 6px;color:#34d399;font-size:17px;font-weight:800;">Referral Admitted &#127881;</h2>
+        <p style="color:rgba(237,228,207,0.55);margin:0 0 18px;font-size:14px;">Hi ${opts.name || "there"},<br>Great news &mdash; your referral has been officially admitted.</p>
+        ${infoBox("#34d399", "ADMITTED", opts.oppTitle, opts.hospitalName)}
+        ${btn(`${BASE}/rep/opportunities`, "View Opportunities", "#34d399", "#052e16")}
+      `),
+    })
+    .catch((e: unknown) => console.error("[email] admission failed:", e));
+}
+
+// ── Weekly Digest (sent to each active rep every Monday) ────────────────────
+export async function sendWeeklyDigestEmail(opts: {
+  to: string;
+  name: string;
+  weekOf: string;
+  activitiesLogged: number;
+  leadsWorked: number;
+  oppsUpdated: number;
+  tasksCompleted: number;
+  tasksPending: number;
+}) {
+  if (!canSend()) return;
+  const pendingNote =
+    opts.tasksPending > 0
+      ? `<p style="color:rgba(237,228,207,0.5);font-size:12px;margin:16px 0 0;">You have <strong style="color:#fbbf24;">${opts.tasksPending}</strong> open task${opts.tasksPending === 1 ? "" : "s"} waiting for you.</p>`
+      : "";
+  await deliver({
+      from: FROM,
+      to: opts.to,
+      subject: `Your Weekly Summary - Week of ${opts.weekOf}`,
+      html: layout(`
+        <h2 style="margin:0 0 6px;color:#ede4cf;font-size:17px;font-weight:800;">Weekly Activity Summary</h2>
+        <p style="color:rgba(237,228,207,0.55);margin:0 0 18px;font-size:14px;">Hi ${opts.name || "there"},<br>Here is a snapshot of your activity over the past 7 days.</p>
+        <div style="display:grid;gap:10px;margin-bottom:20px;">
+          ${infoBox("#c9a84c", "ACTIVITIES LOGGED", String(opts.activitiesLogged), "Calls, visits, emails & check-ins")}
+          ${infoBox("#38bdf8", "LEADS WORKED", String(opts.leadsWorked), "Leads updated or followed up on")}
+          ${infoBox("#34d399", "OPPORTUNITIES UPDATED", String(opts.oppsUpdated), "Pipeline opportunities moved or touched")}
+          ${infoBox("#a78bfa", "TASKS COMPLETED", String(opts.tasksCompleted), "Tasks closed out this week")}
+        </div>
+        ${pendingNote}
+        <div style="margin-top:20px;">${btn(`${BASE}/rep/dashboard`, "View My Dashboard")}</div>
+      `),
+    })
+    .catch((e: unknown) => console.error("[email] weekly-digest failed:", e));
+}
+
+// ── Stale Pipeline Alert (to rep) ────────────────────────────────────────────
+export async function sendStalePipelineEmail(opts: {
+  to: string;
+  name: string;
+  oppTitle: string;
+  stage: string;
+  daysStale: number;
+}) {
+  if (!canSend()) return;
+  const stageLabel = opts.stage.replace(/_/g, " ");
+  await deliver({
+      from: FROM,
+      to: opts.to,
+      subject: `Stale Pipeline: "${opts.oppTitle}" hasn't moved in ${opts.daysStale} days`,
+      html: layout(`
+        <h2 style="margin:0 0 6px;color:#fbbf24;font-size:17px;font-weight:800;">Pipeline Opportunity Stalled</h2>
+        <p style="color:rgba(237,228,207,0.55);margin:0 0 18px;font-size:14px;">Hi ${opts.name || "there"},<br>An opportunity in your pipeline hasn't advanced in ${opts.daysStale} days and may need attention.</p>
+        ${infoBox("#fbbf24", `${opts.daysStale}d STALE`, opts.oppTitle, `Current stage: ${stageLabel}`)}
+        ${btn(`${BASE}/rep/opportunities`, "Review Pipeline", "#fbbf24", "#1a1208")}
+      `),
+    })
+    .catch((e: unknown) => console.error("[email] stale-pipeline failed:", e));
+}
+
+// ── Inactive Referral Source Alert (to rep) ──────────────────────────────────
+export async function sendInactiveSourceEmail(opts: {
+  to: string;
+  name: string;
+  sourceName: string;
+  daysSinceLastReferral: number;
+}) {
+  if (!canSend()) return;
+  await deliver({
+      from: FROM,
+      to: opts.to,
+      subject: `Inactive Source: ${opts.sourceName} hasn't referred in ${opts.daysSinceLastReferral} days`,
+      html: layout(`
+        <h2 style="margin:0 0 6px;color:#f97316;font-size:17px;font-weight:800;">Referral Source Going Cold</h2>
+        <p style="color:rgba(237,228,207,0.55);margin:0 0 18px;font-size:14px;">Hi ${opts.name || "there"},<br>A referral source in your territory hasn't sent a referral in over ${opts.daysSinceLastReferral} days. Time to reconnect.</p>
+        ${infoBox("#f97316", `${opts.daysSinceLastReferral}d INACTIVE`, opts.sourceName, "No referrals received recently")}
+        ${btn(`${BASE}/rep/territory`, "View Territory", "#f97316", "#fff")}
+      `),
+    })
+    .catch((e: unknown) => console.error("[email] inactive-source failed:", e));
+}
+
+) {
+  if (!canSend()) return;
+  const pct = opts.totalBeds > 0 ? Math.round((opts.totalAvailable / opts.totalBeds) * 100) : 0;
+  await deliver({
+      from: FROM,
+      to: opts.to,
+      subject: `Low Census Alert: ${opts.totalAvailable} beds available (${pct}% capacity)`,
+      html: layout(`
+        <h2 style="margin:0 0 6px;color:#34d399;font-size:17px;font-weight:800;">Low Census — Push Referrals Now</h2>
+        <p style="color:rgba(237,228,207,0.55);margin:0 0 18px;font-size:14px;">Hi ${opts.name || "there"},<br>Today's census shows low bed availability. This is the time to activate referral source outreach.</p>
+        ${infoBox("#34d399", "LOW CENSUS", `${opts.totalAvailable} of ${opts.totalBeds} beds available`, `Census date: ${opts.date} &bull; ${pct}% capacity open`)}
+        ${btn(`${BASE}/rep/bedboard`, "View Bedboard", "#34d399", "#052e16")}
+      `),
+    })
+    .catch((e: unknown) => console.error("[email] low-census failed:", e));
+}
+
+// ── Rep Inactive Activity Alert (to rep) ─────────────────────────────────────
+export async function sendRepInactiveEmail(opts: {
+  to: string;
+  name: string;
+  daysSinceActivity: number;
+}) {
+  if (!canSend()) return;
+  await deliver({
+      from: FROM,
+      to: opts.to,
+      subject: `Activity Reminder: No logged activities in ${opts.daysSinceActivity} days`,
+      html: layout(`
+        <h2 style="margin:0 0 6px;color:#c084fc;font-size:17px;font-weight:800;">Activity Log Reminder</h2>
+        <p style="color:rgba(237,228,207,0.55);margin:0 0 18px;font-size:14px;">Hi ${opts.name || "there"},<br>You haven't logged any activities in ${opts.daysSinceActivity} days. Keeping your activity log current helps leadership track outreach quality and cadence.</p>
+        ${infoBox("#c084fc", `${opts.daysSinceActivity}d NO ACTIVITY`, "Log your recent visits, calls, and outreach", "Doesn't take long — just a quick entry")}
+        ${btn(`${BASE}/rep/activities`, "Log Activity", "#c084fc", "#fff")}
+      `),
+    })
+    .catch((e: unknown) => console.error("[email] rep-inactive failed:", e));
+}
+
+
+// ── Password Reset ───────────────────────────────────────────────────────────
+export async function sendPasswordResetEmail(opts: { to: string; name: string; resetUrl: string }) {
+  if (!canSend()) return;
+  await deliver({
+    from: FROM,
+    to: opts.to,
+    subject: "Reset your NyxAegis password",
+    html: layout(`
+      <h2 style="margin:0 0 6px;color:#ede4cf;font-size:17px;font-weight:800;">Reset Your Password</h2>
+      <p style="color:rgba(237,228,207,0.55);margin:0 0 18px;font-size:14px;">Hi ${opts.name || "there"},<br>You requested a password reset for your NyxAegis account. This link expires in 1 hour.</p>
+      ${btn(opts.resetUrl, "Reset Password")}
+      <p style="color:rgba(237,228,207,0.4);font-size:12px;margin:18px 0 0;">If you did not request this, you can safely ignore this email.</p>
+    `),
+  }).catch((e: unknown) => console.error("[email] password-reset failed:", e));
+}

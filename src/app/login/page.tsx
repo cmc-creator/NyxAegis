@@ -163,7 +163,7 @@ function LoginForm() {
             </div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginTop: -2 }}>
               <span style={{ fontSize: "0.76rem", color: "rgba(52,34,4,0.72)" }}>Protected access for authorized users only.</span>
-              <Link href="/privacy" style={{ fontSize: "0.78rem", color: FORM_LINK, textDecoration: "none", fontWeight: 700 }}>Privacy</Link>
+              <span style={{ display: "flex", gap: 14 }}><Link href="/forgot-password" style={{ fontSize: "0.78rem", color: FORM_LINK, textDecoration: "none", fontWeight: 700 }}>Forgot password?</Link><Link href="/privacy" style={{ fontSize: "0.78rem", color: FORM_LINK, textDecoration: "none", fontWeight: 700 }}>Privacy</Link></span>
             </div>
             <button
               type="submit"
