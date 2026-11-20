@@ -6,6 +6,9 @@ import { MobileTopBar } from "@/components/layout/MobileTopBar";
 import AIChatWidget from "@/components/ai/AIChatWidget";
 import GlobalSearch from "@/components/search/GlobalSearch";
 import QuickLogWidget from "@/components/activities/QuickLogWidget";
+import SessionTracker from "@/components/analytics/SessionTracker";
+import FirstLoginCelebration from "@/components/onboarding/FirstLoginCelebration";
+import OnboardingWalkthrough from "@/components/onboarding/OnboardingWalkthrough";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +27,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <AIChatWidget />
       <GlobalSearch role="ADMIN" />
       <QuickLogWidget role="ADMIN" />
+      <FirstLoginCelebration role="ADMIN" userName={session.user.name} userEmail={session.user.email} />
+      <OnboardingWalkthrough role="ADMIN" />
+      <SessionTracker />
       <MobileBottomNav role="ADMIN" />
     </div>
   );

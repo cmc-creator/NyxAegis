@@ -6,6 +6,9 @@ import { MobileTopBar } from "@/components/layout/MobileTopBar";
 import AIChatWidget from "@/components/ai/AIChatWidget";
 import GlobalSearch from "@/components/search/GlobalSearch";
 import QuickLogWidget from "@/components/activities/QuickLogWidget";
+import SessionTracker from "@/components/analytics/SessionTracker";
+import FirstLoginCelebration from "@/components/onboarding/FirstLoginCelebration";
+import OnboardingWalkthrough from "@/components/onboarding/OnboardingWalkthrough";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +27,9 @@ export default async function RepLayout({ children }: { children: React.ReactNod
       <AIChatWidget />
       <GlobalSearch role="REP" />
       <QuickLogWidget role="REP" />
+      <FirstLoginCelebration role="REP" userName={session.user.name} userEmail={session.user.email} />
+      <OnboardingWalkthrough role="REP" />
+      <SessionTracker />
       <MobileBottomNav role="REP" />
     </div>
   );

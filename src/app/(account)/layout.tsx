@@ -4,6 +4,9 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 import { MobileTopBar } from "@/components/layout/MobileTopBar";
 import AIChatWidget from "@/components/ai/AIChatWidget";
+import SessionTracker from "@/components/analytics/SessionTracker";
+import FirstLoginCelebration from "@/components/onboarding/FirstLoginCelebration";
+import OnboardingWalkthrough from "@/components/onboarding/OnboardingWalkthrough";
 
 export const dynamic = "force-dynamic";
 
@@ -20,6 +23,9 @@ export default async function AccountLayout({ children }: { children: React.Reac
         <div className="px-4 pt-0 pb-6 md:p-8 page-enter">{children}</div>
       </main>
       <AIChatWidget />
+      <FirstLoginCelebration role="ACCOUNT" userName={session.user.name} userEmail={session.user.email} />
+      <OnboardingWalkthrough role="ACCOUNT" />
+      <SessionTracker />
       <MobileBottomNav role="ACCOUNT" />
     </div>
   );
