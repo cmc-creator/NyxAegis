@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getWorkspaceOrg, isTierKey, TIERS } from "@/lib/billing";
 
 export const maxDuration = 30;
 
@@ -53,6 +54,20 @@ export async function POST(req: NextRequest) {
     const existing = await prisma.user.findUnique({ where: { email: email.toLowerCase().trim() } });
     if (existing) {
       return NextResponse.json({ error: "Email already registered" }, { status: 409 });
+    }
+
+    if (role === "REP") {
+      const org = await getWorkspaceOrg();
+      const tier = isTierKey(org.planTier) ? TIERS[org.planTier] : TIERS.starter;
+      if (tier.seats !== null) {
+        const repCount = await prisma.rep.count();
+        if (repCount >= tier.seats) {
+          return NextResponse.json(
+            { error: `Your ${tier.name} plan includes ${tier.seats} reps and all seats are in use. Upgrade in Billing to add more.` },
+            { status: 403 }
+          );
+        }
+      }
     }
 
     const hashed = await bcrypt.hash(password, 10);
