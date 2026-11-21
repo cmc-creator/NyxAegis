@@ -220,7 +220,7 @@ export function ReferralFeedPanel({
             <div>
               <label style={{ display: "block", fontSize: "0.67rem", fontWeight: 700, color: C.muted, marginBottom: 4, letterSpacing: "0.06em" }}>SERVICE LINE</label>
               <select style={{ ...inp, colorScheme: "dark" }} value={form.serviceLine} onChange={e => setForm(f => ({ ...f, serviceLine: e.target.value }))}>
-                <option value="">— Select —</option>
+                <option value="">- Select -</option>
                 {SERVICE_LINES.map(s => <option key={s} value={s} style={{ background: "var(--nyx-card)" }}>{lbl(s)}</option>)}
               </select>
             </div>

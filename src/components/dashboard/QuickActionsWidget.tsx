@@ -147,7 +147,7 @@ export default function QuickActionsWidget() {
   const active = ALL_ACTIONS.filter((a) => enabled.includes(a.id));
 
   if (!mounted) {
-    // SSR placeholder — renders default actions non-interactively
+    // SSR placeholder - renders default actions non-interactively
     return (
       <div style={{ marginBottom: 32 }}>
         <p style={{ fontSize: "0.7rem", fontWeight: 700, color: "var(--nyx-accent-label)", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 12 }}>

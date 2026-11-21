@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Valid email required" }, { status: 400 });
   }
 
-  // Always return a generic success — never reveal whether the email exists
+  // Always return a generic success - never reveal whether the email exists
   const user = await prisma.user.findUnique({ where: { email } });
 
   if (user) {
@@ -54,6 +54,6 @@ export async function POST(req: NextRequest) {
       await sendPasswordResetEmail({ to: user.email, name: user.name ?? "", resetUrl });    }
   }
 
-  // Generic response — never reveal whether the email is registered
+  // Generic response - never reveal whether the email is registered
   return NextResponse.json({ ok: true });
 }

@@ -49,7 +49,7 @@ function ShareButton({ resource }: { resource: ResourceItem }) {
         });
         return;
       } catch {
-        // User cancelled — fall through to clipboard
+        // User cancelled - fall through to clipboard
       }
     }
     // Desktop fallback: copy to clipboard
@@ -58,7 +58,7 @@ function ShareButton({ resource }: { resource: ResourceItem }) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // clipboard not available — do nothing
+      // clipboard not available - do nothing
     }
   }
 

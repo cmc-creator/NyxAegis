@@ -39,8 +39,8 @@ function parseCSV(text: string): string[][] {
 // POST /api/integrations/medworxs/csv
 //
 // Body: multipart/form-data
-//   file     – CSV file
-//   mapping  – JSON string describing column indices or header names:
+//   file     - CSV file
+//   mapping  - JSON string describing column indices or header names:
 //     {
 //       "referringProvider" : "Referring Physician",   // column header
 //       "referringNpi"      : "Referring NPI",

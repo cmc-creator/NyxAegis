@@ -33,7 +33,7 @@ async function fetchColumns(apiKey: string, boardId: string) {
   return (data.boards?.[0]?.columns ?? []) as { id: string; title: string }[];
 }
 
-// Fetch all items (rows) for a board — uses cursor pagination
+// Fetch all items (rows) for a board - uses cursor pagination
 async function fetchItems(apiKey: string, boardId: string): Promise<{ id: string; name: string; columnValues: { id: string; text: string }[] }[]> {
   const query = `
     query($boardId: [ID!], $cursor: String) {
@@ -193,7 +193,7 @@ export async function POST(req: NextRequest) {
             });
             updated++;
           } else {
-            // Hospitals require a User — we create a placeholder user
+            // Hospitals require a User - we create a placeholder user
             const email = map["primaryContactEmail"] ? colVal(item, map["primaryContactEmail"]) : null;
             const userEmail = email || `monday-${item.id}@import.nyx`;
             let user = await prisma.user.findUnique({ where: { email: userEmail }, select: { id: true } });

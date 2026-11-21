@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
   },
   webpack: (config, { dev }) => {
     if (dev) {
-      // Network drives don't trigger filesystem events — use polling
+      // Network drives don't trigger filesystem events - use polling
       config.watchOptions = {
         poll: 1000,
         aggregateTimeout: 300,

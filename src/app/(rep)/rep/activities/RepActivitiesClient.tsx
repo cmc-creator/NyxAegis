@@ -236,7 +236,7 @@ export default function RepActivitiesClient({
           <div style={{ background: "#111827", border: "1px solid rgba(34,211,238,0.25)", borderRadius: 16, padding: 28, width: "100%", maxWidth: 400 }}>
             <h2 style={{ margin: "0 0 6px", fontSize: "1.1rem", fontWeight: 800, color: C.text }}>Export Visit Log</h2>
             <p style={{ margin: "0 0 20px", fontSize: "0.8rem", color: C.muted, lineHeight: 1.5 }}>
-              Downloads a CSV with date, activity type, destination, addresses, GPS coordinates, arrival/departure times, and duration — suitable for mileage reimbursement.
+              Downloads a CSV with date, activity type, destination, addresses, GPS coordinates, arrival/departure times, and duration - suitable for mileage reimbursement.
             </p>
             <div style={{ display: "flex", gap: 12, marginBottom: 20 }}>
               <div style={{ flex: 1 }}>
@@ -388,7 +388,7 @@ export default function RepActivitiesClient({
                     </span>
                   </div>
                   <span style={{ fontSize: "0.8rem", color: C.muted, paddingTop: 2 }}>
-                    {a.hospital?.hospitalName ?? "—"}
+                    {a.hospital?.hospitalName ?? "-"}
                   </span>
                   <span style={{ fontSize: "0.75rem", color: C.muted, paddingTop: 2 }}>
                     {relTime(a.completedAt ?? a.createdAt)}
@@ -428,7 +428,7 @@ export default function RepActivitiesClient({
               <div>
                 <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: C.muted, marginBottom: 5 }}>Account</label>
                 <select style={{ ...inp, width: "100%" }} value={editForm.hospitalId} onChange={(e) => setEditForm(f => ({ ...f, hospitalId: e.target.value }))}>
-                  <option value="">— None —</option>
+                  <option value="">- None -</option>
                   {hospitals.map(h => <option key={h.id} value={h.id}>{h.hospitalName}</option>)}
                 </select>
               </div>
@@ -473,7 +473,7 @@ export default function RepActivitiesClient({
               <div>
                 <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: C.muted, marginBottom: 5 }}>Account</label>
                 <select style={{ ...inp, width: "100%" }} value={form.hospitalId} onChange={(e) => setForm(f => ({ ...f, hospitalId: e.target.value }))}>
-                  <option value="">— None —</option>
+                  <option value="">- None -</option>
                   {hospitals.map(h => <option key={h.id} value={h.id}>{h.hospitalName}</option>)}
                 </select>
               </div>

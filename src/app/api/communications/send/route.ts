@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
 
     // ── Send via channel ──────────────────────────────────────────────────────
     if (channel === "OUTLOOK") {
-      // ── Microsoft Graph — send email ───────────────────────────────────────
+      // ── Microsoft Graph - send email ───────────────────────────────────────
       const token = await prisma.integrationToken.findUnique({
         where: { userId_provider: { userId: session.user.id, provider: "microsoft" } },
       });
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
       }
 
     } else if (channel === "GMAIL") {
-      // ── Gmail API — send email ─────────────────────────────────────────────
+      // ── Gmail API - send email ─────────────────────────────────────────────
       const token = await prisma.integrationToken.findUnique({
         where: { userId_provider: { userId: session.user.id, provider: "google" } },
       });
@@ -142,7 +142,7 @@ export async function POST(req: NextRequest) {
       }
 
     } else {
-      // INTERNAL — no external send
+      // INTERNAL - no external send
       status = "SENT";
     }
 

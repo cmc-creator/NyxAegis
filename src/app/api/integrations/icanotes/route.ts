@@ -30,7 +30,7 @@ function parseCSV(text: string): string[][] {
   return rows.filter((r) => r.some((c) => c !== ""));
 }
 
-// Safely parse a date string — returns undefined if invalid
+// Safely parse a date string - returns undefined if invalid
 function safeDate(s: string | undefined): Date | undefined {
   if (!s) return undefined;
   const d = new Date(s);
@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
 
     if (!referringProvider) {
       errors++;
-      errorLog.push(`Row ${lineNum}: missing Referring Provider — skipped`);
+      errorLog.push(`Row ${lineNum}: missing Referring Provider - skipped`);
       continue;
     }
 

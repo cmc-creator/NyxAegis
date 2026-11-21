@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * SessionTracker — lightweight, invisible component that:
+ * SessionTracker - lightweight, invisible component that:
  *  1. Creates a server-side UserSession record on first mount (per browser session).
  *  2. Posts a PageView whenever the Next.js pathname changes.
  *  3. Ends the session (records logoutAt + durationSecs) on page unload.
@@ -41,7 +41,7 @@ export default function SessionTracker() {
           sessionStorage.setItem(SESSION_KEY, data.id);
         }
       })
-      .catch(() => {/* swallow — non-critical */});
+      .catch(() => {/* swallow - non-critical */});
   }, []);
 
   // ── Track page views on route change ────────────────────────────────────────

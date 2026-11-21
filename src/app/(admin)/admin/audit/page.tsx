@@ -78,7 +78,7 @@ export default function AuditLogPage() {
         <div>
           <p style={{ color: "var(--nyx-accent-label)", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", marginBottom: 4 }}>INTELLIGENCE</p>
           <h1 style={{ fontSize: "1.8rem", fontWeight: 900, color: C.text }}>Audit Log</h1>
-          <p style={{ color: C.muted, fontSize: "0.875rem", marginTop: 4 }}>Full history of all record changes — who did what and when</p>
+          <p style={{ color: C.muted, fontSize: "0.875rem", marginTop: 4 }}>Full history of all record changes - who did what and when</p>
         </div>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
           <div style={{ position: "relative" }}>

@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 export const maxDuration = 30;
 
-// PATCH /api/tasks/[id] — update a task
+// PATCH /api/tasks/[id] - update a task
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -46,7 +46,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   return NextResponse.json(task);
 }
 
-// DELETE /api/tasks/[id] — delete a task
+// DELETE /api/tasks/[id] - delete a task
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

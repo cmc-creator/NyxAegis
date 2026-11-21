@@ -43,7 +43,7 @@ const IMPORT_TYPES: { value: ImportType; label: string; hint: string; badge: str
     value: "accounts",
     label: "Accounts",
     badge: "ACCOUNTS",
-    hint: "Import all external accounts — doctor offices, ERs, outpatient programs, schools, churches, volunteer orgs, or any place your reps visit. Portal Email is optional: only include it if you want to give that account a login to the portal.",
+    hint: "Import all external accounts - doctor offices, ERs, outpatient programs, schools, churches, volunteer orgs, or any place your reps visit. Portal Email is optional: only include it if you want to give that account a login to the portal.",
   },
   {
     value: "contacts",
@@ -96,7 +96,7 @@ export default function AdminImportPage() {
       const data = await res.json();
       setRelinkResult({ linked: data.linked ?? 0, skipped: data.skipped ?? 0 });
     } catch {
-      alert("Re-link failed — please try again.");
+      alert("Re-link failed - please try again.");
     } finally {
       setRelinking(false);
     }
@@ -168,7 +168,7 @@ export default function AdminImportPage() {
         <div style={{ background: relinkResult.linked > 0 ? "rgba(80,200,120,0.08)" : "rgba(255,180,0,0.08)", border: `1px solid ${relinkResult.linked > 0 ? "rgba(80,200,120,0.3)" : "rgba(255,180,0,0.3)"}`, borderRadius: 10, padding: "12px 16px", marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "0.82rem", color: "#ede4cf" }}>
           <span>
             {relinkResult.linked > 0
-              ? `✅ Linked ${relinkResult.linked} activit${relinkResult.linked === 1 ? "y" : "ies"} to accounts.${ relinkResult.skipped > 0 ? ` ${relinkResult.skipped} still unmatched — their activity title may not contain the account name.` : " All unlinked activities are now connected!"}`
+              ? `✅ Linked ${relinkResult.linked} activit${relinkResult.linked === 1 ? "y" : "ies"} to accounts.${ relinkResult.skipped > 0 ? ` ${relinkResult.skipped} still unmatched - their activity title may not contain the account name.` : " All unlinked activities are now connected!"}`
               : `⚠️ No activities were linked. Make sure you import Accounts first, then click Re-link.`}
           </span>
           <button onClick={() => setRelinkResult(null)} style={{ background: "none", border: "none", color: "rgba(237,228,207,0.5)", cursor: "pointer", fontSize: "1rem", padding: "0 4px", marginLeft: 12 }}>×</button>
@@ -293,13 +293,13 @@ export default function AdminImportPage() {
             /* ── PREVIEW PANEL ── */
             <>
               <p style={{ margin: "0 0 4px", fontWeight: 800, color: "#fde68a", fontSize: "1rem" }}>
-                Preview — {result.totalRows} rows scanned
+                Preview - {result.totalRows} rows scanned
               </p>
               <p style={{ margin: "0 0 14px", fontSize: "0.82rem", color: "rgba(237,228,207,0.55)" }}>
                 {result.created} row{result.created !== 1 ? "s" : ""} ready to create
                 {" · "}{result.updated ?? 0} row{(result.updated ?? 0) !== 1 ? "s" : ""} ready to update
                 {" · "}{result.skipped} will be skipped
-                {" "}— nothing has been written yet. Review below, then click <strong style={{ color: "#fde68a" }}>Confirm and Import</strong>.
+                {" "}- nothing has been written yet. Review below, then click <strong style={{ color: "#fde68a" }}>Confirm and Import</strong>.
               </p>
 
               {/* Activity match stats */}
@@ -307,7 +307,7 @@ export default function AdminImportPage() {
                 <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 14 }}>
                   <span style={{ background: result.accountsMatched === result.accountsFound && result.accountsFound > 0 ? "rgba(34,197,94,0.1)" : "rgba(239,68,68,0.1)", border: `1px solid ${result.accountsMatched === result.accountsFound && result.accountsFound > 0 ? "rgba(34,197,94,0.3)" : "rgba(239,68,68,0.3)"}`, borderRadius: 8, padding: "6px 12px", fontSize: "0.78rem", color: result.accountsMatched === result.accountsFound && result.accountsFound > 0 ? "#86efac" : "#fca5a5", fontWeight: 700 }}>
                     Accounts linked: {result.accountsMatched ?? 0} / {result.accountsFound ?? 0}
-                    {(result.accountsFound ?? 0) > 0 && (result.accountsMatched ?? 0) < (result.accountsFound ?? 0) && " \u2014 some rows did not match any account (check \u2717 rows below)"}
+                    {(result.accountsFound ?? 0) > 0 && (result.accountsMatched ?? 0) < (result.accountsFound ?? 0) && " - some rows did not match any account (check \u2717 rows below)"}
                   </span>
                   <span style={{ background: "rgba(147,197,253,0.08)", border: "1px solid rgba(147,197,253,0.2)", borderRadius: 8, padding: "6px 12px", fontSize: "0.78rem", color: "#93c5fd", fontWeight: 700 }}>
                     Reps linked: {result.repsMatched ?? 0}
@@ -358,7 +358,7 @@ export default function AdminImportPage() {
                   </summary>
                   <ul style={{ marginTop: 8, paddingLeft: 18, fontSize: "0.78rem", color: "rgba(239,68,68,0.7)", lineHeight: 1.8 }}>
                     {Object.entries(result.skipReasons).map(([reason, count]) => (
-                      <li key={reason}><strong>{count}x</strong> — {reason}</li>
+                      <li key={reason}><strong>{count}x</strong> - {reason}</li>
                     ))}
                   </ul>
                 </details>
@@ -374,14 +374,14 @@ export default function AdminImportPage() {
             /* ── IMPORT COMPLETE PANEL ── */
             <>
               <p style={{ margin: "0 0 8px", fontWeight: 800, color: "#86efac", fontSize: "1rem" }}>
-                Import complete — {result.created} created · {result.updated ?? 0} updated
+                Import complete - {result.created} created · {result.updated ?? 0} updated
               </p>
               <p style={{ margin: 0, fontSize: "0.82rem", color: "rgba(237,228,207,0.6)" }}>
                 {result.totalRows} rows processed · {result.created} created · {result.updated ?? 0} updated · {result.skipped} skipped (missing required fields or unmatched links)
               </p>
               {result.created === 0 && result.columns && result.columns.length > 0 && (
                 <details open style={{ marginTop: 12 }}>
-                  <summary style={{ fontSize: "0.8rem", color: "#fde68a", cursor: "pointer", fontWeight: 700 }}>Columns detected in your file — click to collapse</summary>
+                  <summary style={{ fontSize: "0.8rem", color: "#fde68a", cursor: "pointer", fontWeight: 700 }}>Columns detected in your file - click to collapse</summary>
                   <p style={{ margin: "8px 0 4px", fontSize: "0.75rem", color: "rgba(237,228,207,0.45)" }}>Make sure one of these matches the expected column names:</p>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
                     {result.columns.map((c) => (
@@ -395,14 +395,14 @@ export default function AdminImportPage() {
                   <summary style={{ fontSize: "0.8rem", color: "#fca5a5", cursor: "pointer", fontWeight: 700 }}>Why rows were skipped</summary>
                   <ul style={{ marginTop: 8, paddingLeft: 18, fontSize: "0.78rem", color: "rgba(239,68,68,0.7)", lineHeight: 1.8 }}>
                     {Object.entries(result.skipReasons).map(([reason, count]) => (
-                      <li key={reason}><strong>{count}x</strong> — {reason}</li>
+                      <li key={reason}><strong>{count}x</strong> - {reason}</li>
                     ))}
                   </ul>
                 </details>
               )}
               {result.errors.length > 0 && (
                 <details style={{ marginTop: 12 }}>
-                  <summary style={{ fontSize: "0.8rem", color: "#fca5a5", cursor: "pointer" }}>{result.errors.length} row error{result.errors.length !== 1 ? "s" : ""} — click to expand</summary>
+                  <summary style={{ fontSize: "0.8rem", color: "#fca5a5", cursor: "pointer" }}>{result.errors.length} row error{result.errors.length !== 1 ? "s" : ""} - click to expand</summary>
                   <ul style={{ marginTop: 8, paddingLeft: 18, fontSize: "0.78rem", color: "rgba(239,68,68,0.7)", lineHeight: 1.8 }}>
                     {result.errors.map((e, i) => <li key={i}>{e}</li>)}
                   </ul>

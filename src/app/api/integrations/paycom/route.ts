@@ -93,9 +93,9 @@ export async function POST(req: NextRequest) {
           });
           updated++;
         } else {
-          // No matching rep found — log as informational skip
+          // No matching rep found - log as informational skip
           skipped++;
-          errorLog.push(`Row ${i + 2}: Rep not found for email "${email}" (${name}) — skipped. Create the rep in NyxAegis first.`);
+          errorLog.push(`Row ${i + 2}: Rep not found for email "${email}" (${name}) - skipped. Create the rep in NyxAegis first.`);
         }
       } catch (err) {
         errors++;
@@ -133,11 +133,11 @@ export async function POST(req: NextRequest) {
 
         if (!existingUser?.rep) {
           skipped++;
-          errorLog.push(`Row ${i + 2}: Rep not found for "${email || name}" — skipped.`);
+          errorLog.push(`Row ${i + 2}: Rep not found for "${email || name}" - skipped.`);
           continue;
         }
 
-        // Upsert — deduplicate by repId + paidAt date
+        // Upsert - deduplicate by repId + paidAt date
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const existing = await (prisma as any).repPayment.findFirst({
           where: { repId: existingUser.rep.id, paidAt: payDate },
@@ -151,7 +151,7 @@ export async function POST(req: NextRequest) {
             repId: existingUser.rep.id,
             amount,
             paidAt: payDate,
-            notes: `Paycom import — ${name || email}`,
+            notes: `Paycom import - ${name || email}`,
             status: "PAID",
           },
         });

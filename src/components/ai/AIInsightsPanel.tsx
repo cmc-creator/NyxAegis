@@ -73,7 +73,7 @@ function SuggestedNextActions({ role }: { role: string }) {
           if (days >= 14) {
             base.push({
               label: `Re-engage ${l.hospitalName}`,
-              desc: `${days} days since last update — status: ${l.status.replace(/_/g, " ")}`,
+              desc: `${days} days since last update - status: ${l.status.replace(/_/g, " ")}`,
               prompt: `I haven't touched the lead "${l.hospitalName}" in ${days} days. It's currently in ${l.status.replace(/_/g, " ")} status. What's the best next step to move it forward?`,
               urgency: days >= 30 ? "high" : "medium",
             });

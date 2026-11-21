@@ -39,7 +39,7 @@ function checkInMemory(params: {
 
 // ── Upstash / Vercel KV distributed rate limiter ───────────────────────────
 // Requires env vars: UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN
-// (Vercel KV automatically provides KV_REST_API_URL / KV_REST_API_TOKEN —
+// (Vercel KV automatically provides KV_REST_API_URL / KV_REST_API_TOKEN -
 //  map those to the Upstash names in your Vercel project settings, or set
 //  UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN directly.)
 
@@ -99,7 +99,7 @@ export async function checkRateLimit(params: {
   const limiter = getLimiter(params.namespace, params.limit, params.windowMs);
 
   if (!limiter) {
-    // No Redis configured — use in-memory (local dev / fallback)
+    // No Redis configured - use in-memory (local dev / fallback)
     return checkInMemory(params);
   }
 

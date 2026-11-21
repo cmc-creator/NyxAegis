@@ -6,7 +6,7 @@ import VisitPrepClient from "./VisitPrepClient";
 export const dynamic = "force-dynamic";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Rule-based talking points — no LLM call; computed instantly from rep data
+// Rule-based talking points - no LLM call; computed instantly from rep data
 // ─────────────────────────────────────────────────────────────────────────────
 function buildTalkingPoints(opts: {
   daysSinceContact: number | null;
@@ -19,45 +19,45 @@ function buildTalkingPoints(opts: {
   const { daysSinceContact, referralsThis90, referralsPrev90, tier, competitorIntel, monthlyGoal } = opts;
   const pts: string[] = [];
 
-  // — Recency
+  // - Recency
   if (daysSinceContact === null) {
-    pts.push("First visit — introduce yourself, leave materials, and ask about their most complex ongoing cases.");
+    pts.push("First visit - introduce yourself, leave materials, and ask about their most complex ongoing cases.");
   } else if (daysSinceContact > 30) {
     pts.push("It's been over a month. Open with a warm check-in and ask if anything has changed in their caseload.");
   } else if (daysSinceContact > 14) {
     pts.push("2+ weeks since last contact. Follow up on anything discussed last time and share a recent outcome story.");
   } else if (daysSinceContact <= 7) {
-    pts.push("Recent contact — keep it brief. A quick check-in reinforces the relationship without over-visiting.");
+    pts.push("Recent contact - keep it brief. A quick check-in reinforces the relationship without over-visiting.");
   }
 
-  // — Volume trend
+  // - Volume trend
   const delta = referralsThis90 - referralsPrev90;
   if (referralsThis90 === 0 && referralsPrev90 === 0) {
     pts.push("No referrals yet. Discuss ideal patient profiles, admission criteria, and how to reach the on-call team.");
   } else if (delta <= -3) {
-    pts.push(`Volume dropped ${Math.abs(delta)} referrals vs last quarter. Ask if there are access or process barriers — address them directly.`);
+    pts.push(`Volume dropped ${Math.abs(delta)} referrals vs last quarter. Ask if there are access or process barriers - address them directly.`);
   } else if (delta >= 3) {
-    pts.push(`Strong momentum — up ${delta} referrals vs last quarter. Thank them and discuss what's working so you can sustain it.`);
+    pts.push(`Strong momentum - up ${delta} referrals vs last quarter. Thank them and discuss what's working so you can sustain it.`);
   } else if (referralsThis90 > 0) {
     pts.push("Volume is holding steady. Share a positive patient outcome or a recent program enhancement to stay top of mind.");
   }
 
-  // — Monthly goal gap
+  // - Monthly goal gap
   if (monthlyGoal && referralsThis90 > 0) {
     const monthlyAvg = Math.round(referralsThis90 / 3);
     if (monthlyAvg < monthlyGoal * 0.6) {
-      pts.push(`Currently averaging ~${monthlyAvg}/mo vs a goal of ${monthlyGoal}. Explore what would help increase volume — education, access, or trust-building.`);
+      pts.push(`Currently averaging ~${monthlyAvg}/mo vs a goal of ${monthlyGoal}. Explore what would help increase volume - education, access, or trust-building.`);
     }
   }
 
-  // — Tier-specific angle
+  // - Tier-specific angle
   if (tier === "TIER_1") {
-    pts.push("Tier 1 account. Prioritize relationship depth — ask about staff changes, continuing education needs, or co-marketing opportunities.");
+    pts.push("Tier 1 account. Prioritize relationship depth - ask about staff changes, continuing education needs, or co-marketing opportunities.");
   } else if (tier === "TIER_3") {
     pts.push("Tier 3 account. Identify a champion. One strong referral can shift their confidence and unlock more volume.");
   }
 
-  // — Competitor intel
+  // - Competitor intel
   if (competitorIntel) {
     pts.push(`Intel: ${competitorIntel}`);
   }

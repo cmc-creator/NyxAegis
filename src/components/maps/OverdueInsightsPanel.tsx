@@ -154,7 +154,7 @@ export function OverdueInsightsPanel({ hospitals }: { hospitals: OverdueHospital
                       {h.contacts.length > 0 && (
                         <span style={{ marginLeft: 8, color: "var(--nyx-accent-label)" }}>
                           {h.contacts[0].name}
-                          {h.contacts[0].title ? ` — ${h.contacts[0].title}` : ""}
+                          {h.contacts[0].title ? ` - ${h.contacts[0].title}` : ""}
                           {h.contacts.length > 1 ? ` +${h.contacts.length - 1}` : ""}
                         </span>
                       )}

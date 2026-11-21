@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Look up the token — must be unused and not expired
+  // Look up the token - must be unused and not expired
   const record = await prisma.passwordResetToken.findUnique({ where: { token } });
 
   if (!record || record.usedAt !== null || record.expiresAt < new Date()) {

@@ -123,7 +123,7 @@ function formatPhone(raw: string): string {
 }
 
 function formatDate(iso: string | null): string {
-  if (!iso) return "—";
+  if (!iso) return "-";
   return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
@@ -461,7 +461,7 @@ export default function VisitPrepClient({
           borderRadius: 14, padding: "16px 20px", marginBottom: 20,
         }}>
           <div style={{ fontSize: "0.75rem", fontWeight: 800, color: "var(--nyx-accent)", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 14 }}>
-            ⚡ Log Activity — {source.name}
+            ⚡ Log Activity - {source.name}
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 10, marginBottom: 10 }}>
             <div>

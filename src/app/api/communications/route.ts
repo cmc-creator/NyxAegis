@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 export const maxDuration = 30;
 
-// GET /api/communications — list logs for current user
+// GET /api/communications - list logs for current user
 export async function GET() {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -17,7 +17,7 @@ export async function GET() {
   return NextResponse.json(logs);
 }
 
-// POST /api/communications — save a draft or internal note (no send)
+// POST /api/communications - save a draft or internal note (no send)
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

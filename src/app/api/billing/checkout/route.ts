@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { appBaseUrl, billingConfigured, getStripe, getWorkspaceOrg, isTierKey, priceIdForTier, TIERS } from "@/lib/billing";
 
-// POST /api/billing/checkout — start a subscription checkout for a plan tier.
+// POST /api/billing/checkout - start a subscription checkout for a plan tier.
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session || session.user.role !== "ADMIN") {

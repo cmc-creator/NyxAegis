@@ -3,7 +3,7 @@ import type Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
 import { getStripe, tierForPriceId } from "@/lib/billing";
 
-// POST /api/billing/webhook — Stripe subscription lifecycle events.
+// POST /api/billing/webhook - Stripe subscription lifecycle events.
 // Keeps the workspace Organization plan in sync automatically.
 export async function POST(req: NextRequest) {
   const secret = process.env.STRIPE_WEBHOOK_SECRET;

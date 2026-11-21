@@ -15,7 +15,7 @@ const ACCENT_STR = "var(--nyx-accent-str)";
 const ACCENT_LBL = "var(--nyx-accent-label)";
 
 // ─── Diamond bullet ───────────────────────────────────────────────────────────
-// A tiny faceted gem SVG — crown, girdle, pavillon, table highlight, culet.
+// A tiny faceted gem SVG - crown, girdle, pavillon, table highlight, culet.
 // `tint` shifts the colour channel so each group looks like a different cut.
 function DiamondBullet({ active, tint = "accent" }: { active: boolean; tint?: string }) {
   const base    = active ? "var(--nyx-accent)"     : "var(--nyx-text-muted)";
@@ -259,7 +259,7 @@ export function Sidebar({ role, userName, userEmail }: SidebarProps) {
 
   return (
     <>
-      {/* Mobile hamburger button — hidden; MobileTopBar owns this on mobile */}
+      {/* Mobile hamburger button - hidden; MobileTopBar owns this on mobile */}
       <button
         className="nyx-hamburger-float"
         onClick={() => setMobileOpen(true)}
@@ -297,7 +297,7 @@ export function Sidebar({ role, userName, userEmail }: SidebarProps) {
             <div style={{ fontSize: "0.62rem", color: TEXT_MUTED, letterSpacing: "0.08em", marginTop: 2 }}>{role === "ADMIN" ? "ADMIN" : role === "REP" ? "BD REP" : "ACCOUNT"}</div>
           </div>
           </div>
-          {/* Close button — mobile only */}
+          {/* Close button - mobile only */}
           <button
             className="nyx-hamburger"
             onClick={() => setMobileOpen(false)}

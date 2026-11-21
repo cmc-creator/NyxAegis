@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 
-// ssr: false MUST live in a Client Component — not a Server Component
+// ssr: false MUST live in a Client Component - not a Server Component
 const TerritoryMapClient = dynamic(
   () => import("@/components/maps/TerritoryMapClient"),
   {

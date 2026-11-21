@@ -6,7 +6,7 @@ import { getWorkspaceOrg, isTierKey, TIERS } from "@/lib/billing";
 
 export const maxDuration = 30;
 
-// GET /api/admin/users — list all users
+// GET /api/admin/users - list all users
 export async function GET() {
   const session = await auth();
   if (!session || session.user.role !== "ADMIN") {
@@ -32,7 +32,7 @@ export async function GET() {
   }
 }
 
-// POST /api/admin/users — create a user directly (admin only, bypasses self-registration)
+// POST /api/admin/users - create a user directly (admin only, bypasses self-registration)
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session || session.user.role !== "ADMIN") {
@@ -111,7 +111,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// DELETE /api/admin/users?id=xxx — remove a user
+// DELETE /api/admin/users?id=xxx - remove a user
 export async function DELETE(req: NextRequest) {
   const session = await auth();
   if (!session || session.user.role !== "ADMIN") {
@@ -135,7 +135,7 @@ export async function DELETE(req: NextRequest) {
   }
 }
 
-// PATCH /api/admin/users?id=xxx — approve a pending self-signup
+// PATCH /api/admin/users?id=xxx - approve a pending self-signup
 export async function PATCH(req: NextRequest) {
   const session = await auth();
   if (!session || session.user.role !== "ADMIN") {
@@ -187,7 +187,7 @@ export async function PATCH(req: NextRequest) {
   }
 }
 
-// PUT /api/admin/users?id=xxx — reset user password
+// PUT /api/admin/users?id=xxx - reset user password
 export async function PUT(req: NextRequest) {
   const session = await auth();
   if (!session || session.user.role !== "ADMIN") {

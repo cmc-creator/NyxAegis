@@ -776,8 +776,8 @@ export default function CalendarClient({
       const week = buildWeekDays(currentDate);
       const s = week[0]; const e = week[6];
       if (s.getMonth() === e.getMonth())
-        return `${MONTHS[s.getMonth()]} ${s.getDate()}–${e.getDate()}, ${s.getFullYear()}`;
-      return `${MONTHS[s.getMonth()]} ${s.getDate()} – ${MONTHS[e.getMonth()]} ${e.getDate()}, ${e.getFullYear()}`;
+        return `${MONTHS[s.getMonth()]} ${s.getDate()}-${e.getDate()}, ${s.getFullYear()}`;
+      return `${MONTHS[s.getMonth()]} ${s.getDate()} - ${MONTHS[e.getMonth()]} ${e.getDate()}, ${e.getFullYear()}`;
     }
     return fmtMonthYear(currentDate);
   }

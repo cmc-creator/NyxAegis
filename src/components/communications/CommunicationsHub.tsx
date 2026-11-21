@@ -247,7 +247,7 @@ export default function CommunicationsHub({ role: _role }: Props) {
   }
 
   function fillBodyFromAI() {
-    // Listen for AI response to fill body — fires aegis:prompt and listens for response
+    // Listen for AI response to fill body - fires aegis:prompt and listens for response
     const prompt = `Draft a professional outreach email body${to ? ` to ${toName || to}` : ""}${subject ? ` about: ${subject}` : ""}. Be concise, warm, and action-oriented. Return only the email body text without subject or salutation headers.`;
     window.dispatchEvent(new CustomEvent("aegis:prompt", { detail: prompt }));
   }
@@ -371,7 +371,7 @@ export default function CommunicationsHub({ role: _role }: Props) {
           onDisconnect={() => disconnectProvider("google")}
         />
 
-        {/* Microsoft Teams — webhook-based */}
+        {/* Microsoft Teams - webhook-based */}
         <div style={{
           background: CARD, border: `1px solid ${microsoftToken?.teamsWebhook ? "#5558AF44" : BORDER}`,
           borderRadius: 12, padding: "14px 18px", display: "flex", alignItems: "center",

@@ -712,7 +712,7 @@ function applyTheme(key: string) {
   applyStoredBgs(key);
 }
 
-// ─── Elegant per-theme icon — replaces the old gem/diamond cartoon ─────────
+// ─── Elegant per-theme icon - replaces the old gem/diamond cartoon ─────────
 function ThemeIcon({ accent, themeKey, size = 32 }: { accent: string; themeKey: string; size?: number }) {
   const f = accent; // petal fill at low fillOpacity
   const petal = (deg: number, r: number) => {
@@ -1437,7 +1437,7 @@ export default function SettingsClient({ personalMode = false }: { personalMode?
       )}
 
       {/*  THEMES  */}
-      <Section title="Appearance &mdash; Theme">
+      <Section title="Appearance - Theme">
         <p style={{ fontSize: "0.78rem", color: "var(--nyx-text-muted)", marginBottom: 18 }}>
           Choose your interface theme. Changes apply instantly across the entire platform.
         </p>
@@ -1890,11 +1890,11 @@ export default function SettingsClient({ personalMode = false }: { personalMode?
                 <span style={{ fontSize: "0.62rem", fontWeight: 800, background: "rgba(248,113,113,0.15)", border: "1px solid rgba(248,113,113,0.40)", borderRadius: 4, padding: "2px 6px", color: "#f87171", letterSpacing: "0.06em" }}>EXTREME CAUTION</span>
                 <span style={{ fontSize: "0.62rem", fontWeight: 800, background: "rgba(248,113,113,0.10)", border: "1px solid rgba(248,113,113,0.30)", borderRadius: 4, padding: "2px 6px", color: "#f87171", letterSpacing: "0.05em" }}>ADMIN ONLY</span>
               </div>
-              <div style={{ fontSize: "0.75rem", color: "var(--nyx-text-muted)", marginTop: 4, lineHeight: 1.5 }}>Permanently wipes <strong style={{ color: "#f87171" }}>ALL</strong> records &mdash; leads, opps, invoices, contracts, activities. <strong style={{ color: "#f87171" }}>No undo. No recovery.</strong></div>
+              <div style={{ fontSize: "0.75rem", color: "var(--nyx-text-muted)", marginTop: 4, lineHeight: 1.5 }}>Permanently wipes <strong style={{ color: "#f87171" }}>ALL</strong> records - leads, opps, invoices, contracts, activities. <strong style={{ color: "#f87171" }}>No undo. No recovery.</strong></div>
             </div>
             {confirmAction === "clear-all"
               ? <div style={{ display: "flex", gap: 8 }}>
-                  <button onClick={() => devAction("clear-all")} disabled={devLoading !== null || !isAdmin} style={{ background: "rgba(248,113,113,0.18)", border: "1px solid rgba(248,113,113,0.45)", borderRadius: 7, padding: "7px 14px", color: "#f87171", cursor: isAdmin ? "pointer" : "not-allowed", fontWeight: 800, fontSize: "0.8rem" }}>{devLoading === "clear-all" ? "Wiping\u2026" : "\u26a0 Confirm \u2014 Wipe Everything"}</button>
+                  <button onClick={() => devAction("clear-all")} disabled={devLoading !== null || !isAdmin} style={{ background: "rgba(248,113,113,0.18)", border: "1px solid rgba(248,113,113,0.45)", borderRadius: 7, padding: "7px 14px", color: "#f87171", cursor: isAdmin ? "pointer" : "not-allowed", fontWeight: 800, fontSize: "0.8rem" }}>{devLoading === "clear-all" ? "Wiping\u2026" : "\u26a0 Confirm - Wipe Everything"}</button>
                   <button onClick={() => setConfirmAction(null)} style={{ background: "none", border: "1px solid var(--nyx-border)", borderRadius: 7, padding: "7px 12px", color: "var(--nyx-text-muted)", cursor: "pointer", fontSize: "0.8rem" }}>Cancel</button>
                 </div>
               : <button onClick={() => devAction("clear-all")} disabled={devLoading !== null || !isAdmin} style={{ background: "rgba(248,113,113,0.08)", border: "1px solid rgba(248,113,113,0.25)", borderRadius: 7, padding: "8px 18px", color: "#f87171", cursor: isAdmin ? "pointer" : "not-allowed", fontWeight: 700, fontSize: "0.8rem" }}>Clear All</button>

@@ -5,7 +5,7 @@ import type { TaskStatus } from "@prisma/client";
 
 export const maxDuration = 30;
 
-// GET /api/tasks — list tasks for the current user (rep) or all tasks (admin)
+// GET /api/tasks - list tasks for the current user (rep) or all tasks (admin)
 export async function GET(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
   return NextResponse.json(tasks);
 }
 
-// POST /api/tasks — create a new task
+// POST /api/tasks - create a new task
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

@@ -147,7 +147,7 @@ export default async function LeaderboardPage() {
           {/* ── Full table ────────────────────────────────────────────── */}
           <div style={{ background: CARD, border: `1px solid ${BORDER}`, borderRadius: 14, overflow: "hidden" }}>
             <div style={{ padding: "16px 20px", borderBottom: `1px solid ${BORDER}` }}>
-              <p style={{ fontSize: "0.65rem", fontWeight: 700, color: "var(--nyx-accent-label)", letterSpacing: "0.12em", textTransform: "uppercase" }}>ALL REPS — {monthLabel.toUpperCase()}</p>
+              <p style={{ fontSize: "0.65rem", fontWeight: 700, color: "var(--nyx-accent-label)", letterSpacing: "0.12em", textTransform: "uppercase" }}>ALL REPS - {monthLabel.toUpperCase()}</p>
             </div>
 
             {/* Header */}
@@ -199,7 +199,7 @@ export default async function LeaderboardPage() {
 
                   <div>
                     {rankDelta === 0 ? (
-                      <span style={{ fontSize: "0.72rem", color: MUTED }}>—</span>
+                      <span style={{ fontSize: "0.72rem", color: MUTED }}>-</span>
                     ) : (
                       <span style={{ fontSize: "0.72rem", fontWeight: 700, color: rankDelta > 0 ? "#34d399" : "#f87171" }}>
                         {rankDelta > 0 ? `▲ +${rankDelta}` : `▼ ${rankDelta}`}

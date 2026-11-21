@@ -205,7 +205,7 @@ export default function ActivitiesPage() {
       setRelinkResult({ linked: data.linked ?? 0, skipped: data.skipped ?? 0 });
       await load();
     } catch {
-      alert("Re-link failed — please try again.");
+      alert("Re-link failed - please try again.");
     } finally {
       setRelinking(false);
     }
@@ -430,13 +430,13 @@ export default function ActivitiesPage() {
                 </span>
               </div>
               <span style={{ fontSize: "0.8rem", color: C.muted, paddingTop: 2 }}>
-                {a.hospital?.hospitalName ?? a.lead?.hospitalName ?? "—"}
+                {a.hospital?.hospitalName ?? a.lead?.hospitalName ?? "-"}
               </span>
               <span style={{ fontSize: "0.8rem", color: C.muted, paddingTop: 2 }}>
-                {a.rep?.user.name ?? "—"}
+                {a.rep?.user.name ?? "-"}
               </span>
               <span style={{ fontSize: "0.8rem", color: C.muted, paddingTop: 2 }}>
-                {a.createdByUser?.name ?? a.createdByUser?.email ?? "—"}
+                {a.createdByUser?.name ?? a.createdByUser?.email ?? "-"}
               </span>
               <span style={{ fontSize: "0.75rem", color: C.muted, paddingTop: 2 }}>
                 {relTime(a.completedAt ?? a.createdAt)}
@@ -472,7 +472,7 @@ export default function ActivitiesPage() {
               <div>
                 <label style={{ display: "block", fontSize: "0.75rem", fontWeight: 700, color: C.muted, marginBottom: 5 }}>Account</label>
                 <select style={{ ...inp, width: "100%" }} value={editForm.hospitalId} onChange={(e) => setEditForm(f => ({ ...f, hospitalId: e.target.value }))}>
-                  <option value="">— None —</option>
+                  <option value="">- None -</option>
                   {accounts.map(h => <option key={h.id} value={h.id}>{h.hospitalName}</option>)}
                 </select>
               </div>

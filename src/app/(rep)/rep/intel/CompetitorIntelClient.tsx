@@ -217,7 +217,7 @@ export default function CompetitorIntelClient({ sources }: { sources: SourceItem
         </p>
         <h1 style={{ fontSize: "1.8rem", fontWeight: 900, color: TEXT }}>Competitive Intel</h1>
         <p style={{ color: TEXT_MUTED, fontSize: "0.875rem", marginTop: 4 }}>
-          Landscape view of your assigned referral sources — competitor activity, engagement status, and referral momentum.
+          Landscape view of your assigned referral sources - competitor activity, engagement status, and referral momentum.
         </p>
       </div>
 

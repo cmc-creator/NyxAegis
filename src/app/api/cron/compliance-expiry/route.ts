@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
     },
   });
 
-  // Docs already expired (expiresAt < now) — alert admin only, not rep repeatedly
+  // Docs already expired (expiresAt < now) - alert admin only, not rep repeatedly
   const expired = await prisma.complianceDoc.findMany({
     where: {
       expiresAt: { gte: new Date(now.getTime() - 24 * 60 * 60 * 1000), lt: now }, // expired in last 24h
@@ -76,7 +76,7 @@ export async function GET(req: NextRequest) {
   let notificationsCreated = 0;
   let emailsSent = 0;
 
-  // ── Expiring Soon — notify & email the rep ──────────────────────────────────
+  // ── Expiring Soon - notify & email the rep ──────────────────────────────────
   for (const doc of expiringSoon) {
     const userId = doc.rep.user.id;
     const daysLeft = Math.ceil((new Date(doc.expiresAt!).getTime() - now.getTime()) / 86400000);
@@ -105,7 +105,7 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // ── Just Expired — bell notification for rep + email for all admins ─────────
+  // ── Just Expired - bell notification for rep + email for all admins ─────────
   for (const doc of expired) {
     const repUserId = doc.rep.user.id;
 

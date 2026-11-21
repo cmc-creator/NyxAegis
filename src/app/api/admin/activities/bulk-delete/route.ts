@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 
-// POST /api/admin/activities/bulk-delete — admin only
+// POST /api/admin/activities/bulk-delete - admin only
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (session?.user?.role !== "ADMIN") {

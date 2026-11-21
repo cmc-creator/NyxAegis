@@ -171,7 +171,7 @@ export async function POST(req: NextRequest) {
           await prisma.hospital.update({ where: { id: existing.id }, data });
           updated++;
         } else {
-          // Need a User row — use contact email or generate placeholder
+          // Need a User row - use contact email or generate placeholder
           const email = data.primaryContactEmail || `migrate-${Date.now()}-${i}@import.nyx`;
           let user = await prisma.user.findUnique({ where: { email }, select: { id: true } });
           if (!user) {
@@ -260,7 +260,7 @@ export async function POST(req: NextRequest) {
       });
       if (!hospital) {
         errors++;
-        errorLog.push(`Row ${lineNum} "${title}": no matching hospital for "${hospitalName}" — import Hospital Accounts first`);
+        errorLog.push(`Row ${lineNum} "${title}": no matching hospital for "${hospitalName}" - import Hospital Accounts first`);
         continue;
       }
 
@@ -312,7 +312,7 @@ export async function POST(req: NextRequest) {
       });
       if (!hospital) {
         errors++;
-        errorLog.push(`Row ${lineNum} "${name}": no matching hospital for "${hospitalName}" — import Hospital Accounts first`);
+        errorLog.push(`Row ${lineNum} "${name}": no matching hospital for "${hospitalName}" - import Hospital Accounts first`);
         continue;
       }
 

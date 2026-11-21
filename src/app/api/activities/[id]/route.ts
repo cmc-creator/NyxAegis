@@ -14,7 +14,7 @@ export async function PATCH(
   const { id } = await params;
   const data = await req.json();
 
-  // Build update payload — only allow certain fields
+  // Build update payload - only allow certain fields
   const {
     type, title, notes,
     scheduledAt, completedAt,

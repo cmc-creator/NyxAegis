@@ -149,7 +149,7 @@ export default function AdminUsersPage() {
       if (data.sent) {
         showToast(`✓ Invite email sent to ${name ?? id}`);
       } else if (data.inviteUrl) {
-        // Email not configured — show the link so admin can share it
+        // Email not configured - show the link so admin can share it
         setInviteLink(data.inviteUrl);
       }
     } catch (e) {
@@ -215,7 +215,7 @@ export default function AdminUsersPage() {
           <div style={{ background: "#1a120a", border: "1px solid rgba(201,168,76,0.3)", borderRadius: 16, padding: "28px 28px 24px", width: "100%", maxWidth: 520, boxShadow: "0 24px 60px rgba(0,0,0,0.6)" }} onClick={(e) => e.stopPropagation()}>
             <h3 style={{ margin: "0 0 6px", fontSize: "1.05rem", fontWeight: 800, color: "#ede4cf" }}>Share Invite Link</h3>
             <p style={{ margin: "0 0 14px", fontSize: "0.82rem", color: "rgba(237,228,207,0.5)" }}>
-              Email is not configured. Copy and share this link manually — it expires in <strong style={{ color: "#c9a84c" }}>24 hours</strong>.
+              Email is not configured. Copy and share this link manually - it expires in <strong style={{ color: "#c9a84c" }}>24 hours</strong>.
             </p>
             <div style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(201,168,76,0.2)", borderRadius: 8, padding: "10px 14px", fontSize: "0.78rem", color: "#c9a84c", wordBreak: "break-all", marginBottom: 16 }}>
               {inviteLink}
@@ -381,7 +381,7 @@ export default function AdminUsersPage() {
 
               {/* Info */}
               <div style={{ flex: 1, minWidth: 180 }}>
-                <p style={{ margin: 0, fontWeight: 700, color: "#ede4cf", fontSize: "0.95rem" }}>{u.name ?? "—"}</p>
+                <p style={{ margin: 0, fontWeight: 700, color: "#ede4cf", fontSize: "0.95rem" }}>{u.name ?? "-"}</p>
                 <p style={{ margin: "2px 0 0", fontSize: "0.8rem", color: "rgba(237,228,207,0.5)" }}>{u.email}</p>
                 {u.rep?.title && <p style={{ margin: "2px 0 0", fontSize: "0.75rem", color: "rgba(201,168,76,0.7)" }}>{u.rep.title}</p>}
                 {u.hospital?.hospitalName && <p style={{ margin: "2px 0 0", fontSize: "0.75rem", color: "rgba(201,168,76,0.7)" }}>{u.hospital.hospitalName}</p>}

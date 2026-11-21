@@ -11,7 +11,7 @@ const steps = [
   {
     step: "1",
     title: "Configure your outbound email provider",
-    desc: "NyxAegis uses Resend for transactional email. Email open tracking is built into Resend's API — no additional setup needed for basic opens/clicks.",
+    desc: "NyxAegis uses Resend for transactional email. Email open tracking is built into Resend's API - no additional setup needed for basic opens/clicks.",
   },
   {
     step: "2",

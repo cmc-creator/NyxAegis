@@ -44,7 +44,7 @@ export default async function CompetitorIntelPage() {
 
   const sourceIds = rawSources.map((s) => s.id);
 
-  // Referral counts per source — last 30d and last 90d
+  // Referral counts per source - last 30d and last 90d
   const referrals30 = await prisma.referral.groupBy({
     by: ["referralSourceId"],
     where: {

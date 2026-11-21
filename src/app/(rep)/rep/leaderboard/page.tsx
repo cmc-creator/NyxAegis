@@ -88,7 +88,7 @@ export default async function RepLeaderboardPage() {
           Activity Rankings
         </h1>
         <p style={{ color: "var(--nyx-text-muted)", fontSize: "0.875rem", marginTop: 6 }}>
-          {monthLabel} — your name is visible, peers are anonymized.
+          {monthLabel} - your name is visible, peers are anonymized.
         </p>
         {myRank > 0 && (
           <div style={{ marginTop: 14, display: "inline-flex", alignItems: "center", gap: 10, background: "var(--nyx-accent-dim)", border: "1px solid var(--nyx-accent-str)", borderRadius: 10, padding: "10px 18px" }}>

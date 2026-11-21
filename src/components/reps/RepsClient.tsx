@@ -35,7 +35,7 @@ function exportRepsCSV(reps: Rep[]) {
   URL.revokeObjectURL(url);
 }
 
-/** Inline SVG sparkline — just a tiny trend line generated from the opp count as a visual anchor */
+/** Inline SVG sparkline - just a tiny trend line generated from the opp count as a visual anchor */
 function Sparkline({ value, color }: { value: number; color: string }) {
   const max = 20;
   const pts = Array.from({ length: 8 }, (_, i) => {

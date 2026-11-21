@@ -74,7 +74,7 @@ export async function GET(
     prisma.activity.count({ where: { referralSourceId: sourceId, createdAt: { gte: d30 } } }),
     prisma.referral.count({ where: { referralSourceId: sourceId, createdAt: { gte: d30 } } }),
     prisma.referral.count({ where: { referralSourceId: sourceId, createdAt: { gte: d60, lt: d30 } } }),
-    // Group referrals by month (last 6 months) — we'll bucket manually
+    // Group referrals by month (last 6 months) - we'll bucket manually
     prisma.referral.findMany({
       where: { referralSourceId: sourceId, createdAt: { gte: d6mo } },
       select: { createdAt: true, status: true, serviceLine: true },

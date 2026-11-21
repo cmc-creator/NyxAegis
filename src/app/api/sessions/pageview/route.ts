@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 export const maxDuration = 10;
 
-/** POST — record a page view within a session */
+/** POST - record a page view within a session */
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

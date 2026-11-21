@@ -12,7 +12,7 @@ async function main() {
 
   const adminPw = await bcrypt.hash("Soldier10!", 10);
 
-  // Only seed the admin account — all real data is entered by live users.
+  // Only seed the admin account - all real data is entered by live users.
   await prisma.user.upsert({
     where:  { email: "admin@nyxaegis.com" },
     update: {

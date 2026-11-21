@@ -5,7 +5,7 @@ interface ConfirmDialogProps {
   message: string;
   subtext?: string;
   confirmLabel?: string;
-  /** hex or css color for the confirm button accent — defaults to danger red */
+  /** hex or css color for the confirm button accent - defaults to danger red */
   confirmColor?: string;
   onConfirm: () => void;
   onCancel: () => void;

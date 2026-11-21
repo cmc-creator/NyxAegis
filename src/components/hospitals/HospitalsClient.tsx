@@ -173,7 +173,7 @@ function HospitalModal({ hospital, onClose, onSave }: {
               <input style={inp} value={form.primaryContactPhone ?? ""} onChange={e => set("primaryContactPhone", e.target.value)} placeholder="(615) 555-0100" />
             </div>
 
-            {/* Portal access — only for new hospitals */}
+            {/* Portal access - only for new hospitals */}
             {!isEdit && (
               <>
                 <div style={{ gridColumn: "1/-1", borderTop: `1px solid ${C.border}`, paddingTop: 14, marginTop: 4 }}>

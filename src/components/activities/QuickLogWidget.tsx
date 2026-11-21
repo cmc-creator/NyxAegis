@@ -84,7 +84,7 @@ export default function QuickLogWidget({ repId, role }: { repId?: string; role: 
 
   return (
     <>
-      {/* FAB — offset above the AIChatWidget FAB (bottom:24 right:24) to prevent overlap */}
+      {/* FAB - offset above the AIChatWidget FAB (bottom:24 right:24) to prevent overlap */}
       <button
         onClick={() => setOpen(true)}
         title="Quick log activity"
@@ -106,7 +106,7 @@ export default function QuickLogWidget({ repId, role }: { repId?: string; role: 
         ⚡
       </button>
 
-      {/* Panel — slides up from bottom on mobile, anchored bottom-right on desktop */}
+      {/* Panel - slides up from bottom on mobile, anchored bottom-right on desktop */}
       {open && (
         <div
           style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 600, display: "flex", alignItems: "flex-end", justifyContent: "flex-end" }}

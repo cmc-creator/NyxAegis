@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { appBaseUrl, billingConfigured, getStripe, getWorkspaceOrg } from "@/lib/billing";
 
-// POST /api/billing/portal — open the Stripe billing portal for this workspace.
+// POST /api/billing/portal - open the Stripe billing portal for this workspace.
 export async function POST() {
   const session = await auth();
   if (!session || session.user.role !== "ADMIN") {

@@ -385,7 +385,7 @@ export default function ReferralSourcesPage() {
             >
               <div style={{ fontSize:"1.6rem", marginBottom:6 }}>📂</div>
               <div style={{ fontSize:"0.85rem", color:C.muted }}>
-                {csvFilename ? <span style={{ color:C.text, fontWeight:600 }}>{csvFilename} — {csvRows.length} rows parsed</span> : "Click to select or drag & drop a CSV file"}
+                {csvFilename ? <span style={{ color:C.text, fontWeight:600 }}>{csvFilename} - {csvRows.length} rows parsed</span> : "Click to select or drag & drop a CSV file"}
               </div>
               <input ref={fileInputRef} type="file" accept=".csv" style={{ display:"none" }} onChange={e => { if (e.target.files?.[0]) handleCSVFile(e.target.files[0]); }} />
             </div>
@@ -393,7 +393,7 @@ export default function ReferralSourcesPage() {
             {/* Preview */}
             {csvRows.length > 0 && !importResult && (
               <div style={{ background:C.card, borderRadius:8, overflow:"hidden", marginBottom:16, border:`1px solid ${C.border}` }}>
-                <div style={{ padding:"8px 12px", fontSize:"0.65rem", fontWeight:700, color:C.muted, letterSpacing:"0.08em", borderBottom:`1px solid ${C.border}` }}>PREVIEW — first {Math.min(5, csvRows.length)} of {csvRows.length} rows</div>
+                <div style={{ padding:"8px 12px", fontSize:"0.65rem", fontWeight:700, color:C.muted, letterSpacing:"0.08em", borderBottom:`1px solid ${C.border}` }}>PREVIEW - first {Math.min(5, csvRows.length)} of {csvRows.length} rows</div>
                 <div style={{ overflowX:"auto" }}>
                   <table style={{ width:"100%", borderCollapse:"collapse", fontSize:"0.72rem" }}>
                     <thead>

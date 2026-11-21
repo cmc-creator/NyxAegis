@@ -75,7 +75,7 @@ export function MobileTopBar({ role, userName }: Props) {
 
   return (
     <header className="nyx-topbar" aria-label="Top navigation">
-      {/* Hamburger — opens slide-in sidebar */}
+      {/* Hamburger - opens slide-in sidebar */}
       <button
         className="nyx-topbar-btn"
         onClick={openMenu}
@@ -113,7 +113,7 @@ export function MobileTopBar({ role, userName }: Props) {
           </svg>
         </button>
 
-        {/* Quick log — only for ADMIN and REP */}
+        {/* Quick log - only for ADMIN and REP */}
         {role !== "ACCOUNT" && (
           <button
             className="nyx-topbar-btn nyx-topbar-log"

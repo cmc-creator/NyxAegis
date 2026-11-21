@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       const contactList = h.contacts.length
         ? h.contacts.map(c => `${c.name}${c.title ? ` (${c.title})` : ""}`).join(", ")
         : "no contacts on file";
-      return `${i + 1}. **${h.hospitalName}**${location ? ` — ${location}` : ""} | Status: ${h.status} | ${lastContact} | Contacts: ${contactList}`;
+      return `${i + 1}. **${h.hospitalName}**${location ? ` - ${location}` : ""} | Status: ${h.status} | ${lastContact} | Contacts: ${contactList}`;
     })
     .join("\n");
 

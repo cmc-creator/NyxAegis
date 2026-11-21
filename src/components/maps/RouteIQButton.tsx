@@ -18,7 +18,7 @@ function buildRouteUrl(hospitals: Hospital[]): string {
     .slice(0, 10); // most map apps cap waypoints at 10
 
   if (destinations.length === 0) {
-    // No location data — open generic maps search
+    // No location data - open generic maps search
     return "https://maps.google.com/maps";
   }
 
@@ -27,7 +27,7 @@ function buildRouteUrl(hospitals: Hospital[]): string {
   const isAndroid = /Android/.test(ua);
 
   if (isIOS) {
-    // Apple Maps — supports single destination only (use first hospital)
+    // Apple Maps - supports single destination only (use first hospital)
     const dest = encodeURIComponent(destinations[0]);
     return `https://maps.apple.com/?q=${dest}`;
   }
@@ -38,7 +38,7 @@ function buildRouteUrl(hospitals: Hospital[]): string {
     return `geo:0,0?q=${dest}`;
   }
 
-  // Desktop / other — Google Maps multi-stop route
+  // Desktop / other - Google Maps multi-stop route
   if (destinations.length === 1) {
     return `https://maps.google.com/maps?q=${encodeURIComponent(destinations[0])}`;
   }

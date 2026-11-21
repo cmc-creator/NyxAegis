@@ -27,7 +27,7 @@ async function endSession(req: NextRequest, id: string) {
   return NextResponse.json({ ok: true });
 }
 
-/** PATCH — end a session (normal page close / explicit logout) */
+/** PATCH - end a session (normal page close / explicit logout) */
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -36,7 +36,7 @@ export async function PATCH(
   return endSession(req, id);
 }
 
-/** POST — end a session via sendBeacon (sendBeacon only supports POST) */
+/** POST - end a session via sendBeacon (sendBeacon only supports POST) */
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }

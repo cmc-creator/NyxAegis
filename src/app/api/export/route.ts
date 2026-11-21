@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 export const maxDuration = 30;
 
-// Simple CSV serializer — no external library needed
+// Simple CSV serializer - no external library needed
 function toCSV(rows: Record<string, unknown>[], cols: string[]): string {
   const escape = (v: unknown) => {
     const s = v == null ? "" : String(v).replace(/"/g, '""');

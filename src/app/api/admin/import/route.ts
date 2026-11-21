@@ -493,7 +493,7 @@ async function importAccounts(rows: Record<string, unknown>[], dryRun = false, d
         continue;
       }
 
-      // Create account — portal email is optional.
+      // Create account - portal email is optional.
       // With portal email: create a linked portal user + hospital.
       // Without portal email: create the hospital record only (standard for referral accounts).
       if (portalEmail) {
@@ -624,7 +624,7 @@ async function importContacts(rows: Record<string, unknown>[], dryRun = false, d
       continue;
     }
 
-    // Find matching hospital — try contains first, then word-by-word fuzzy match
+    // Find matching hospital - try contains first, then word-by-word fuzzy match
     let hospital = await prisma.hospital.findFirst({
       where: { hospitalName: { contains: accountName, mode: "insensitive" } },
     });
@@ -882,7 +882,7 @@ async function importActivities(rows: Record<string, unknown>[], dryRun = false,
     }
 
     // Always use the activity suffix part as the resolved title when we detected a dash-split,
-    // regardless of whether the hospital matched — this puts the real activity in the Title column.
+    // regardless of whether the hospital matched - this puts the real activity in the Title column.
     if (titleSuffixActivity && resolvedTitle === subject) {
       resolvedTitle = titleSuffixActivity;
     }
@@ -917,7 +917,7 @@ async function importActivities(rows: Record<string, unknown>[], dryRun = false,
     let completedAt: Date | undefined = parseSpreadsheetDate(dateRaw);
     if (!completedAt && dateStr) completedAt = parseSpreadsheetDate(dateStr);
 
-    // Dedup by title only — do NOT filter by hospitalId here because existing records
+    // Dedup by title only - do NOT filter by hospitalId here because existing records
     // from a previous import may have hospitalId = null and would never be found otherwise.
     const existingActivity = await prisma.activity.findFirst({
       where: {

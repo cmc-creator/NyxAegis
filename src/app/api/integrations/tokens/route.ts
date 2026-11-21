@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 
 export const maxDuration = 10;
 
-// GET /api/integrations/tokens — return connected providers for the current user
+// GET /api/integrations/tokens - return connected providers for the current user
 export async function GET() {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -24,7 +24,7 @@ export async function GET() {
   return NextResponse.json(tokens);
 }
 
-// PATCH /api/integrations/tokens — update Teams webhook URL or other metadata
+// PATCH /api/integrations/tokens - update Teams webhook URL or other metadata
 export async function PATCH(req: NextRequest) {
   const session = await auth();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

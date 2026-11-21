@@ -20,7 +20,7 @@ img[data-nimg] {
    Switch via: document.documentElement.setAttribute('data-theme','glass')
    ───────────────────────────────────────────────────────── */
 
-/* Luxury — Obsidian & Gold (default, no data-theme attribute needed) */
+/* Luxury - Obsidian & Gold (default, no data-theme attribute needed) */
 :root,
 :root[data-theme="luxury"] {
   --nyx-accent:       #C9A84C;
@@ -48,7 +48,7 @@ img[data-nimg] {
   --ring:              42 70% 54%;
 }
 
-/* Glass — Midnight Cyan */
+/* Glass - Midnight Cyan */
 :root[data-theme="glass"] {
   --nyx-accent:       #00d4ff;
   --nyx-accent-glow:  rgba(0,212,255,0.18);
@@ -123,7 +123,7 @@ img[data-nimg] {
   --ring:              262 80% 75%;
 }
 
-/* Hot Pink — Neon Magenta */
+/* Hot Pink - Neon Magenta */
 :root[data-theme="hotpink"] {
   --nyx-accent:       #ec4899;
   --nyx-accent-glow:  rgba(236,72,153,0.22);
@@ -173,7 +173,7 @@ img[data-nimg] {
   --ring:              0 90% 70%;
 }
 
-/* Light — Clean Silver */
+/* Light - Clean Silver */
 :root[data-theme="light"] {
   --nyx-accent:       #6366f1;
   --nyx-accent-glow:  rgba(99,102,241,0.18);
@@ -198,7 +198,7 @@ img[data-nimg] {
   --ring:              239 84% 67%;
 }
 
-/* Blush — Soft Daylight */
+/* Blush - Soft Daylight */
 :root[data-theme="blush"] {
   --nyx-accent:       #be185d;
   --nyx-accent-glow:  rgba(190,24,93,0.16);
@@ -223,7 +223,7 @@ img[data-nimg] {
   --ring:              330 75% 45%;
 }
 
-/* Azure — Deep Ocean */
+/* Azure - Deep Ocean */
 :root[data-theme="azure"] {
   --nyx-accent:       #3b82f6;
   --nyx-accent-glow:  rgba(59,130,246,0.22);
@@ -248,7 +248,7 @@ img[data-nimg] {
   --ring:              217 91% 60%;
 }
 
-/* ── Midnight Goddess — Obsidian & Amethyst ── */
+/* ── Midnight Goddess - Obsidian & Amethyst ── */
 :root[data-theme="goddess"] {
   --nyx-accent:       #9D4EDD;
   --nyx-accent-glow:  rgba(157,78,221,0.22);
@@ -273,7 +273,7 @@ img[data-nimg] {
   --ring:              277 65% 59%;
 }
 
-/* ── Imperial Gold — Charcoal & Polished Gold ── */
+/* ── Imperial Gold - Charcoal & Polished Gold ── */
 :root[data-theme="imperial"] {
   --nyx-accent:       #D4AF37;
   --nyx-accent-glow:  rgba(212,175,55,0.22);
@@ -298,7 +298,7 @@ img[data-nimg] {
   --ring:              44 68% 52%;
 }
 
-/* ── Stellar Chrome — Deep Navy & Chrome ── */
+/* ── Stellar Chrome - Deep Navy & Chrome ── */
 :root[data-theme="chrome"] {
   --nyx-accent:       #B8C8D8;
   --nyx-accent-glow:  rgba(184,200,216,0.20);
@@ -323,7 +323,7 @@ img[data-nimg] {
   --ring:              210 25% 78%;
 }
 
-/* ── Bespoke Walnut — Dark Wood & Brushed Bronze ── */
+/* ── Bespoke Walnut - Dark Wood & Brushed Bronze ── */
 :root[data-theme="walnut"] {
   --nyx-accent:       #A07848;
   --nyx-accent-glow:  rgba(160,120,72,0.22);
@@ -348,7 +348,7 @@ img[data-nimg] {
   --ring:              32 38% 46%;
 }
 
-/* ── Argentum — Platinum Dark & Ice Blue ── */
+/* ── Argentum - Platinum Dark & Ice Blue ── */
 :root[data-theme="argentum"] {
   --nyx-accent:       #7EC8E3;
   --nyx-accent-glow:  rgba(126,200,227,0.20);
@@ -373,7 +373,7 @@ img[data-nimg] {
   --ring:              196 60% 70%;
 }
 
-/* ── The Alchemist — Dark Nebula & Electric Violet ── */
+/* ── The Alchemist - Dark Nebula & Electric Violet ── */
 :root[data-theme="alchemist"] {
   --nyx-accent:       #7C3AED;
   --nyx-accent-glow:  rgba(124,58,237,0.25);
@@ -398,7 +398,7 @@ img[data-nimg] {
   --ring:              262 83% 58%;
 }
 
-/* ── Executive Slate — Matte Grey & Emerald ── */
+/* ── Executive Slate - Matte Grey & Emerald ── */
 :root[data-theme="slate"] {
   --nyx-accent:       #10B981;
   --nyx-accent-glow:  rgba(16,185,129,0.20);
@@ -423,7 +423,7 @@ img[data-nimg] {
   --ring:              160 84% 39%;
 }
 
-/* ── Ivory Estate — Warm Ivory & Rose Gold ── */
+/* ── Ivory Estate - Warm Ivory & Rose Gold ── */
 :root[data-theme="ivory"] {
   --nyx-accent:       #C47A5A;
   --nyx-accent-glow:  rgba(196,122,90,0.20);
@@ -448,7 +448,7 @@ img[data-nimg] {
   --ring:              18 44% 56%;
 }
 
-/* ── Carbon Fiber — Matte Black & Racing Red ── */
+/* ── Carbon Fiber - Matte Black & Racing Red ── */
 :root[data-theme="carbon"] {
   --nyx-accent:       #DC2626;
   --nyx-accent-glow:  rgba(220,38,38,0.22);
@@ -473,7 +473,7 @@ img[data-nimg] {
   --ring:              0 84% 52%;
 }
 
-/* ── Alabaster Estate — White Marble & Gold Leaf ── */
+/* ── Alabaster Estate - White Marble & Gold Leaf ── */
 :root[data-theme="alabaster"] {
   --nyx-accent:       #B8960C;
   --nyx-accent-glow:  rgba(184,150,12,0.18);
@@ -498,7 +498,7 @@ img[data-nimg] {
   --ring:              42 87% 37%;
 }
 
-/* ── Obsidian Sovereign — Void Black & Lava Red ── */
+/* ── Obsidian Sovereign - Void Black & Lava Red ── */
 :root[data-theme="obsidian"] {
   --nyx-accent:       #FF3520;
   --nyx-accent-glow:  rgba(255,53,32,0.24);
@@ -523,7 +523,7 @@ img[data-nimg] {
   --ring:              6 100% 56%;
 }
 
-/* ── Jade Dynasty — Deep Jade & Rose Quartz ── */
+/* ── Jade Dynasty - Deep Jade & Rose Quartz ── */
 :root[data-theme="jade"] {
   --nyx-accent:       #E891A4;
   --nyx-accent-glow:  rgba(232,145,164,0.20);
@@ -548,7 +548,7 @@ img[data-nimg] {
   --ring:              345 65% 74%;
 }
 
-/* ── Sovereign Grove — Dark Bronze & Moss Green ── */
+/* ── Sovereign Grove - Dark Bronze & Moss Green ── */
 :root[data-theme="grove"] {
   --nyx-accent:       #6B8E4E;
   --nyx-accent-glow:  rgba(107,142,78,0.20);
@@ -573,7 +573,7 @@ img[data-nimg] {
   --ring:              96 29% 43%;
 }
 
-/* ── Lotus Core — Deep Violet Water & Pearl ── */
+/* ── Lotus Core - Deep Violet Water & Pearl ── */
 :root[data-theme="lotus"] {
   --nyx-accent:       #EDE0DC;
   --nyx-accent-glow:  rgba(237,224,220,0.18);
@@ -598,7 +598,7 @@ img[data-nimg] {
   --ring:              26 30% 90%;
 }
 
-/* ── Carbon Evolution — Carbon & Fern Green ── */
+/* ── Carbon Evolution - Carbon & Fern Green ── */
 :root[data-theme="evolution"] {
   --nyx-accent:       #4CAF50;
   --nyx-accent-glow:  rgba(76,175,80,0.20);
@@ -623,7 +623,7 @@ img[data-nimg] {
   --ring:              122 39% 49%;
 }
 
-/* ── Deep Abyss — Midnight Ocean & Bioluminescent Teal ── */
+/* ── Deep Abyss - Midnight Ocean & Bioluminescent Teal ── */
 :root[data-theme="abyss"] {
   --nyx-accent:       #00D4B4;
   --nyx-accent-glow:  rgba(0,212,180,0.22);
@@ -648,7 +648,7 @@ img[data-nimg] {
   --ring:              172 100% 42%;
 }
 
-/* ── The Riviera — Mediterranean & White Gold ── */
+/* ── The Riviera - Mediterranean & White Gold ── */
 :root[data-theme="riviera"] {
   --nyx-accent:       #E8D890;
   --nyx-accent-glow:  rgba(232,216,144,0.20);
@@ -673,7 +673,7 @@ img[data-nimg] {
   --ring:              50 60% 74%;
 }
 
-/* ── Glacial Pure — Frosted Platinum & Ice Crystal ── */
+/* ── Glacial Pure - Frosted Platinum & Ice Crystal ── */
 :root[data-theme="glacial"] {
   --nyx-accent:       #4A9ECC;
   --nyx-accent-glow:  rgba(74,158,204,0.18);
@@ -698,7 +698,7 @@ img[data-nimg] {
   --ring:              204 55% 55%;
 }
 
-/* ── Alabaster Peak — Silver-White & Cool Platinum ── */
+/* ── Alabaster Peak - Silver-White & Cool Platinum ── */
 :root[data-theme="peak"] {
   --nyx-accent:       #8899AA;
   --nyx-accent-glow:  rgba(136,153,170,0.18);
@@ -723,7 +723,7 @@ img[data-nimg] {
   --ring:              210 18% 60%;
 }
 
-/* ── Tectonic Gold — Matte Slate & Gold Veins ── */
+/* ── Tectonic Gold - Matte Slate & Gold Veins ── */
 :root[data-theme="tectonic"] {
   --nyx-accent:       #C9A84C;
   --nyx-accent-glow:  rgba(201,168,76,0.22);
@@ -748,7 +748,7 @@ img[data-nimg] {
   --ring:              42 55% 52%;
 }
 
-/* ── High Altitude — Twilight Mountain & Soft Amethyst ── */
+/* ── High Altitude - Twilight Mountain & Soft Amethyst ── */
 :root[data-theme="altitude"] {
   --nyx-accent:       #9B7FCC;
   --nyx-accent-glow:  rgba(155,127,204,0.20);
@@ -773,7 +773,7 @@ img[data-nimg] {
   --ring:              266 40% 65%;
 }
 
-/* ── Fancy Future — Neon Void & Holographic Cyan ── */
+/* ── Fancy Future - Neon Void & Holographic Cyan ── */
 :root[data-theme="future"] {
   --nyx-accent:       #00E5FF;
   --nyx-accent-glow:  rgba(0,229,255,0.24);
@@ -798,7 +798,7 @@ img[data-nimg] {
   --ring:              188 100% 50%;
 }
 
-/* ── Medieval — Castle Stone & Torch Amber ── */
+/* ── Medieval - Castle Stone & Torch Amber ── */
 :root[data-theme="medieval"] {
   --nyx-accent:       #C8853C;
   --nyx-accent-glow:  rgba(200,133,60,0.22);
@@ -918,7 +918,7 @@ img[data-nimg] {
   }
 }
 
-/* Sidebar photo texture — applied via appearance picker (--nyx-sidebar-tex) */
+/* Sidebar photo texture - applied via appearance picker (--nyx-sidebar-tex) */
 .sidebar {
   position: relative;
   overflow: hidden;
@@ -983,7 +983,7 @@ img[data-nimg] {
   transform: translateX(120%);
 }
 
-/* Gradient border — looks like polished metal at any radius */
+/* Gradient border - looks like polished metal at any radius */
 .gold-card {
   position: relative;
   border: 1px solid transparent !important;
@@ -1038,7 +1038,7 @@ img[data-nimg] {
   100%      { background-position: 0% 0%; opacity: 0.75; }
 }
 
-/* ── Luxury gold frame — calendar, modal, featured panels ─────────── */
+/* ── Luxury gold frame - calendar, modal, featured panels ─────────── */
 .nyx-gold-frame {
   position: relative;
   border: 2px solid transparent;
@@ -1279,7 +1279,7 @@ button:active, a:active {
 
 /* ── Mobile Responsive ──────────────────────────────────────────────────────── */
 
-/* Sidebar base — needed for transform to work */
+/* Sidebar base - needed for transform to work */
 .nyx-sidebar {
   background: var(--nyx-card);
   transition: transform 0.25s ease;
@@ -1312,7 +1312,7 @@ input[type="checkbox"], input[type="radio"], select, label {
   touch-action: manipulation;
 }
 
-/* Use dynamic viewport height — fixes the layout-jump when mobile browser
+/* Use dynamic viewport height - fixes the layout-jump when mobile browser
    chrome (URL bar, gesture bar) appears or disappears */
 @supports (min-height: 100dvh) {
   .min-h-screen {
@@ -1424,7 +1424,7 @@ main, .nyx-sidebar, .nyx-table-scroll {
     transform: translateX(0) !important;
   }
 
-  /* Overlay backdrop — shown only when sidebar is open */
+  /* Overlay backdrop - shown only when sidebar is open */
   .nyx-mobile-overlay {
     display: block !important;
     position: fixed;
@@ -1433,7 +1433,7 @@ main, .nyx-sidebar, .nyx-table-scroll {
     z-index: 299;
   }
 
-  /* Hamburger button — show on mobile */
+  /* Hamburger button - show on mobile */
   .nyx-hamburger {
     display: flex !important;
   }
@@ -1454,18 +1454,18 @@ main, .nyx-sidebar, .nyx-table-scroll {
     width: 100% !important;
   }
 
-  /* Hide desktop keyboard shortcut hint — irrelevant on mobile */
+  /* Hide desktop keyboard shortcut hint - irrelevant on mobile */
   .nyx-search-shortcut {
     display: none !important;
   }
 
-  /* Hide the sidebar floating hamburger — topbar owns this on mobile */
+  /* Hide the sidebar floating hamburger - topbar owns this on mobile */
   .nyx-hamburger-float {
     display: none !important;
   }
 }
 
-/* Desktop — keep sidebar always visible, hide all mobile-only chrome */
+/* Desktop - keep sidebar always visible, hide all mobile-only chrome */
 @media (min-width: 769px) {
   .nyx-sidebar {
     transform: none !important;
@@ -1583,7 +1583,7 @@ main, .nyx-sidebar, .nyx-table-scroll {
     color: var(--nyx-accent);
   }
 
-  /* + quick log button — accent-coloured pill */
+  /* + quick log button - accent-coloured pill */
   .nyx-topbar-log {
     background: var(--nyx-accent-dim) !important;
     border: 1px solid var(--nyx-accent-str) !important;
@@ -1623,7 +1623,7 @@ main, .nyx-sidebar, .nyx-table-scroll {
     box-shadow: inset 0 0 0 1px var(--nyx-accent-mid);
   }
 
-  /* On mobile, hide the old floating FABs — topbar quick-log button replaces them */
+  /* On mobile, hide the old floating FABs - topbar quick-log button replaces them */
   .nyx-fab-quicklog {
     display: none !important;
   }
@@ -1707,12 +1707,12 @@ main, .nyx-sidebar, .nyx-table-scroll {
     bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
   }
 
-  /* AI widget FAB — lift above the bottom nav */
+  /* AI widget FAB - lift above the bottom nav */
   .nyx-fab-ai {
     bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
   }
 
-  /* AI chat panel — full-width bottom sheet above the FAB */
+  /* AI chat panel - full-width bottom sheet above the FAB */
   .nyx-ai-panel {
     bottom: calc(144px + env(safe-area-inset-bottom, 0px)) !important;
     right: 8px !important;
@@ -1722,7 +1722,7 @@ main, .nyx-sidebar, .nyx-table-scroll {
     border-radius: 16px !important;
   }
 
-  /* Hide the desktop search bar button — topbar search button handles this on mobile */
+  /* Hide the desktop search bar button - topbar search button handles this on mobile */
   .nyx-search-desktop-btn {
     display: none !important;
   }
@@ -1759,7 +1759,7 @@ main, .nyx-sidebar, .nyx-table-scroll {
     margin-bottom: 2px;
   }
 
-  /* Responsive stat grid — 2 cols on mobile */
+  /* Responsive stat grid - 2 cols on mobile */
   .nyx-stat-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 10px !important;
@@ -1833,7 +1833,7 @@ main, .nyx-sidebar, .nyx-table-scroll {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   Light theme readability — fixes for all 6 light-bg themes:
+   Light theme readability - fixes for all 6 light-bg themes:
    light · blush · ivory · alabaster · glacial · peak
    ══════════════════════════════════════════════════════════════ */
 
@@ -1847,7 +1847,7 @@ main, .nyx-sidebar, .nyx-table-scroll {
   color-scheme: light;
 }
 
-/* Badge text — pastel tones on white fail contrast; use darker hues */
+/* Badge text - pastel tones on white fail contrast; use darker hues */
 :root[data-theme="light"]     .badge-success,
 :root[data-theme="blush"]     .badge-success,
 :root[data-theme="ivory"]     .badge-success,
@@ -1892,7 +1892,7 @@ main, .nyx-sidebar, .nyx-table-scroll {
   border-color: rgba(100,116,139,0.24);
 }
 
-/* stat-value glow haloes look harsh on white — strip text-shadow */
+/* stat-value glow haloes look harsh on white - strip text-shadow */
 :root[data-theme="light"]     .stat-value,
 :root[data-theme="blush"]     .stat-value,
 :root[data-theme="ivory"]     .stat-value,
@@ -1900,7 +1900,7 @@ main, .nyx-sidebar, .nyx-table-scroll {
 :root[data-theme="glacial"]   .stat-value,
 :root[data-theme="peak"]      .stat-value { text-shadow: none; }
 
-/* card-glow hover shadow — soften the dark drop-shadow on light bg */
+/* card-glow hover shadow - soften the dark drop-shadow on light bg */
 :root[data-theme="light"]     .card-glow:hover,
 :root[data-theme="blush"]     .card-glow:hover,
 :root[data-theme="ivory"]     .card-glow:hover,
@@ -1913,7 +1913,7 @@ main, .nyx-sidebar, .nyx-table-scroll {
     inset 0 1px 0 var(--nyx-accent-mid);
 }
 
-/* gold-card — on light backgrounds the dark drop shadow is too heavy */
+/* gold-card - on light backgrounds the dark drop shadow is too heavy */
 :root[data-theme="light"]     .gold-card,
 :root[data-theme="blush"]     .gold-card,
 :root[data-theme="ivory"]     .gold-card,

@@ -167,7 +167,7 @@ export async function sendComplianceExpiredAdminEmail(opts: {
   await deliver({
       from: FROM,
       to: opts.to,
-      subject: `Expired Compliance Doc: ${opts.repName} — ${opts.docTitle}`,
+      subject: `Expired Compliance Doc: ${opts.repName} - ${opts.docTitle}`,
       html: layout(`
         <h2 style="margin:0 0 6px;color:#f87171;font-size:17px;font-weight:800;">Compliance Document Expired</h2>
         <p style="color:rgba(237,228,207,0.55);margin:0 0 18px;font-size:14px;">A rep's compliance document has expired and requires attention.</p>
@@ -320,7 +320,7 @@ export async function sendRepInactiveEmail(opts: {
       html: layout(`
         <h2 style="margin:0 0 6px;color:#c084fc;font-size:17px;font-weight:800;">Activity Log Reminder</h2>
         <p style="color:rgba(237,228,207,0.55);margin:0 0 18px;font-size:14px;">Hi ${opts.name || "there"},<br>You haven't logged any activities in ${opts.daysSinceActivity} days. Keeping your activity log current helps leadership track outreach quality and cadence.</p>
-        ${infoBox("#c084fc", `${opts.daysSinceActivity}d NO ACTIVITY`, "Log your recent visits, calls, and outreach", "Doesn't take long — just a quick entry")}
+        ${infoBox("#c084fc", `${opts.daysSinceActivity}d NO ACTIVITY`, "Log your recent visits, calls, and outreach", "Doesn't take long - just a quick entry")}
         ${btn(`${BASE}/rep/activities`, "Log Activity", "#c084fc", "#fff")}
       `),
     })

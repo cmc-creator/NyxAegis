@@ -77,6 +77,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, sent: true });
   }
 
-  // Email not configured — return the link so admin can share it manually
+  // Email not configured - return the link so admin can share it manually
   return NextResponse.json({ ok: true, sent: false, inviteUrl });
 }

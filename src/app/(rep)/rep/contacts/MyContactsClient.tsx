@@ -104,7 +104,7 @@ export default function MyContactsClient({ sources }: { sources: Source[] }) {
           transition: "border-color 0.2s",
         }}
       >
-        {/* Summary row — always visible */}
+        {/* Summary row - always visible */}
         <button
           onClick={() => setExpanded(isOpen ? null : s.id)}
           style={{
@@ -256,7 +256,7 @@ export default function MyContactsClient({ sources }: { sources: Source[] }) {
               )}
               <div>
                 <div style={{ fontSize: "0.63rem", color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.07em" }}>Tier</div>
-                <div style={{ color: tierColor, fontWeight: 700 }}>{s.tier?.replace("_", " ") ?? "—"}</div>
+                <div style={{ color: tierColor, fontWeight: 700 }}>{s.tier?.replace("_", " ") ?? "-"}</div>
               </div>
               <div>
                 <div style={{ fontSize: "0.63rem", color: "#6b7280", textTransform: "uppercase", letterSpacing: "0.07em" }}>Referrals Sent</div>
@@ -326,7 +326,7 @@ export default function MyContactsClient({ sources }: { sources: Source[] }) {
       {tier1.length > 0 && (
         <div style={{ marginBottom: 20 }}>
           <div style={{ fontSize: "0.65rem", fontWeight: 800, color: "#22d3ee", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 10 }}>
-            ◆ Tier 1 — Priority Accounts
+            ◆ Tier 1 - Priority Accounts
           </div>
           {tier1.map(renderCard)}
         </div>

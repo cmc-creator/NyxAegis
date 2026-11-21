@@ -172,7 +172,7 @@ export function SourceScorecardPanel({
                   color: data.scorecard.trend > 0 ? "#34d399" : data.scorecard.trend < 0 ? "#f87171" : C.accent,
                   suffix: data.scorecard.trend > 0 ? ` ▲${data.scorecard.trend}` : data.scorecard.trend < 0 ? ` ▼${Math.abs(data.scorecard.trend)}` : "" },
                 { label: "Days Since Visit",
-                  value: data.scorecard.daysSinceLastActivity !== null ? `${data.scorecard.daysSinceLastActivity}d` : "—",
+                  value: data.scorecard.daysSinceLastActivity !== null ? `${data.scorecard.daysSinceLastActivity}d` : "-",
                   color: data.scorecard.daysSinceLastActivity === null ? "#f87171"
                        : data.scorecard.daysSinceLastActivity <= 14 ? "#34d399"
                        : data.scorecard.daysSinceLastActivity <= 30 ? "#fbbf24" : "#f87171" },

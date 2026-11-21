@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-// PATCH /api/messages/[id] — mark as read
+// PATCH /api/messages/[id] - mark as read
 export async function PATCH(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -21,7 +21,7 @@ export async function PATCH(
   return NextResponse.json({ ok: true });
 }
 
-// DELETE /api/messages/[id] — sender can retract, recipient can dismiss
+// DELETE /api/messages/[id] - sender can retract, recipient can dismiss
 export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }

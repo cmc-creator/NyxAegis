@@ -69,7 +69,7 @@ export async function GET(req: NextRequest) {
   let emailsSent = 0;
   let statusUpdated = 0;
 
-  // ── Expiring Soon — bell + email to all admins ────────────────────────────
+  // ── Expiring Soon - bell + email to all admins ────────────────────────────
   for (const contract of expiringSoon) {
     const daysLeft = Math.ceil((new Date(contract.endDate!).getTime() - now.getTime()) / 86_400_000);
     const urgency = daysLeft <= 14 ? "WARNING" : "INFO";
@@ -80,7 +80,7 @@ export async function GET(req: NextRequest) {
         data: {
           userId: admin.id,
           title: daysLeft <= 14 ? "Contract Expiring This Week" : "Contract Expiring Soon",
-          body: `"${contract.title}" (${hospitalName}) ends ${fmt(contract.endDate ?? null)} — ${daysLeft} day${daysLeft === 1 ? "" : "s"} left.`,
+          body: `"${contract.title}" (${hospitalName}) ends ${fmt(contract.endDate ?? null)} - ${daysLeft} day${daysLeft === 1 ? "" : "s"} left.`,
           type: urgency,
           link: "/admin/contracts",
         },
@@ -100,7 +100,7 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // ── Just Expired — auto-update status, bell + email to all admins ──────────
+  // ── Just Expired - auto-update status, bell + email to all admins ──────────
   for (const contract of justExpired) {
     const hospitalName = contract.hospital?.hospitalName ?? "Unknown Hospital";
 

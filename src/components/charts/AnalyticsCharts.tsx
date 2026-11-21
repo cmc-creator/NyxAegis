@@ -104,7 +104,7 @@ export default function AnalyticsCharts({
       {/* Row 1: Pipeline funnel + Monthly revenue */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
 
-        {/* Pipeline by Stage — horizontal bars */}
+        {/* Pipeline by Stage - horizontal bars */}
         <div className="gold-card" style={{ borderRadius: 12, padding: 20 }}>
           <p style={{ fontSize: "0.65rem", fontWeight: 700, color: "var(--nyx-accent-label)", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 18 }}>PIPELINE FUNNEL</p>
           {oppsByStage.length === 0
@@ -122,7 +122,7 @@ export default function AnalyticsCharts({
           }
         </div>
 
-        {/* Monthly Revenue — vertical bars */}
+        {/* Monthly Revenue - vertical bars */}
         <div className="gold-card" style={{ borderRadius: 12, padding: 20 }}>
           <p style={{ fontSize: "0.65rem", fontWeight: 700, color: "var(--nyx-accent-label)", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 18 }}>REVENUE TREND</p>
           {monthlyRevenue.length === 0

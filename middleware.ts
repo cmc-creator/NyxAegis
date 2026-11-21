@@ -18,7 +18,7 @@ function getProxy() {
 
 export async function middleware(req: NextRequest) {
   if (!process.env.AUTH_SECRET) {
-    // Auth not configured — pass through so the app at least loads
+    // Auth not configured - pass through so the app at least loads
     return NextResponse.next();
   }
   const proxy = getProxy();
