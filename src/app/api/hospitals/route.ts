@@ -49,6 +49,7 @@ export async function POST(req: NextRequest) {
           email: portalEmail,
           name: rest.primaryContactName ?? rest.hospitalName,
           role: "ACCOUNT",
+          emailVerified: new Date(), // admin-created portal account; no verify gate
         },
       });
       return tx.hospital.create({

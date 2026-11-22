@@ -199,7 +199,7 @@ export async function POST(req: NextRequest) {
             let user = await prisma.user.findUnique({ where: { email: userEmail }, select: { id: true } });
             if (!user) {
               user = await prisma.user.create({
-                data: { email: userEmail, name: hospitalName, role: "ACCOUNT" },
+                data: { email: userEmail, name: hospitalName, role: "ACCOUNT", emailVerified: new Date() },
               });
             }
             const existingHosp = await prisma.hospital.findUnique({ where: { userId: user.id }, select: { id: true } });

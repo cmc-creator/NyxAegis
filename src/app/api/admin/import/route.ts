@@ -516,6 +516,7 @@ async function importAccounts(rows: Record<string, unknown>[], dryRun = false, d
                 email: portalEmail,
                 name: contactName || name,
                 role: "ACCOUNT",
+                emailVerified: new Date(), // admin-imported portal account; no verify gate
               },
             });
             await tx.hospital.create({

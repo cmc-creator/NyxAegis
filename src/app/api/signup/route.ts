@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit, getRequestIdentity } from "@/lib/rate-limit";
+import { sendVerificationForUser } from "@/lib/verification";
 
 export const maxDuration = 30;
 
@@ -55,6 +56,14 @@ export async function POST(req: NextRequest) {
         }),
       },
     });
+
+    // Send the email verification link. A mail failure must not fail the
+    // signup itself; the user can resend from the verify notice.
+    try {
+      await sendVerificationForUser(user);
+    } catch (e) {
+      console.error("[signup] verification email failed:", e);
+    }
 
     return NextResponse.json({ id: user.id, email: user.email, role: user.role }, { status: 201 });
   } catch (e) {

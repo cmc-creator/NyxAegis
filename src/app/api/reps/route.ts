@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
   if (!email || !name) return NextResponse.json({ error: "name and email required" }, { status: 400 });
   const bcrypt = await import("bcryptjs");
   const hashed = await bcrypt.hash(password || "rep123!", 12);
-  const user = await prisma.user.create({ data: { name, email, password: hashed, role: "REP" } });
+  const user = await prisma.user.create({ data: { name, email, password: hashed, role: "REP", emailVerified: new Date() } });
   const rep = await prisma.rep.create({
     data: { userId: user.id, title, phone, territory, licensedStates: licensedStates ?? [], status: status ?? "ACTIVE", hipaaTrainedAt: hipaaTrainedAt ? new Date(hipaaTrainedAt) : undefined },
     include: { user: { select: { name: true, email: true } }, _count: { select: { opportunities: true, territories: true } } },

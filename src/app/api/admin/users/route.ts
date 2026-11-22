@@ -78,6 +78,7 @@ export async function POST(req: NextRequest) {
         email: email.toLowerCase().trim(),
         password: hashed,
         role,
+        emailVerified: new Date(), // admin-created accounts are vetted; no verify gate
         ...(role === "REP"
           ? {
               rep: {

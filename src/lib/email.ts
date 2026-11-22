@@ -328,6 +328,22 @@ export async function sendRepInactiveEmail(opts: {
 }
 
 
+// ── Email Verification ───────────────────────────────────────────────────────
+export async function sendVerificationEmail(opts: { to: string; name: string; verifyUrl: string }) {
+  if (!canSend()) return;
+  await deliver({
+    from: FROM,
+    to: opts.to,
+    subject: "Verify your NyxAegis email",
+    html: layout(`
+      <h2 style="margin:0 0 6px;color:#ede4cf;font-size:17px;font-weight:800;">Verify Your Email</h2>
+      <p style="color:rgba(237,228,207,0.55);margin:0 0 18px;font-size:14px;">Hi ${opts.name || "there"},<br>Welcome to NyxAegis. Please verify your email address to finish setting up your account and open your portal. This link expires in 24 hours.</p>
+      ${btn(opts.verifyUrl, "Verify Email")}
+      <p style="color:rgba(237,228,207,0.4);font-size:12px;margin:18px 0 0;">If you did not create this account, you can safely ignore this email.</p>
+    `),
+  }).catch((e: unknown) => console.error("[email] verification failed:", e));
+}
+
 // ── Password Reset ───────────────────────────────────────────────────────────
 export async function sendPasswordResetEmail(opts: { to: string; name: string; resetUrl: string }) {
   if (!canSend()) return;
