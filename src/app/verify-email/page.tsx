@@ -34,7 +34,7 @@ export default async function VerifyEmailPage({
 }) {
   const { status } = await searchParams;
 
-  let session: Awaited<ReturnType<typeof auth>> = null;
+  let session: any = null;
   try { session = await auth(); } catch { session = null; }
 
   let verified = false;
