@@ -17,8 +17,11 @@ export default async function BillingPage({ searchParams }: { searchParams: Prom
   return (
     <div style={{ maxWidth: 880, margin: "0 auto" }}>
       <h1 style={{ fontSize: "1.6rem", fontWeight: 800, marginBottom: 4 }}>Billing &amp; Subscription</h1>
-      <p style={{ color: "rgba(216,232,244,0.5)", marginBottom: 28, fontSize: "0.9rem" }}>
+      <p className="nyx-store-hide" style={{ color: "rgba(216,232,244,0.5)", marginBottom: 28, fontSize: "0.9rem" }}>
         Plans renew monthly through Stripe. Upgrades, payment methods, and cancellation are self service.
+      </p>
+      <p className="nyx-store-note" style={{ color: "rgba(216,232,244,0.5)", marginBottom: 28, fontSize: "0.9rem" }}>
+        Plan changes and billing are handled on the web at nyxaegis.com.
       </p>
 
       {params.checkout === "success" && (
@@ -30,7 +33,7 @@ export default async function BillingPage({ searchParams }: { searchParams: Prom
         <div style={card}>Checkout was cancelled. Your plan did not change.</div>
       )}
       {!configured && (
-        <div style={card}>
+        <div className="nyx-store-hide" style={card}>
           <strong>Billing setup is almost done.</strong> Plan buttons turn on as soon as the Stripe connection is finished by the NyxCollective team.
         </div>
       )}
@@ -48,7 +51,7 @@ export default async function BillingPage({ searchParams }: { searchParams: Prom
         {subscribed && <ManageBillingButton />}
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 16 }}>
+      <div className="nyx-store-hide" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 16 }}>
         {(Object.keys(TIERS) as TierKey[]).map((key) => {
           const tier = TIERS[key];
           const isCurrent = key === currentTier;

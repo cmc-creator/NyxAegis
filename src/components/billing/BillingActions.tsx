@@ -17,7 +17,7 @@ export function SubscribeButton({ tier, label, configured }: { tier: string; lab
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   return (
-    <span style={{ display: "inline-block" }}>
+    <span className="nyx-store-hide" style={{ display: "inline-block" }}>
       <button
         disabled={busy || !configured}
         onClick={async () => {
@@ -38,7 +38,7 @@ export function ManageBillingButton() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   return (
-    <span style={{ display: "inline-block" }}>
+    <span className="nyx-store-hide" style={{ display: "inline-block" }}>
       <button
         disabled={busy}
         onClick={async () => {

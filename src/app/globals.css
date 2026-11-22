@@ -2009,3 +2009,18 @@ main, .nyx-sidebar, .nyx-table-scroll {
     scroll-behavior: auto !important;
   }
 }
+/* Store shells (see src/lib/store-shell.ts): subscriptions are sold only
+   on the web, so purchase actions and plan upgrade prompts are hidden
+   while the data-store-shell attribute is on <html>, and the web billing
+   note shows instead. */
+.nyx-store-note {
+  display: none;
+}
+
+html[data-store-shell="store"] .nyx-store-hide {
+  display: none !important;
+}
+
+html[data-store-shell="store"] .nyx-store-note {
+  display: block;
+}
