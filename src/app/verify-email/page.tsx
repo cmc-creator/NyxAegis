@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Session } from "next-auth";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { isEmailVerified } from "@/lib/verification";
@@ -34,7 +35,7 @@ export default async function VerifyEmailPage({
 }) {
   const { status } = await searchParams;
 
-  let session: any = null;
+  let session: Session | null = null;
   try { session = await auth(); } catch { session = null; }
 
   let verified = false;
