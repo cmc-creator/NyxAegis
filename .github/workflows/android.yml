@@ -1,0 +1,90 @@
+# READY TO PASTE as .github/workflows/android.yml in cmc-creator/NyxAegis.
+# The GitHub connector cannot write workflow files, so this lands through
+# the GitHub web UI (the route used for the NyxSurvive workflow edits on
+# 2026-11-22). Modeled on the Feed the Bear and NyxSurvive Android builds.
+#
+# Secrets to create in the repo settings UI before the first run
+# (values come from files on Connie's machine, never through chat):
+#   ANDROID_KEYSTORE_BASE64    base64 of the NyxAegis upload keystore
+#   ANDROID_KEYSTORE_PASSWORD  the keystore password (for PKCS12 the key
+#                              password equals the store password)
+#   ANDROID_KEY_ALIAS          the key alias inside the keystore
+name: Android app
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Install Capacitor and add the Android project
+        working-directory: native
+        run: |
+          npm install
+          npx cap add android
+          npx cap sync android
+
+      - name: Set the release version (1.0, versionCode 1)
+        working-directory: native/android/app
+        run: |
+          python3 - << 'PYEOF'
+          src = open("build.gradle").read()
+          assert "versionCode 1" in src, "versionCode anchor not found in build.gradle"
+          assert 'versionName "1.0"' in src, "versionName anchor not found in build.gradle"
+          # First release: the Capacitor template already stamps
+          # versionCode 1 and versionName "1.0", so nothing to replace yet.
+          # For later releases, replace the two values here, following the
+          # NyxSurvive pattern, and bump versionCode every upload.
+          print("release version set: versionCode 1, versionName 1.0")
+          PYEOF
+
+      - name: Write the upload keystore from secrets
+        working-directory: native/android/app
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 -d > nyxaegis-upload.jks
+
+      - name: Build the signed AAB
+        working-directory: native/android
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          cat >> app/build.gradle << 'GRADLEEOF'
+
+          android {
+              signingConfigs {
+                  release {
+                      storeFile file("nyxaegis-upload.jks")
+                      storePassword System.getenv("KEYSTORE_PASSWORD")
+                      keyAlias System.getenv("KEY_ALIAS")
+                      keyPassword System.getenv("KEYSTORE_PASSWORD")
+                  }
+              }
+              buildTypes {
+                  release {
+                      signingConfig signingConfigs.release
+                  }
+              }
+          }
+          GRADLEEOF
+          ./gradlew bundleRelease
+
+      - name: Upload the AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: nyxaegis-aab
+          path: native/android/app/build/outputs/bundle/release/app-release.aab
