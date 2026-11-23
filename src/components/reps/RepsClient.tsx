@@ -16,6 +16,14 @@ interface Rep {
   createdAt: string;
 }
 
+interface RepTerritoryRow {
+  id: string;
+  state: string;
+  city?: string | null;
+  region?: string | null;
+  notes?: string | null;
+}
+
 function exportRepsCSV(reps: Rep[]) {
   const headers = ["Name","Email","Title","Status","Phone","City","State","Territory","Business","Opportunities","Territories","Licensed States","HIPAA Trained","W-9 On File","Added"];
   const rows = reps.map(r => [
@@ -63,10 +71,11 @@ const fmtDate = (d: string | null | undefined) => d ? new Date(d).toLocaleDateSt
 
 const US_STATES = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"];
 
-function RepModal({ rep, onClose, onSave, onDelete }: {
+function RepModal({ rep, onClose, onSave, onDelete, onTerritoryChange }: {
   rep: Rep | null; onClose: () => void;
   onSave: (d: Partial<Rep> & { name?: string; email?: string; password?: string }) => Promise<void>;
   onDelete?: () => Promise<void>;
+  onTerritoryChange?: () => void;
 }) {
   const isEdit = !!rep;
   const [form, setForm] = useState<Partial<Rep> & { name?: string; email?: string; password?: string }>({
@@ -84,6 +93,53 @@ function RepModal({ rep, onClose, onSave, onDelete }: {
   function toggleState(s: string) {
     const cur = form.licensedStates ?? [];
     set("licensedStates", cur.includes(s) ? cur.filter(x => x !== s) : [...cur, s]);
+  }
+
+  // Territory assignments (RepTerritory rows) save immediately through
+  // /api/reps/[id]/territories. They are separate from the profile form,
+  // which only stores the free-text territory description.
+  const [territories, setTerritories] = useState<RepTerritoryRow[]>([]);
+  const [tForm, setTForm] = useState({ state: "AZ", region: "", city: "", notes: "" });
+  const [tBusy, setTBusy] = useState(false);
+  const [tError, setTError] = useState<string | null>(null);
+
+  const loadTerritories = useCallback(async () => {
+    if (!rep) return;
+    const r = await fetch(`/api/reps/${rep.id}/territories`);
+    if (r.ok) setTerritories(await r.json());
+  }, [rep]);
+
+  useEffect(() => { void loadTerritories(); }, [loadTerritories]);
+
+  async function addTerritory() {
+    if (!rep) return;
+    setTBusy(true); setTError(null);
+    try {
+      const r = await fetch(`/api/reps/${rep.id}/territories`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ state: tForm.state, region: tForm.region || undefined, city: tForm.city || undefined, notes: tForm.notes || undefined }),
+      });
+      if (!r.ok) {
+        const d: unknown = await r.json().catch(() => null);
+        const msg = d && typeof d === "object" && "error" in d ? String((d as { error: unknown }).error) : "Could not save the assignment.";
+        setTError(msg);
+        return;
+      }
+      setTForm(f => ({ state: f.state, region: "", city: "", notes: "" }));
+      await loadTerritories();
+      onTerritoryChange?.();
+    } finally { setTBusy(false); }
+  }
+
+  async function removeTerritory(territoryId: string) {
+    if (!rep) return;
+    setTBusy(true); setTError(null);
+    try {
+      const r = await fetch(`/api/reps/${rep.id}/territories?territoryId=${encodeURIComponent(territoryId)}`, { method: "DELETE" });
+      if (!r.ok) { setTError("Could not remove the assignment."); return; }
+      await loadTerritories();
+      onTerritoryChange?.();
+    } finally { setTBusy(false); }
   }
 
   async function submit(e: React.FormEvent) {
@@ -178,6 +234,41 @@ function RepModal({ rep, onClose, onSave, onDelete }: {
                 })}
               </div>
             </div>
+
+            {isEdit && rep && (
+              <div style={{ gridColumn: "1/-1", borderTop: `1px solid ${C.border}`, paddingTop: 14, marginTop: 4 }}>
+                <p style={{ fontSize: "0.65rem", fontWeight: 700, color: "var(--nyx-accent-label)", letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: 6 }}>Territory Assignments</p>
+                <p style={{ fontSize: "0.75rem", color: C.muted, marginBottom: 10 }}>State and city coverage for this rep. Assignments save right away and show on Territory Management and on the rep&apos;s My Territory page.</p>
+                {territories.length === 0
+                  ? <p style={{ fontSize: "0.8rem", color: C.muted, marginBottom: 10 }}>No assignments yet.</p>
+                  : (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 12 }}>
+                      {territories.map(t => (
+                        <div key={t.id} style={{ display: "flex", alignItems: "center", gap: 8, background: C.input, border: `1px solid ${C.border}`, borderRadius: 7, padding: "6px 10px" }}>
+                          <span style={{ fontWeight: 800, color: C.cyan, fontSize: "0.8rem" }}>{t.state}</span>
+                          <span style={{ flex: 1, fontSize: "0.78rem", color: C.muted }}>{[t.region, t.city, t.notes].filter(Boolean).join(" - ") || "Statewide"}</span>
+                          <button type="button" disabled={tBusy} onClick={() => removeTerritory(t.id)} title="Remove assignment"
+                            style={{ background: "none", border: "none", color: "#f87171", cursor: "pointer", fontSize: "1rem", lineHeight: 1 }}>×</button>
+                        </div>
+                      ))}
+                    </div>
+                  )
+                }
+                <div style={{ display: "grid", gridTemplateColumns: "90px 1fr 1fr", gap: 8 }}>
+                  <select style={sel} value={tForm.state} onChange={e => setTForm(f => ({ ...f, state: e.target.value }))}>
+                    {US_STATES.map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                  <input style={inp} value={tForm.region} onChange={e => setTForm(f => ({ ...f, region: e.target.value }))} placeholder="Region (optional)" />
+                  <input style={inp} value={tForm.city} onChange={e => setTForm(f => ({ ...f, city: e.target.value }))} placeholder="City (optional)" />
+                  <input style={{ ...inp, gridColumn: "1/3" }} value={tForm.notes} onChange={e => setTForm(f => ({ ...f, notes: e.target.value }))} placeholder="Notes (optional)" />
+                  <button type="button" disabled={tBusy} onClick={addTerritory}
+                    style={{ background: "var(--nyx-accent-mid)", border: "1px solid var(--nyx-accent-str)", borderRadius: 7, padding: "8px 14px", color: C.cyan, cursor: "pointer", fontWeight: 700, fontSize: "0.8rem" }}>
+                    {tBusy ? "Saving..." : "Add Assignment"}
+                  </button>
+                </div>
+                {tError && <p style={{ fontSize: "0.78rem", color: "#f87171", marginTop: 8 }}>{tError}</p>}
+              </div>
+            )}
 
             <div style={{ gridColumn: "1/-1" }}>
               <label style={{ fontSize: "0.72rem", color: C.muted, display: "block", marginBottom: 4 }}>INTERNAL NOTES</label>
@@ -544,6 +635,7 @@ export default function RepsClient() {
           onClose={() => setModal(null)}
           onSave={handleSave}
           onDelete={modal !== "add" ? handleDelete : undefined}
+          onTerritoryChange={() => { void load(); }}
         />
       )}
     </div>

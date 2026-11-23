@@ -29,7 +29,8 @@ function useDebounce<T>(value: T, delay: number): T {
   return dv;
 }
 
-export default function GlobalSearch({ role: _role }: { role: string }) {
+export default function GlobalSearch({ role }: { role: string }) {
+  const isRep = role === "REP";
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResults | null>(null);
@@ -70,13 +71,23 @@ export default function GlobalSearch({ role: _role }: { role: string }) {
       .finally(() => setLoading(false));
   }, [dq]);
 
+  // Result links must stay inside the signed-in user's own portal. Reps who
+  // followed the old /admin/... links were bounced to /login by the admin
+  // layout, which looked like a logout. Reps get the rep portal equivalents
+  // (accounts live on their territory page), and result types with no rep
+  // portal page (leads, reps) are hidden for them.
   const allItems = results
-    ? [
-        ...results.hospitals.map(h => ({ type: "hospital" as const, id: h.id, primary: h.hospitalName, secondary: [h.city, h.state].filter(Boolean).join(", "), badge: h.status, href: `/admin/hospitals` })),
-        ...results.leads.map(l => ({ type: "lead" as const, id: l.id, primary: l.hospitalName, secondary: l.contactName ?? "", badge: l.status, href: `/admin/leads` })),
-        ...results.opportunities.map(o => ({ type: "opportunity" as const, id: o.id, primary: o.title, secondary: o.hospital.hospitalName, badge: o.stage, href: `/admin/opportunities` })),
-        ...results.reps.map(r => ({ type: "rep" as const, id: r.id, primary: r.user.name ?? r.user.email ?? "", secondary: r.territory ?? "", badge: r.title ?? "", href: `/admin/reps` })),
-      ]
+    ? isRep
+      ? [
+          ...results.hospitals.map(h => ({ type: "hospital" as const, id: h.id, primary: h.hospitalName, secondary: [h.city, h.state].filter(Boolean).join(", "), badge: h.status, href: `/rep/territory` })),
+          ...results.opportunities.map(o => ({ type: "opportunity" as const, id: o.id, primary: o.title, secondary: o.hospital.hospitalName, badge: o.stage, href: `/rep/opportunities` })),
+        ]
+      : [
+          ...results.hospitals.map(h => ({ type: "hospital" as const, id: h.id, primary: h.hospitalName, secondary: [h.city, h.state].filter(Boolean).join(", "), badge: h.status, href: `/admin/hospitals` })),
+          ...results.leads.map(l => ({ type: "lead" as const, id: l.id, primary: l.hospitalName, secondary: l.contactName ?? "", badge: l.status, href: `/admin/leads` })),
+          ...results.opportunities.map(o => ({ type: "opportunity" as const, id: o.id, primary: o.title, secondary: o.hospital.hospitalName, badge: o.stage, href: `/admin/opportunities` })),
+          ...results.reps.map(r => ({ type: "rep" as const, id: r.id, primary: r.user.name ?? r.user.email ?? "", secondary: r.territory ?? "", badge: r.title ?? "", href: `/admin/reps` })),
+        ]
     : [];
 
   const TYPE_ICON: Record<string, string> = { hospital: "🏥", lead: "🎯", opportunity: "📊", rep: "👤" };
@@ -131,7 +142,7 @@ export default function GlobalSearch({ role: _role }: { role: string }) {
             value={query}
             onChange={e => setQuery(e.target.value)}
             onKeyDown={handleKey}
-            placeholder="Search accounts, leads, opportunities, reps…"
+            placeholder={isRep ? "Search accounts, opportunities…" : "Search accounts, leads, opportunities, reps…"}
             style={{ flex: 1, background: "none", border: "none", outline: "none", color: C.text, fontSize: "1rem", caretColor: C.accent }}
           />
           {loading && <span style={{ fontSize: "0.75rem", color: C.muted }}>Searching…</span>}
@@ -170,7 +181,7 @@ export default function GlobalSearch({ role: _role }: { role: string }) {
 
         {query.length < 2 && (
           <div style={{ padding: "20px 18px", color: C.muted, fontSize: "0.8rem" }}>
-            Start typing to search across all accounts, leads, opportunities, and reps.
+            {isRep ? "Start typing to search across accounts and opportunities in your portal." : "Start typing to search across all accounts, leads, opportunities, and reps."}
           </div>
         )}
 
