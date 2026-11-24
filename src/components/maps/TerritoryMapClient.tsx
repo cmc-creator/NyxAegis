@@ -1,5 +1,7 @@
-﻿"use client";
+"use client";
 import { useEffect, useRef } from "react";
+import type { IControl, Map as MapLibreMap, Popup as MapLibrePopup } from "maplibre-gl";
+import type { Feature, FeatureCollection, Polygon } from "geojson";
 
 // State center lat/lng lookup
 const STATE_CENTERS: Record<string, [number, number]> = {
@@ -40,6 +42,11 @@ const STATUS_CLR: Record<string, string> = {
   ACTIVE: "var(--nyx-accent)", PROSPECT: "#fbbf24", INACTIVE: "#64748b",
 };
 
+// CARTO Dark Matter vector style. CARTO raster basemaps now require an API
+// key and serve "API KEY REQUIRED" placeholder tiles; the GL style and its
+// vector tiles are keyless.
+const DARK_MATTER_STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json";
+
 // Slightly jitter markers within the same state so they don't stack
 function jitter(seed: number, range: number) {
   // deterministic-ish jitter using index
@@ -47,32 +54,73 @@ function jitter(seed: number, range: number) {
   return ((a - Math.floor(a)) - 0.5) * range * 2;
 }
 
+// Geodesic circle polygon ([lng, lat] ring) matching an L.circle of the
+// same radius in meters, for use as a GeoJSON fill/line layer
+function circlePolygon(centerLatLng: [number, number], radiusMeters: number, steps = 64): [number, number][] {
+  const [lat, lng] = centerLatLng;
+  const earthRadius = 6371008.8;
+  const latRad = (lat * Math.PI) / 180;
+  const lngRad = (lng * Math.PI) / 180;
+  const angularDistance = radiusMeters / earthRadius;
+  const ring: [number, number][] = [];
+  for (let i = 0; i <= steps; i++) {
+    const bearing = ((i * 360) / steps) * (Math.PI / 180);
+    const pointLat = Math.asin(
+      Math.sin(latRad) * Math.cos(angularDistance) +
+      Math.cos(latRad) * Math.sin(angularDistance) * Math.cos(bearing)
+    );
+    const pointLng = lngRad + Math.atan2(
+      Math.sin(bearing) * Math.sin(angularDistance) * Math.cos(latRad),
+      Math.cos(angularDistance) - Math.sin(latRad) * Math.sin(pointLat)
+    );
+    ring.push([(pointLng * 180) / Math.PI, (pointLat * 180) / Math.PI]);
+  }
+  return ring;
+}
+
+// Legend control - same content and styling as the previous Leaflet control
+class LegendControl implements IControl {
+  private container: HTMLDivElement | null = null;
+
+  onAdd(): HTMLElement {
+    const div = document.createElement("div");
+    div.style.cssText = "background:rgba(10,18,35,0.9);padding:12px 16px;border-radius:8px;border:1px solid var(--nyx-accent-mid);font-size:0.75rem;color:#d8e8f4;min-width:150px";
+    div.innerHTML = `
+      <div style="font-weight:700;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--nyx-accent-label);margin-bottom:8px">Account Status</div>
+      ${[["ACTIVE","var(--nyx-accent)"],["PROSPECT","#fbbf24"],["INACTIVE","#64748b"]].map(([s,c]) =>
+        `<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+          <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${c}"></span>${s}
+        </div>`
+      ).join("")}
+      <div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.08)">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#fb923c"></span>Overdue 30d+
+        </div>
+      </div>
+    `;
+    this.container = div;
+    return div;
+  }
+
+  onRemove(): void {
+    this.container?.parentNode?.removeChild(this.container);
+    this.container = null;
+  }
+}
+
+type TerritoryProps = { repName: string; state: string; color: string };
+
 export default function TerritoryMapClient({ hospitals, repTerritories, overdueHospitals = [] }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<unknown>(null);
+  const mapRef = useRef<MapLibreMap | null>(null);
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
+    let removed = false;
 
-    // Dynamically require leaflet to avoid SSR issues
-    import("leaflet").then(L => {
-      // Fix default icon paths
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      delete (L.Icon.Default.prototype as any)._getIconUrl;
-      L.Icon.Default.mergeOptions({
-        iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-        iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-        shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-      });
-
-      const map = L.map(containerRef.current!, {
-        center: [34.3, -111.5],
-        zoom: 6,
-        minZoom: 3,
-        maxZoom: 12,
-        scrollWheelZoom: true,
-        zoomControl: true,
-      });
+    // Dynamically import maplibre-gl to avoid SSR issues
+    import("maplibre-gl").then(maplibregl => {
+      if (removed || !containerRef.current) return;
 
       // Inject pulse animation for overdue markers
       if (!document.getElementById("nyx-overdue-style")) {
@@ -89,64 +137,96 @@ export default function TerritoryMapClient({ hospitals, repTerritories, overdueH
         document.head.appendChild(style);
       }
 
-      // Basemap tiles: OpenStreetMap (keyless). CARTO raster basemaps now
-      // require an API key and serve "API KEY REQUIRED" placeholder tiles.
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        subdomains: "abc",
-        maxZoom: 19,
-      }).addTo(map);
+      const map = new maplibregl.Map({
+        container: containerRef.current,
+        style: DARK_MATTER_STYLE,
+        center: [-111.5, 34.3],
+        zoom: 6,
+        minZoom: 3,
+        maxZoom: 12,
+      });
+      mapRef.current = map;
 
-      // Draw state territory fills per rep
-      repTerritories.forEach(rep => {
-        rep.states.forEach(state => {
+      // Zoom control in the top-left, where the Leaflet control sat
+      map.addControl(new maplibregl.NavigationControl(), "top-left");
+      map.addControl(new LegendControl(), "bottom-right");
+
+      map.on("load", () => {
+        if (removed) return;
+
+        // Draw state territory fills per rep - GeoJSON circle polygons
+        // (180 km radius, same as the previous L.circle rendering)
+        const features: Feature<Polygon, TerritoryProps>[] = [];
+        repTerritories.forEach(rep => {
+          rep.states.forEach(state => {
+            const center = STATE_CENTERS[state];
+            if (!center) return;
+            features.push({
+              type: "Feature",
+              properties: { repName: rep.name, state, color: rep.color },
+              geometry: { type: "Polygon", coordinates: [circlePolygon(center, 180000)] },
+            });
+          });
+        });
+        const collection: FeatureCollection<Polygon, TerritoryProps> = { type: "FeatureCollection", features };
+        map.addSource("nyx-territories", { type: "geojson", data: collection });
+        map.addLayer({
+          id: "nyx-territory-fill",
+          type: "fill",
+          source: "nyx-territories",
+          paint: { "fill-color": ["get", "color"], "fill-opacity": 0.08 },
+        });
+        map.addLayer({
+          id: "nyx-territory-line",
+          type: "line",
+          source: "nyx-territories",
+          paint: { "line-color": ["get", "color"], "line-width": 1, "line-dasharray": [4, 4] },
+        });
+
+        // Sticky tooltip following the mouse over a territory circle,
+        // replacing the Leaflet bindTooltip(..., { sticky: true })
+        const tooltip = new maplibregl.Popup({ closeButton: false, closeOnClick: false });
+        map.on("mousemove", "nyx-territory-fill", e => {
+          const feature = e.features?.[0];
+          if (!feature) return;
+          tooltip
+            .setLngLat(e.lngLat)
+            .setHTML(`<b>${String(feature.properties?.repName ?? "")}</b><br>${String(feature.properties?.state ?? "")}`)
+            .addTo(map);
+        });
+        map.on("mouseleave", "nyx-territory-fill", () => tooltip.remove());
+
+        // Leaflet keeps a single popup open at a time; mirror that here
+        const openPopups: MapLibrePopup[] = [];
+        const trackPopup = (popup: MapLibrePopup) => {
+          openPopups.push(popup);
+          popup.on("open", () => {
+            openPopups.forEach(p => {
+              if (p !== popup && p.isOpen()) p.remove();
+            });
+          });
+        };
+
+        // Hospital markers
+        hospitals.forEach((h, idx) => {
+          const state = h.state ?? "";
           const center = STATE_CENTERS[state];
           if (!center) return;
-          L.circle(center, {
-            radius: 180000,
-            color: rep.color,
-            fillColor: rep.color,
-            fillOpacity: 0.08,
-            weight: 1,
-            dashArray: "4 4",
-          }).addTo(map).bindTooltip(`<b>${rep.name}</b><br>${state}`, { sticky: true });
-        });
-      });
 
-      // State label markers
-      const stateAssignments = new Map<string, string>();
-      repTerritories.forEach(rep => rep.states.forEach(s => stateAssignments.set(s, rep.name)));
+          const lat = center[0] + jitter(idx * 3, 0.6);
+          const lng = center[1] + jitter(idx * 3 + 1, 0.8);
+          const color = STATUS_CLR[h.status] ?? "#64748b";
 
-      // Hospital markers
-      const stateCounts = new Map<string, number>();
-      hospitals.forEach((h, idx) => {
-        const state = h.state ?? "";
-        const center = STATE_CENTERS[state];
-        if (!center) return;
-
-        const count = stateCounts.get(state) ?? 0;
-        stateCounts.set(state, count + 1);
-
-        const lat = center[0] + jitter(idx * 3, 0.6);
-        const lng = center[1] + jitter(idx * 3 + 1, 0.8);
-        const color = STATUS_CLR[h.status] ?? "#64748b";
-
-        const icon = L.divIcon({
-          className: "",
-          html: `<div style="
+          const el = document.createElement("div");
+          el.style.cssText = `
             width:14px;height:14px;border-radius:50%;
             background:${color};
             border:2px solid rgba(255,255,255,0.9);
             box-shadow:0 0 8px ${color}cc,0 0 2px rgba(0,0,0,0.8);
             cursor:pointer;
-          "></div>`,
-          iconSize: [14, 14],
-          iconAnchor: [7, 7],
-        });
+          `;
 
-        L.marker([lat, lng], { icon })
-          .addTo(map)
-          .bindPopup(`
+          const popup = new maplibregl.Popup({ maxWidth: "250px" }).setHTML(`
             <div style="min-width:180px;line-height:1.6">
               <div style="font-weight:800;font-size:0.95rem;margin-bottom:4px">${h.hospitalName}</div>
               <div style="font-size:0.78rem;color:#666">${h.city ?? ""}${h.city && h.state ? ", " : ""}${h.state ?? ""}</div>
@@ -156,39 +236,38 @@ export default function TerritoryMapClient({ hospitals, repTerritories, overdueH
               </div>
               ${h.assignedRepName ? `<div style="font-size:0.75rem;color:#888;margin-top:2px">Rep: ${h.assignedRepName}</div>` : ""}
             </div>
-          `, { maxWidth: 250 });
-      });
+          `);
+          trackPopup(popup);
 
-      // Overdue hospital markers (pulsing amber)
-      const overdueStateCounts = new Map<string, number>();
-      overdueHospitals.forEach((h, idx) => {
-        const state = h.state ?? "";
-        const center = STATE_CENTERS[state];
-        if (!center) return;
+          new maplibregl.Marker({ element: el })
+            .setLngLat([lng, lat])
+            .setPopup(popup)
+            .addTo(map);
+        });
 
-        const lat = center[0] + jitter(idx * 7 + 2, 0.55);
-        const lng = center[1] + jitter(idx * 7 + 3, 0.75);
-        overdueStateCounts.set(state, (overdueStateCounts.get(state) ?? 0) + 1);
+        // Overdue hospital markers (pulsing amber)
+        overdueHospitals.forEach((h, idx) => {
+          const state = h.state ?? "";
+          const center = STATE_CENTERS[state];
+          if (!center) return;
 
-        const overdueIcon = L.divIcon({
-          className: "",
-          html: `<div class="nyx-overdue-marker" style="
+          const lat = center[0] + jitter(idx * 7 + 2, 0.55);
+          const lng = center[1] + jitter(idx * 7 + 3, 0.75);
+
+          const el = document.createElement("div");
+          el.className = "nyx-overdue-marker";
+          el.style.cssText = `
             width:15px;height:15px;border-radius:50%;
             background:#fb923c;
             border:2px solid rgba(255,255,255,0.9);
             cursor:pointer;
-          "></div>`,
-          iconSize: [15, 15],
-          iconAnchor: [7, 7],
-        });
+          `;
 
-        const contactHtml = h.contacts.length
-          ? h.contacts.slice(0, 3).map(c => `<div style="font-size:0.75rem;color:#fb923c;margin-top:2px">${c.name}${c.title ? ` <span style="color:#888;font-weight:400">(${c.title})</span>` : ""}</div>`).join("")
-          : `<div style="font-size:0.75rem;color:#888;margin-top:2px">No contacts on file</div>`;
+          const contactHtml = h.contacts.length
+            ? h.contacts.slice(0, 3).map(c => `<div style="font-size:0.75rem;color:#fb923c;margin-top:2px">${c.name}${c.title ? ` <span style="color:#888;font-weight:400">(${c.title})</span>` : ""}</div>`).join("")
+            : `<div style="font-size:0.75rem;color:#888;margin-top:2px">No contacts on file</div>`;
 
-        L.marker([lat, lng], { icon: overdueIcon })
-          .addTo(map)
-          .bindPopup(`
+          const popup = new maplibregl.Popup({ maxWidth: "260px" }).setHTML(`
             <div style="min-width:190px;line-height:1.6">
               <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
                 <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#fb923c;flex-shrink:0"></span>
@@ -204,38 +283,21 @@ export default function TerritoryMapClient({ hospitals, repTerritories, overdueH
                 ${contactHtml}
               </div>
             </div>
-          `, { maxWidth: 260 });
-      });
+          `);
+          trackPopup(popup);
 
-      // Legend
-      const LegendControl = L.Control.extend({
-        onAdd() {
-          const div = L.DomUtil.create("div");
-          div.style.cssText = "background:rgba(10,18,35,0.9);padding:12px 16px;border-radius:8px;border:1px solid var(--nyx-accent-mid);font-size:0.75rem;color:#d8e8f4;min-width:150px";
-          div.innerHTML = `
-            <div style="font-weight:700;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--nyx-accent-label);margin-bottom:8px">Account Status</div>
-            ${[["ACTIVE","var(--nyx-accent)"],["PROSPECT","#fbbf24"],["INACTIVE","#64748b"]].map(([s,c]) =>
-              `<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
-                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${c}"></span>${s}
-              </div>`
-            ).join("")}
-            <div style="margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.08)">
-              <div style="display:flex;align-items:center;gap:6px">
-                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#fb923c"></span>Overdue 30d+
-              </div>
-            </div>
-          `;
-          return div;
-        },
+          new maplibregl.Marker({ element: el })
+            .setLngLat([lng, lat])
+            .setPopup(popup)
+            .addTo(map);
+        });
       });
-      new LegendControl({ position: "bottomright" as L.ControlPosition }).addTo(map);
-
-      mapRef.current = map;
     });
 
     return () => {
+      removed = true;
       if (mapRef.current) {
-        (mapRef.current as { remove: () => void }).remove();
+        mapRef.current.remove();
         mapRef.current = null;
       }
     };
@@ -243,8 +305,8 @@ export default function TerritoryMapClient({ hospitals, repTerritories, overdueH
 
   return (
     <>
-      {/* Leaflet CSS */}
-      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+      {/* MapLibre GL CSS */}
+      <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@6.19.0/dist/maplibre-gl.css" />
       <div ref={containerRef} style={{ width: "100%", height: 500, borderRadius: 10, overflow: "hidden" }} />
     </>
   );
