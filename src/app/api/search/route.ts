@@ -16,12 +16,12 @@ export async function GET(req: NextRequest) {
 
   const [hospitals, leads, opportunities, reps] = await Promise.all([
     prisma.hospital.findMany({
-      where: { OR: [{ hospitalName: contains(q) }, { city: contains(q) }, { state: contains(q) }, { primaryContactName: contains(q) }] },
+      where: { OR: [{ hospitalName: contains(q) }, { systemName: contains(q) }, { city: contains(q) }, { state: contains(q) }, { primaryContactName: contains(q) }] },
       select: { id: true, hospitalName: true, city: true, state: true, status: true },
       take: 8,
     }),
     prisma.lead.findMany({
-      where: { OR: [{ hospitalName: contains(q) }, { contactName: contains(q) }, { city: contains(q) }, { state: contains(q) }] },
+      where: { OR: [{ hospitalName: contains(q) }, { systemName: contains(q) }, { contactName: contains(q) }, { city: contains(q) }, { state: contains(q) }] },
       select: { id: true, hospitalName: true, contactName: true, status: true, city: true, state: true },
       take: 8,
     }),

@@ -342,6 +342,19 @@ export default function OpportunitiesClient({ hospitals, reps }: { hospitals: Ho
     try { const r = await fetch("/api/opportunities"); if (r.ok) setOpps(await r.json()); } finally { setLoading(false); }
   }, []);
   useEffect(() => { load(); }, [load]);
+  // Deep link from global search (?open=<id>) - opens that record's editor
+  const openParamRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (openParamRef.current === null) {
+      openParamRef.current = new URLSearchParams(window.location.search).get("open") ?? "";
+    }
+    if (!openParamRef.current) return;
+    const rec = opps.find(o => o.id === openParamRef.current);
+    if (rec) {
+      setModal(rec);
+      openParamRef.current = "";
+    }
+  }, [opps]);
 
   useEffect(() => {
     const onEnd = () => setDraggingId(null);

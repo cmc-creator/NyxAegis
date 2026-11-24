@@ -36,6 +36,8 @@ export default function GlobalSearch({ role }: { role: string }) {
   const [results, setResults] = useState<SearchResults | null>(null);
   const [loading, setLoading] = useState(false);
   const [cursor, setCursor] = useState(0);
+  const [searchedQuery, setSearchedQuery] = useState("");
+  const reqRef = useRef(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const dq = useDebounce(query, 280);
@@ -63,12 +65,30 @@ export default function GlobalSearch({ role }: { role: string }) {
   useEffect(() => { if (open) setTimeout(() => inputRef.current?.focus(), 50); }, [open]);
 
   useEffect(() => {
-    if (dq.length < 2) { setResults(null); return; }
+    if (dq.length < 2) { setResults(null); setSearchedQuery(""); return; }
     setLoading(true);
+    const reqId = ++reqRef.current;
     fetch(`/api/search?q=${encodeURIComponent(dq)}`)
       .then(r => r.json())
-      .then(d => { setResults(d); setCursor(0); })
-      .finally(() => setLoading(false));
+      .then(d => {
+        // Stale-response guard: a slower earlier query must not overwrite
+        // the results of the query currently in the box.
+        if (reqId !== reqRef.current) return;
+        setResults({
+          hospitals: d.hospitals ?? [],
+          leads: d.leads ?? [],
+          opportunities: d.opportunities ?? [],
+          reps: d.reps ?? [],
+        });
+        setSearchedQuery(dq);
+        setCursor(0);
+      })
+      .catch(() => {
+        if (reqId !== reqRef.current) return;
+        setResults({ hospitals: [], leads: [], opportunities: [], reps: [] });
+        setSearchedQuery(dq);
+      })
+      .finally(() => { if (reqId === reqRef.current) setLoading(false); });
   }, [dq]);
 
   // Result links must stay inside the signed-in user's own portal. Reps who
@@ -83,10 +103,10 @@ export default function GlobalSearch({ role }: { role: string }) {
           ...results.opportunities.map(o => ({ type: "opportunity" as const, id: o.id, primary: o.title, secondary: o.hospital.hospitalName, badge: o.stage, href: `/rep/opportunities` })),
         ]
       : [
-          ...results.hospitals.map(h => ({ type: "hospital" as const, id: h.id, primary: h.hospitalName, secondary: [h.city, h.state].filter(Boolean).join(", "), badge: h.status, href: `/admin/hospitals` })),
-          ...results.leads.map(l => ({ type: "lead" as const, id: l.id, primary: l.hospitalName, secondary: l.contactName ?? "", badge: l.status, href: `/admin/leads` })),
-          ...results.opportunities.map(o => ({ type: "opportunity" as const, id: o.id, primary: o.title, secondary: o.hospital.hospitalName, badge: o.stage, href: `/admin/opportunities` })),
-          ...results.reps.map(r => ({ type: "rep" as const, id: r.id, primary: r.user.name ?? r.user.email ?? "", secondary: r.territory ?? "", badge: r.title ?? "", href: `/admin/reps` })),
+          ...results.hospitals.map(h => ({ type: "hospital" as const, id: h.id, primary: h.hospitalName, secondary: [h.city, h.state].filter(Boolean).join(", "), badge: h.status, href: `/admin/hospitals?open=${h.id}` })),
+          ...results.leads.map(l => ({ type: "lead" as const, id: l.id, primary: l.hospitalName, secondary: l.contactName ?? "", badge: l.status, href: `/admin/leads?open=${l.id}` })),
+          ...results.opportunities.map(o => ({ type: "opportunity" as const, id: o.id, primary: o.title, secondary: o.hospital.hospitalName, badge: o.stage, href: `/admin/opportunities?open=${o.id}` })),
+          ...results.reps.map(r => ({ type: "rep" as const, id: r.id, primary: r.user.name ?? r.user.email ?? "", secondary: r.territory ?? "", badge: r.title ?? "", href: `/admin/reps?open=${r.id}` })),
         ]
     : [];
 
@@ -98,6 +118,7 @@ export default function GlobalSearch({ role }: { role: string }) {
     setOpen(false);
     setQuery("");
     setResults(null);
+    setSearchedQuery("");
   }, [router]);
 
   const handleKey = (e: React.KeyboardEvent) => {
@@ -173,9 +194,15 @@ export default function GlobalSearch({ role }: { role: string }) {
           </div>
         )}
 
-        {query.length >= 2 && !loading && allItems.length === 0 && (
+        {dq.length >= 2 && !loading && searchedQuery === dq && allItems.length === 0 && (
           <div style={{ padding: "32px 18px", textAlign: "center", color: C.muted, fontSize: "0.875rem" }}>
-            No results for &ldquo;{query}&rdquo;
+            No results for &ldquo;{dq}&rdquo;
+          </div>
+        )}
+
+        {query.length >= 2 && allItems.length === 0 && (loading || dq !== query || searchedQuery !== dq) && (
+          <div style={{ padding: "32px 18px", textAlign: "center", color: C.muted, fontSize: "0.875rem" }}>
+            Searching…
           </div>
         )}
 

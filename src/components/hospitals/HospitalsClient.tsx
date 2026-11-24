@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { ActivityFeedPanel } from "@/components/activities/ActivityFeedPanel";
 
 type HospitalType = "ACUTE_CARE"|"CRITICAL_ACCESS"|"SPECIALTY"|"HEALTH_SYSTEM"|"AMBULATORY"|"OUTPATIENT"|"LONG_TERM_CARE"|"BEHAVIORAL_HEALTH"|"REHABILITATION"|"CHILDRENS"|"CANCER_CENTER"|"URGENT_CARE"|"PCP"|"PRIVATE_PRACTICE"|"OTHER";
@@ -214,6 +214,19 @@ export default function HospitalsClient({ initialHospitals }: { initialHospitals
   const [search, setSearch] = useState("");
   const [filterType, setFilterType] = useState<string>("ALL");
   const [filterStatus, setFilterStatus] = useState<string>("ALL");
+  // Deep link from global search (?open=<id>) - opens that record's editor
+  const openParamRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (openParamRef.current === null) {
+      openParamRef.current = new URLSearchParams(window.location.search).get("open") ?? "";
+    }
+    if (!openParamRef.current) return;
+    const rec = hospitals.find(h => h.id === openParamRef.current);
+    if (rec) {
+      setModal(rec);
+      openParamRef.current = "";
+    }
+  }, [hospitals]);
 
   const load = useCallback(async (q?: string) => {
     const url = q ? `/api/hospitals?search=${encodeURIComponent(q)}` : "/api/hospitals";

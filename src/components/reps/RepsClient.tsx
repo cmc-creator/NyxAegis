@@ -318,6 +318,19 @@ export default function RepsClient() {
   }, []);
 
   useEffect(() => { load(); }, [load]);
+  // Deep link from global search (?open=<id>) - opens that record's editor
+  const openParamRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (openParamRef.current === null) {
+      openParamRef.current = new URLSearchParams(window.location.search).get("open") ?? "";
+    }
+    if (!openParamRef.current) return;
+    const rec = reps.find(r => r.id === openParamRef.current);
+    if (rec) {
+      setModal(rec);
+      openParamRef.current = "";
+    }
+  }, [reps]);
 
   // Close action menu on outside click
   useEffect(() => {

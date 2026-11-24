@@ -356,6 +356,19 @@ export default function LeadsClient({ reps }: { reps: Rep[] }) {
   }, []);
 
   useEffect(() => { load(); }, [load]);
+  // Deep link from global search (?open=<id>) - opens that record's editor
+  const openParamRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (openParamRef.current === null) {
+      openParamRef.current = new URLSearchParams(window.location.search).get("open") ?? "";
+    }
+    if (!openParamRef.current) return;
+    const rec = leads.find(l => l.id === openParamRef.current);
+    if (rec) {
+      setModal(rec);
+      openParamRef.current = "";
+    }
+  }, [leads]);
 
   const filtered = leads.filter(l => {
     const matchStatus = filterStatus === "ALL" || l.status === filterStatus;
