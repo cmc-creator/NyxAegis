@@ -47,6 +47,14 @@ const STATUS_CLR: Record<string, string> = {
 // vector tiles are keyless.
 const DARK_MATTER_STYLE = "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json";
 
+// MapLibre v6 derives its web worker URL as a sibling file of the library
+// module (maplibre-gl-worker.mjs next to import.meta.url). In a Next.js
+// bundle that sibling file does not exist, the worker 404s, vector tiles
+// never parse, the map "load" event never fires, and the canvas stays on
+// the style background with no geography and no markers. Point the worker
+// at the pinned CDN file instead (same host and version as the CSS below).
+const MAPLIBRE_WORKER_URL = "https://unpkg.com/maplibre-gl@6.19.0/dist/maplibre-gl-worker.mjs";
+
 // Slightly jitter markers within the same state so they don't stack
 function jitter(seed: number, range: number) {
   // deterministic-ish jitter using index
@@ -121,6 +129,8 @@ export default function TerritoryMapClient({ hospitals, repTerritories, overdueH
     // Dynamically import maplibre-gl to avoid SSR issues
     import("maplibre-gl").then(maplibregl => {
       if (removed || !containerRef.current) return;
+
+      maplibregl.setWorkerUrl(MAPLIBRE_WORKER_URL);
 
       // Inject pulse animation for overdue markers
       if (!document.getElementById("nyx-overdue-style")) {
