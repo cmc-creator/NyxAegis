@@ -997,6 +997,18 @@ model AiChatMessage {
   @@map("ai_chat_messages")
 }
 
+model AiContentReport {
+  id        String   @id @default(cuid())
+  userId    String
+  userEmail String?
+  prompt    String?  @db.Text
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@map("ai_content_reports")
+}
+
 // ---- Ported from DestinySpringsCRM (2026-11-20) ----
 
 enum TaskStatus {

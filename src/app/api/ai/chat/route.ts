@@ -306,7 +306,8 @@ export async function POST(req: NextRequest) {
   }
 
   // â”€â”€ Gemini function-calling loop (max 5 tool-call rounds) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+  const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+  const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
   let currentContents = [...contents];
   let finalText = "";
 

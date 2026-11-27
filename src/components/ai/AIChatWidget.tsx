@@ -51,6 +51,7 @@ export default function AIChatWidget() {
   const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const [input, setInput]       = useState("");
   const [loading, setLoading]   = useState(false);
+  const [reportedIds, setReportedIds] = useState<Set<string>>(new Set());
   const bottomRef               = useRef<HTMLDivElement>(null);
   const inputRef                = useRef<HTMLTextAreaElement>(null);
   const pendingPromptRef        = useRef<string | null>(null);
@@ -128,6 +129,29 @@ export default function AIChatWidget() {
 
   const clearChat = () => setMessages([WELCOME_MESSAGE]);
 
+  const promptFor = (msg: Message): string | undefined => {
+    const idx = messages.indexOf(msg);
+    for (let j = idx - 1; j >= 0; j--) {
+      if (messages[j].role === "user") return messages[j].content;
+    }
+    return undefined;
+  };
+
+  const reportMessage = async (msg: Message) => {
+    try {
+      const res = await fetch("/api/ai/report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: msg.content, prompt: promptFor(msg) }),
+      });
+      if (res.ok) {
+        setReportedIds((prev) => new Set(prev).add(msg.id));
+      }
+    } catch {
+      // Leave the button in place so the user can try again.
+    }
+  };
+
   return (
     <>
       <style>{`
@@ -163,6 +187,9 @@ export default function AIChatWidget() {
         }
         .aegis-send:hover:not(:disabled) {
           background: rgba(201,168,76,0.25) !important;
+        }
+        .aegis-report:hover {
+          color: ${GOLD} !important;
         }
         .aegis-input:focus {
           outline: none;
@@ -253,15 +280,29 @@ export default function AIChatWidget() {
                     <NyxLogo size={28} alt="Aegis" style={{ width: "100%", height: "100%" }} />
                   </div>
                 )}
-                <div
-                  className={m.role === "user" ? "aegis-msg-user" : "aegis-msg-ai"}
-                  style={{
-                    maxWidth: "82%", borderRadius: m.role === "user" ? "14px 4px 14px 14px" : "4px 14px 14px 14px",
-                    padding: "9px 13px", fontSize: "0.82rem", color: TEXT, lineHeight: 1.65,
-                  }}
-                  
-                  dangerouslySetInnerHTML={{ __html: renderMarkdown(m.content) }}
-                />
+                <div style={{ display: "flex", flexDirection: "column", maxWidth: "82%" }}>
+                  <div
+                    className={m.role === "user" ? "aegis-msg-user" : "aegis-msg-ai"}
+                    style={{
+                      borderRadius: m.role === "user" ? "14px 4px 14px 14px" : "4px 14px 14px 14px",
+                      padding: "9px 13px", fontSize: "0.82rem", color: TEXT, lineHeight: 1.65,
+                    }}
+                    dangerouslySetInnerHTML={{ __html: renderMarkdown(m.content) }}
+                  />
+                  {m.role === "assistant" && m.id !== "welcome" && (
+                    reportedIds.has(m.id) ? (
+                      <span style={{ fontSize: "0.68rem", color: MUTED, marginTop: 4, paddingLeft: 2 }}>Thanks, reported</span>
+                    ) : (
+                      <button
+                        className="aegis-report"
+                        onClick={() => reportMessage(m)}
+                        style={{ background: "none", border: "none", cursor: "pointer", padding: "4px 2px 0", fontSize: "0.68rem", color: MUTED, textAlign: "left", textDecoration: "underline", textUnderlineOffset: 2, fontFamily: "inherit" }}
+                      >
+                        Report an Issue
+                      </button>
+                    )
+                  )}
+                </div>
               </div>
             ))}
             {loading && (
