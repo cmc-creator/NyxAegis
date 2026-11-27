@@ -332,6 +332,7 @@ export async function POST(req: NextRequest) {
   const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
   let currentContents = [...contents];
   let finalText = "";
+  const seenToolRounds = new Set<string>();
 
   for (let iter = 0; iter < 5; iter++) {
     const res = await fetchGeminiWithRetry(GEMINI_URL, {
@@ -358,6 +359,11 @@ export async function POST(req: NextRequest) {
       break;
     }
 
+    // If every call this round repeats an earlier round, more rounds will not help - go answer.
+    const roundKey = functionCalls.map(fc => fc.functionCall.name + ":" + JSON.stringify(fc.functionCall.args)).sort().join("|");
+    if (seenToolRounds.has(roundKey)) break;
+    seenToolRounds.add(roundKey);
+
     // Execute all tool calls in parallel
     const toolResults = await Promise.all(functionCalls.map(fc => executeTool(fc.functionCall.name, fc.functionCall.args, userId, role)));
 
@@ -368,7 +374,32 @@ export async function POST(req: NextRequest) {
     ];
   }
 
-  if (!finalText) finalText = "I ran into an issue generating a response. Please try again.";
+  if (!finalText) {
+    // The tool loop ended without an answer (the model kept calling tools). Make one
+    // final tool-free call so the user still gets an answer from the data gathered.
+    try {
+      const synthRes = await fetchGeminiWithRetry(GEMINI_URL, {
+        system_instruction: { parts: [{ text: systemPrompt }] },
+        contents: [
+          ...currentContents,
+          { role: "user" as const, parts: [{ text: "Answer my original question now, using the information above. Do not call any tools." }] },
+        ],
+        generationConfig: { maxOutputTokens: 2000, temperature: 0.7 },
+      }, [0, 1500, 4000]);
+      if (synthRes.ok) {
+        const synthData = await synthRes.json() as { candidates?: { content?: { parts?: GeminiPart[] } }[] };
+        const synthParts = synthData.candidates?.[0]?.content?.parts ?? [];
+        finalText = (synthParts.find((p): p is { text: string } => "text" in p))?.text ?? "";
+      }
+    } catch (err) {
+      console.error("Gemini synthesis error:", err);
+    }
+  }
+
+  if (!finalText) {
+    console.error("AI chat produced no final text after the tool loop and synthesis call.");
+    finalText = "I ran into an issue generating a response. Please try again.";
+  }
 
   // â”€â”€ Save assistant reply + trim memory â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   await prisma.aiChatMessage.create({ data: { userId, role: "assistant", content: finalText } });
