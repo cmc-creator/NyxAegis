@@ -269,6 +269,28 @@ async function buildSnapshotContext(userId: string, role: string): Promise<strin
 }
 
 // â”€â”€ POST Handler â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Gemini returns intermittent 503s under load; retry transient failures with backoff.
+async function fetchGeminiWithRetry(url: string, body: unknown, delays: number[]): Promise<Response> {
+  let lastRes: Response | null = null;
+  let lastErr: unknown = null;
+  for (const delay of delays) {
+    if (delay) await new Promise(r => setTimeout(r, delay));
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (res.ok || (res.status !== 503 && res.status !== 429)) return res;
+      lastRes = res;
+    } catch (err) {
+      lastErr = err;
+    }
+  }
+  if (lastRes) return lastRes;
+  return new Response(lastErr instanceof Error ? lastErr.message : "Gemini request failed", { status: 503 });
+}
+
 export async function POST(req: NextRequest) {
   let session;
   try { session = await auth(); } catch { /* ignore */ }
@@ -306,23 +328,19 @@ export async function POST(req: NextRequest) {
   }
 
   // â”€â”€ Gemini function-calling loop (max 5 tool-call rounds) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+  const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-3.8-flash";
   const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${apiKey}`;
   let currentContents = [...contents];
   let finalText = "";
 
   for (let iter = 0; iter < 5; iter++) {
-    const res = await fetch(GEMINI_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: systemPrompt }] },
-        contents: currentContents,
-        tools: [{ function_declarations: FUNCTION_DECLARATIONS }],
-        tool_config: { function_calling_config: { mode: "AUTO" } },
-        generationConfig: { maxOutputTokens: 1500, temperature: 0.7 },
-      }),
-    });
+    const res = await fetchGeminiWithRetry(GEMINI_URL, {
+      system_instruction: { parts: [{ text: systemPrompt }] },
+      contents: currentContents,
+      tools: [{ function_declarations: FUNCTION_DECLARATIONS }],
+      tool_config: { function_calling_config: { mode: "AUTO" } },
+      generationConfig: { maxOutputTokens: 1500, temperature: 0.7 },
+    }, [0, 1500, 4000, 9000]);
 
     if (!res.ok) {
       const err = await res.text();
